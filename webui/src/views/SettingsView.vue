@@ -80,6 +80,7 @@ async function saveSection(section: string) {
                 data = {
                     project: { name: projectName.value },
                     workspace: { root: workspaceRoot.value },
+                    server: { external_url: externalUrl.value },
                 }
                 break
             case 'agent':
@@ -238,16 +239,11 @@ async function copyText(text: string) {
                                 </div>
                             </div>
 
-                            <div class="flex justify-end gap-2">
-                                <Button size="sm" variant="outline" @click="saveSection('server')" :disabled="!!saving">
-                                    <Loader2 v-if="saving === 'server'" class="mr-1 h-3.5 w-3.5 animate-spin" />
-                                    <Save v-else class="mr-1 h-3.5 w-3.5" />
-                                    {{ saving === 'server' ? '保存中...' : '保存访问地址' }}
-                                </Button>
+                            <div class="flex justify-end">
                                 <Button size="sm" @click="saveSection('project')" :disabled="!!saving">
                                     <Loader2 v-if="saving === 'project'" class="mr-1 h-3.5 w-3.5 animate-spin" />
                                     <Save v-else class="mr-1 h-3.5 w-3.5" />
-                                    {{ saving === 'project' ? '保存中...' : '保存项目设置' }}
+                                    {{ saving === 'project' ? '保存中...' : '保存' }}
                                 </Button>
                             </div>
                         </CardContent>
