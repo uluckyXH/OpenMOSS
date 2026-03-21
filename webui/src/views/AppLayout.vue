@@ -30,6 +30,7 @@ import {
   BookText,
   Settings,
   LogOut,
+  ShieldAlert,
 } from 'lucide-vue-next'
 
 const router = useRouter()
@@ -59,6 +60,7 @@ const menuItems = [
   { title: '审查记录', icon: FileSearch, path: '/reviews' },
   { title: '提示词管理', icon: BookText, path: '/prompts' },
   { title: '系统设置', icon: Settings, path: '/settings' },
+  { title: '系统巡查', icon: ShieldAlert, path: '/patrol' },
 ]
 
 function handleLogout() {
