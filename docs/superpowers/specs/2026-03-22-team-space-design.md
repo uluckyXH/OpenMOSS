@@ -30,11 +30,12 @@
 |------|------|------|
 | id | String(36) | UUID 主键 |
 | team_id | String(36) | 外键 → Team.id |
-| agent_id | String(36) | 外键 → Agent.id |
+| agent_id | String(36) | 外键 → Agent.id，**唯一**（每个 Agent 只能属于一个团队） |
 | self_introduction | Text | 自我介绍内容，NULL 表示未完成 |
 | added_at | DateTime | 加入时间 |
 
 - 联合唯一索引：(team_id, agent_id)
+- **业务约束**：同一 Agent 在系统中只能有一条 TeamMember 记录
 
 ### TeamProfile（团队介绍文件）
 
@@ -53,6 +54,13 @@
 | id | String(36) | UUID 主键 |
 | content | Text | jinja2 模板，支持 {{team_name}}、{{team_description}}、{{members}} 占位符 |
 | updated_at | DateTime | 更新时间 |
+
+#### 模板验证规则
+
+- 必须包含 `{{team_name}}` 占位符
+- 必须包含 `{{members}}` 占位符
+- 如果 `{{team_description}}` 占位符缺失，渲染时使用默认值 "暂无描述"
+- 如果模板内容为空或解析失败，使用系统默认模板
 
 ## 默认模板
 
@@ -123,9 +131,14 @@
 
 | 方法 | 路径 | 认证 | 说明 |
 |------|------|------|------|
-| GET | /api/teams/me | Agent | 获取所属团队信息 |
-| GET | /api/teams/me/profile | Agent | 获取团队介绍（Agent 读取用） |
-| PUT | /api/teams/me/intro | Agent | 提交自我介绍 |
+| GET | /api/teams/me | Agent | 获取所属团队信息，**如无团队返回 404** |
+| GET | /api/teams/me/profile | Agent | 获取团队介绍，**如无团队或团队已禁用返回 403** |
+| PUT | /api/teams/me/intro | Agent | 提交自我介绍，**如无团队或团队已禁用返回 403** |
+
+#### Agent 端点错误处理
+
+- **Agent 无团队**：GET /api/teams/me 返回 `404 Not Found`，`{"detail": "您尚未加入任何团队"}`
+- **团队已禁用**：GET /api/teams/me/profile 和 PUT /api/teams/me/intro 返回 `403 Forbidden`，`{"detail": "团队已禁用，无法访问"}`
 
 ## 业务流程
 
@@ -133,11 +146,12 @@
 
 ```
 1. POST /admin/teams
-   → 创建 Team 记录
+   → 创建 Team 记录，状态为 active
 
 2. POST /admin/teams/{id}/members
    → 为每个成员创建 TeamMember 记录（self_introduction=NULL）
    → 为每个 Agent 创建"自我介绍"子任务（类型：team_intro）
+   → 检查 Agent 是否已有团队，如有则报错返回
 
 3. Agent 认领并完成任务后:
    → PUT /api/teams/me/intro 更新自我介绍
@@ -145,6 +159,18 @@
    → 检查是否所有成员都完成自我介绍
    → 如果全部完成，创建"更新 SOUL.md"任务
 ```
+
+### 团队状态变更
+
+**禁用团队（active → disabled）：**
+- 禁止添加新成员（POST /members 返回 403）
+- 已有成员无法访问团队介绍和提交自我介绍（返回 403）
+- 已创建的子任务保持不变，Agent 仍可完成任务
+- 团队信息保留，仅标记为禁用
+
+**启用团队（disabled → active）：**
+- 恢复所有成员访问权限
+- 不自动重新触发自我介绍任务
 
 ### 2. Agent 提交自我介绍
 
@@ -171,9 +197,11 @@
 - 创建 update_soul 任务（因为团队信息变了）
 
 **团队删除：**
-- 删除所有 TeamMember
+- 团队状态必须为 `disabled` 才能删除
+- 删除所有 TeamMember（级联删除）
 - 删除 TeamProfile
 - 删除 Team 本身
+- **注意**：删除前不会处理相关的自我介绍任务和 update_soul 任务，任务会自动因团队/成员不存在而失效
 
 ### 4. 团队介绍生成逻辑
 
@@ -199,7 +227,7 @@ def generate_profile_content(template: str, team: Team, members: list) -> str:
 | 任务类型 | 说明 | 触发时机 |
 |----------|------|----------|
 | team_intro | 自我介绍任务 | Agent 加入团队时 |
-| update_soul | 更新 SOUL.md 任务 | 团队介绍生成完成，所有 Agent 完成自我介绍后 |
+| update_soul | 更新 SOUL.md 任务 | **该团队所有 Agent 都完成自我介绍后**（包括首次加入时和后续有成员完成时） |
 
 ### team_intro 任务描述
 
