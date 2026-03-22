@@ -140,21 +140,32 @@
 - **Agent 无团队**：GET /api/teams/me 返回 `404 Not Found`，`{"detail": "您尚未加入任何团队"}`
 - **团队已禁用**：GET /api/teams/me/profile 和 PUT /api/teams/me/intro 返回 `403 Forbidden`，`{"detail": "团队已禁用，无法访问"}`
 
+#### Admin API 错误处理
+
+- **团队名称重复**：POST /api/admin/teams 返回 `400 Bad Request`，`{"detail": "团队名称已存在"}`
+- **团队不存在**：GET/PUT/DELETE /api/admin/teams/{id} 返回 `404 Not Found`
+- **Agent 已有团队**：POST /api/admin/teams/{id}/members 返回 `400 Bad Request`，`{"detail": "该 Agent 已有归属团队"}`
+- **Agent 不存在**：POST /api/admin/teams/{id}/members 返回 `404 Not Found`
+
+#### 模板初始化
+
+- 系统首次启动时，自动创建默认模板（内容见上方"团队介绍生成模板（默认）"）
+
 ## 业务流程
 
 ### 1. 创建团队并分配 Agent
 
 ```
-1. POST /admin/teams
+1. POST /api/admin/teams
    → 创建 Team 记录，状态为 active
 
-2. POST /admin/teams/{id}/members
+2. POST /api/admin/teams/{id}/members
    → 为每个成员创建 TeamMember 记录（self_introduction=NULL）
    → 为每个 Agent 创建"自我介绍"子任务（类型：team_intro）
-   → 检查 Agent 是否已有团队，如有则报错返回
+   → 检查 Agent 是否已有团队，如有则返回 400 错误
 
 3. Agent 认领并完成任务后:
-   → PUT /api/teams/me/intro 更新自我介绍
+   → PUT /api/teams/me/intro 更新自我介绍（通过 API Key 认证识别 Agent）
    → 触发团队介绍生成逻辑
    → 检查是否所有成员都完成自我介绍
    → 如果全部完成，创建"更新 SOUL.md"任务
@@ -175,12 +186,14 @@
 ### 2. Agent 提交自我介绍
 
 ```
-1. Agent 调用 PUT /api/teams/me/intro
+1. Agent 调用 PUT /api/teams/me/intro（通过 API Key 认证识别 Agent）
 2. 验证 Agent 属于某个团队
-3. 更新 TeamMember.self_introduction
+3. 更新 TeamMember.self_introduction（使用数据库事务保证一致性）
 4. 生成新的 TeamProfile.content
+   - 如果生成失败，回滚自我介绍更新，返回 500 错误
 5. 检查所有成员是否完成：
    - 是：创建 update_soul 任务
+   - 如果任务创建失败，记录日志但不阻塞流程（可手动重试）
    - 否：结束
 ```
 
