@@ -31,7 +31,12 @@ TEAM_INTRO_DESCRIPTION = """请根据以下模板完成自我介绍：
 ## 联系场景
 [描述什么时候应该联系你]
 
-请将自我介绍写入团队系统中。"""
+请使用 CLI 工具的 team intro 命令将自我介绍提交到团队系统中。
+
+命令格式：
+  task team intro --key <你的API密钥> --content "<你的自我介绍内容>"
+
+完成后，在任务中回复"自我介绍已提交"确认完成。"""
 
 # 更新 SOUL.md 任务描述模板
 UPDATE_SOUL_DESCRIPTION = """请读取团队介绍信息，并更新你的 SOUL.md 文件：
