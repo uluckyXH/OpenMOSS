@@ -80,7 +80,25 @@ class TeamProfileTemplate(Base):
 
 ## 角色协作配置
 
-本团队通过 OpenClaw agent-send 机制实现主动通知，替代定时轮询。
+本团队使用 OpenClaw agent 机制实现成员间的主动通知，作为定时轮询的补充。
+
+### 如何通知其他成员
+
+在任务状态变化时，使用以下命令通知相关成员：
+
+```bash
+# 通知另一个 Agent（使用 openclaw agent 命令）
+openclaw agent --agent <目标AgentID> --message "<通知内容>"
+```
+
+示例：
+```bash
+# 规划师通知执行者有新任务
+openclaw agent --agent xhs_executor_wheat --message "【新任务】请前往系统认领任务：GET /api/sub-tasks/{sub_task_id}"
+
+# 执行者通知审核者提交审核
+openclaw agent --agent xhs_reviewer_cherry --message "【提交审核】任务ID：{sub_task_id}，请审核"
+```
 
 ### 规划师 (planner)
 - **职责**：分析数据、制定计划、拆分任务
