@@ -48,6 +48,7 @@ def init_db():
         review_record,
         reward_log,
         patrol_record,
+        team,
     )
 
     Base.metadata.create_all(bind=engine)
@@ -55,6 +56,9 @@ def init_db():
 
     # 静默迁移旧状态值（available/busy → active，offline → disabled）
     _migrate_agent_statuses()
+
+    # 迁移团队相关字段
+    _migrate_team_fields()
 
     # 首次启动时，自动导入全局规则模板
     _load_default_rules()
@@ -111,5 +115,36 @@ def _load_default_rules():
         db.add(rule)
         db.commit()
         print(f"[Database] 已导入全局规则模板 → rules/global-rule-example.md")
+    finally:
+        db.close()
+
+
+def _migrate_team_fields():
+    """迁移团队相关字段：task.team_id, sub_task.remarks"""
+    from sqlalchemy import text, inspect
+
+    db = SessionLocal()
+    try:
+        inspector = inspect(engine)
+        tables = inspector.get_table_names()
+
+        # 为 task 表添加 team_id 字段
+        if "task" in tables:
+            task_columns = [c["name"] for c in inspector.get_columns("task")]
+            if "team_id" not in task_columns:
+                db.execute(text("ALTER TABLE task ADD COLUMN team_id VARCHAR(36) REFERENCES team(id)"))
+                db.commit()
+                print("[Database] 已迁移 task 表添加 team_id 字段")
+
+        # 为 sub_task 表添加 remarks 字段
+        if "sub_task" in tables:
+            subtask_columns = [c["name"] for c in inspector.get_columns("sub_task")]
+            if "remarks" not in subtask_columns:
+                db.execute(text("ALTER TABLE sub_task ADD COLUMN remarks TEXT"))
+                db.commit()
+                print("[Database] 已迁移 sub_task 表添加 remarks 字段")
+    except Exception as e:
+        db.rollback()
+        print(f"[Database] 迁移字段失败: {e}")
     finally:
         db.close()

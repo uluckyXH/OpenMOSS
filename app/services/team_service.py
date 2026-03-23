@@ -178,6 +178,7 @@ def add_team_member(db: Session, team_id: str, agent_id: str) -> TeamMember:
             description="团队成员自我介绍和 SOUL.md 更新任务",
             type="once",
             status="active",
+            team_id=team_id,  # 关联到团队
         )
         db.add(team_task)
         db.flush()  # 获取 ID 但不提交
@@ -225,6 +226,21 @@ def remove_team_member(db: Session, team_id: str, agent_id: str) -> None:
     ).first()
     if not member:
         raise ValueError("成员不存在")
+
+    # 取消该成员在团队中的相关任务
+    if team.team_task_id:
+        pending_tasks = db.query(SubTask).filter(
+            SubTask.task_id == team.team_task_id,
+            SubTask.assigned_agent == agent_id,
+            SubTask.status.in_(["pending", "assigned", "in_progress"]),
+        ).all()
+
+        for task in pending_tasks:
+            task.status = "cancelled"
+            task.remarks = "agent离职"
+
+        if pending_tasks:
+            db.commit()
 
     db.delete(member)
     db.commit()

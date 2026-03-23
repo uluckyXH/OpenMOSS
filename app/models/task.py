@@ -3,7 +3,7 @@
 """
 import uuid
 from datetime import datetime
-from sqlalchemy import Column, String, Text, DateTime
+from sqlalchemy import Column, String, Text, DateTime, ForeignKey
 
 from app.database import Base
 
@@ -16,5 +16,6 @@ class Task(Base):
     description = Column(Text, default="", comment="任务描述")
     type = Column(String(20), default="once", comment="任务类型: once/recurring")
     status = Column(String(20), default="planning", index=True, comment="状态: planning/active/in_progress/completed/archived")
+    team_id = Column(String(36), ForeignKey("team.id"), nullable=True, index=True, comment="所属团队ID")
     created_at = Column(DateTime, default=datetime.now, comment="创建时间")
     updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now, comment="更新时间")
