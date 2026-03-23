@@ -38,6 +38,7 @@ async def list_admin_tasks(
     status: Optional[str] = Query(None, description="任务状态"),
     task_type: Optional[str] = Query(None, alias="type", description="任务类型 once/recurring"),
     keyword: Optional[str] = Query(None, description="按任务名或描述搜索"),
+    team_id: Optional[str] = Query(None, description="按团队ID筛选"),
     sort_by: str = Query("created_at", description="排序字段"),
     sort_order: str = Query("desc", description="排序方向 asc/desc"),
     _: bool = Depends(verify_admin),
@@ -52,6 +53,7 @@ async def list_admin_tasks(
             status=status,
             task_type=task_type,
             keyword=keyword,
+            team_id=team_id,
             sort_by=sort_by,
             sort_order=sort_order,
         )

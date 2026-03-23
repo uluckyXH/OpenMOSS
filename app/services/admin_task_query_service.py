@@ -48,6 +48,7 @@ def list_tasks(
     status: Optional[str] = None,
     task_type: Optional[str] = None,
     keyword: Optional[str] = None,
+    team_id: Optional[str] = None,
     sort_by: str = "created_at",
     sort_order: str = "desc",
 ) -> dict:
@@ -95,6 +96,8 @@ def list_tasks(
                 Task.description.ilike(pattern),
             )
         )
+    if team_id:
+        query = query.filter(Task.team_id == team_id)
 
     sort_map = {
         "created_at": Task.created_at,

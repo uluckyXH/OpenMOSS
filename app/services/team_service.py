@@ -136,12 +136,41 @@ def update_team(db: Session, team_id: str, name: str = None, description: str = 
     if description is not None:
         team.description = description
 
+    # 检查是否要将团队禁用
+    was_active = team.status == "active"
+    should_disable = status == "disabled" and was_active
+
     if status and status in ("active", "disabled"):
         team.status = status
+
+    # 如果禁用团队，取消所有相关的活跃子任务
+    if should_disable:
+        _cancel_team_tasks(db, team_id)
 
     db.commit()
     db.refresh(team)
     return team
+
+
+def _cancel_team_tasks(db: Session, team_id: str) -> None:
+    """取消团队下的所有活跃任务"""
+    # 查找团队关联的任务
+    team_tasks = db.query(Task).filter(Task.team_id == team_id).all()
+    team_task_ids = [t.id for t in team_tasks]
+
+    if team_task_ids:
+        # 取消这些任务下的所有活跃子任务
+        active_subtasks = db.query(SubTask).filter(
+            SubTask.task_id.in_(team_task_ids),
+            SubTask.status.in_(["pending", "assigned", "in_progress", "review", "rework", "blocked"]),
+        ).all()
+
+        for subtask in active_subtasks:
+            subtask.status = "cancelled"
+            subtask.remarks = "团队已禁用"
+
+        if active_subtasks:
+            db.commit()
 
 
 def delete_team(db: Session, team_id: str) -> None:

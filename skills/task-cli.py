@@ -108,6 +108,36 @@ def cmd_rules(args):
 
 
 # ============================================================
+# 团队 (Agent 端)
+# ============================================================
+
+def cmd_team_mine(args):
+    """查看所属团队信息"""
+    data = _request("get", "/teams/me", args.key)
+    print(f"  团队ID: {data['id']}")
+    print(f"  团队名称: {data['name']}")
+    print(f"  描述: {data['description'] or '-'}")
+    print(f"  状态: {data['status']}")
+
+
+def cmd_team_profile(args):
+    """获取团队介绍"""
+    data = _request("get", "/teams/me/profile", args.key)
+    print(f"  版本: {data['version']}")
+    if data.get('content'):
+        print("\n--- 团队介绍 ---")
+        print(data['content'])
+    else:
+        print("  (团队介绍尚未生成)")
+
+
+def cmd_team_intro(args):
+    """提交自我介绍"""
+    data = _request("put", "/teams/me/intro", args.key, json={"self_introduction": args.content})
+    print(f"✅ 自我介绍已更新")
+
+
+# ============================================================
 # 任务
 # ============================================================
 
@@ -128,13 +158,16 @@ def cmd_task_list(args):
         params["page"] = args.page
     if hasattr(args, 'page_size') and args.page_size:
         params["page_size"] = args.page_size
+    if hasattr(args, 'team_id') and args.team_id:
+        params["team_id"] = args.team_id
     data = _request("get", "/tasks", args.key, params=params)
     items = _extract_items(data)
     if not items:
         print("暂无任务")
         return
     for t in items:
-        print(f"  [{t['status']}] {t['name']} (ID:{t['id']})")
+        team_info = f" [团队:{t.get('team_id', '-')}]" if t.get('team_id') else ""
+        print(f"  [{t['status']}] {t['name']} (ID:{t['id']}){team_info}")
 
 
 def cmd_task_get(args):
@@ -317,6 +350,10 @@ def cmd_sub_task_edit(args):
         body["acceptance"] = args.acceptance
     if args.priority:
         body["priority"] = args.priority
+    if hasattr(args, 'type') and args.type:
+        body["type"] = args.type
+    if hasattr(args, 'remarks') and args.remarks:
+        body["remarks"] = args.remarks
     data = _request("put", f"/sub-tasks/{args.id}", args.key, json=body)
     print(f"✅ 子任务已更新")
     _print_json(data)
@@ -572,6 +609,20 @@ def main():
     p.add_argument("--description", help="职责描述")
     p.set_defaults(func=cmd_register)
 
+    # --- team (Agent 端团队接口) ---
+    team_p = subparsers.add_parser("team", help="团队管理(Agent端)")
+    team_sub = team_p.add_subparsers(dest="team_cmd")
+
+    p = team_sub.add_parser("mine", help="查看所属团队信息")
+    p.set_defaults(func=cmd_team_mine)
+
+    p = team_sub.add_parser("profile", help="获取团队介绍")
+    p.set_defaults(func=cmd_team_profile)
+
+    p = team_sub.add_parser("intro", help="提交自我介绍")
+    p.add_argument("content", help="自我介绍内容")
+    p.set_defaults(func=cmd_team_intro)
+
     # --- rules ---
     p = subparsers.add_parser("rules", help="获取规则提示词")
     p.set_defaults(func=cmd_rules)
@@ -592,6 +643,7 @@ def main():
 
     p = task_sub.add_parser("list", help="查看任务列表")
     p.add_argument("--status", help="按状态过滤")
+    p.add_argument("--team-id", help="按团队ID筛选")
     p.add_argument("--page", type=int, help="页码")
     p.add_argument("--page-size", type=int, help="每页条数（0=全部）")
     p.set_defaults(func=cmd_task_list)
