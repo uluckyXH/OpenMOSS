@@ -13,8 +13,20 @@ from typing import Optional
 class AppConfig:
     """应用配置"""
 
-    def __init__(self, config_path: str = "../config.yaml"):
-        self.config_path = Path(config_path)
+    def __init__(self, config_path: str = None):
+        # 动态计算项目根目录（config.py 位于 app/ 目录下）
+        if config_path is None:
+            # 基于 config.py 的位置推导项目根目录
+            module_dir = Path(__file__).resolve().parent  # app/
+            project_root = module_dir.parent  # 项目根目录
+            config_path = project_root / "config.yaml"
+            example_path = project_root / "config.example.yaml"
+        else:
+            config_path = Path(config_path)
+            example_path = config_path.parent / "config.example.yaml"
+
+        self.config_path = config_path
+        self.example_path = example_path
         self._data = {}
         self._lock = threading.RLock()  # 可重入锁，防止内部方法嵌套调用时死锁
         self.load()
@@ -23,11 +35,10 @@ class AppConfig:
         """加载配置文件"""
         if not self.config_path.exists():
             # 如果没有 config.yaml，从模板复制
-            example_path = Path("../config.example.yaml")
-            if example_path.exists():
+            if self.example_path.exists():
                 import shutil
-                shutil.copy(example_path, self.config_path)
-                print(f"[Config] 已从 {example_path} 创建配置文件 {self.config_path}")
+                shutil.copy(self.example_path, self.config_path)
+                print(f"[Config] 已从 {self.example_path} 创建配置文件 {self.config_path}")
             else:
                 raise FileNotFoundError(
                     f"配置文件 {self.config_path} 不存在，请从 config.example.yaml 复制"
