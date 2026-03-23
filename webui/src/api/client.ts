@@ -692,6 +692,8 @@ export const adminTeamApi = {
     api.get<{ content: string; version: number; updated_at: string }>(`/admin/teams/${teamId}/profile`),
   updateProfile: (teamId: string) =>
     api.put<{ version: number }>(`/admin/teams/${teamId}/profile`),
+  updateProfileContent: (teamId: string, content: string) =>
+    api.patch<{ version: number; content: string }>(`/admin/teams/${teamId}/profile`, { content }),
 
   // 模板管理
   getTemplate: () => api.get<{ content: string }>('/admin/teams/template'),

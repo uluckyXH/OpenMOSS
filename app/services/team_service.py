@@ -489,6 +489,25 @@ def get_team_profile(db: Session, team_id: str) -> TeamProfile:
     return db.query(TeamProfile).filter(TeamProfile.team_id == team_id).first()
 
 
+def update_team_profile(db: Session, team_id: str, content: str) -> TeamProfile:
+    """更新团队介绍（管理员手动编辑）"""
+    profile = db.query(TeamProfile).filter(TeamProfile.team_id == team_id).first()
+    if not profile:
+        # 如果不存在，则创建
+        profile = TeamProfile(
+            id=str(uuid.uuid4()),
+            team_id=team_id,
+            content=content,
+            version=1,
+        )
+        db.add(profile)
+    else:
+        profile.content = content
+        profile.version += 1
+    db.refresh(profile)
+    return profile
+
+
 # ============================================================
 # 模板管理
 # ============================================================

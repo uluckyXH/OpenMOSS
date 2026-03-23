@@ -203,6 +203,27 @@ async def update_profile(
     return {"version": profile.version}
 
 
+class AdminProfileUpdateRequest(BaseModel):
+    content: str
+
+
+@router.patch("/{team_id}/profile")
+async def update_profile_content(
+    team_id: str,
+    req: AdminProfileUpdateRequest,
+    _: bool = Depends(verify_admin),
+    db: Session = Depends(get_db),
+):
+    """更新团队介绍内容（管理员手动编辑）"""
+    # 先检查团队是否存在
+    team = team_service.get_team_by_id(db, team_id)
+    if not team:
+        raise HTTPException(status_code=404, detail="团队不存在")
+
+    profile = team_service.update_team_profile(db, team_id, req.content)
+    return {"version": profile.version, "content": profile.content}
+
+
 # ============================================================
 # 模板管理
 # ============================================================

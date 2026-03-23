@@ -118,10 +118,16 @@
             <div>
               <div class="flex items-center justify-between mb-3">
                 <h3 class="text-sm font-medium">团队介绍预览</h3>
-                <Button variant="outline" size="sm" @click="refreshProfile">
-                  <RefreshCw class="w-4 h-4 mr-1" />
-                  刷新
-                </Button>
+                <div class="flex gap-2">
+                  <Button variant="outline" size="sm" @click="openEditProfile">
+                    <Pencil class="w-4 h-4 mr-1" />
+                    编辑
+                  </Button>
+                  <Button variant="outline" size="sm" @click="refreshProfile">
+                    <RefreshCw class="w-4 h-4 mr-1" />
+                    刷新
+                  </Button>
+                </div>
               </div>
               <div class="p-4 rounded-lg bg-muted max-h-[400px] overflow-y-auto">
                 <pre class="text-sm whitespace-pre-wrap font-mono">{{ teamProfile || '暂无内容' }}</pre>
@@ -257,6 +263,26 @@
         </div>
       </Transition>
     </Teleport>
+
+    <!-- 编辑团队介绍弹窗 -->
+    <Teleport to="body">
+      <Transition name="fade">
+        <div v-if="showEditProfileModal" class="fixed inset-0 z-50 flex items-center justify-center">
+          <div class="absolute inset-0 bg-black/40" @click="showEditProfileModal = false" />
+          <div class="relative z-10 w-full max-w-2xl rounded-xl border bg-background p-6 shadow-lg">
+            <h2 class="text-lg font-semibold mb-2">编辑团队介绍</h2>
+            <p class="text-sm text-muted-foreground mb-4">
+              您可以直接编辑团队介绍内容
+            </p>
+            <textarea v-model="editProfileContent" rows="20" class="w-full font-mono" />
+            <div class="flex justify-end gap-3 mt-4">
+              <Button type="button" variant="outline" @click="showEditProfileModal = false">取消</Button>
+              <Button @click="saveProfile">保存</Button>
+            </div>
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
   </div>
 </template>
 
@@ -274,7 +300,7 @@ import {
   TableCell,
 } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
-import { Plus, FileText, Trash2, RefreshCw, X } from 'lucide-vue-next'
+import { Plus, FileText, Trash2, RefreshCw, X, Pencil } from 'lucide-vue-next'
 import { adminTeamApi, adminAgentApi } from '@/api/client'
 import { toast } from 'vue-sonner'
 
@@ -287,6 +313,7 @@ const showCreateModal = ref(false)
 const showEditModal = ref(false)
 const showAddMemberModal = ref(false)
 const showTemplateModal = ref(false)
+const showEditProfileModal = ref(false)
 
 const newTeam = ref({ name: '', description: '', working_dir: '' })
 const editData = ref({ name: '', description: '', status: 'active', working_dir: '' })
@@ -294,6 +321,7 @@ const newMember = ref({ agentId: '' })
 const availableAgents = ref<any[]>([])
 const teamMembers = ref<any[]>([])  // 所有团队的成员信息
 const templateContent = ref('')
+const editProfileContent = ref('')
 
 // 计算每个 agent 的团队归属信息
 const agentTeamInfo = computed(() => {
@@ -387,6 +415,27 @@ async function refreshProfile() {
   } catch (e) {
     console.error('Failed to load profile:', e)
     teamProfile.value = ''
+  }
+}
+
+// 打开编辑团队介绍弹窗
+function openEditProfile() {
+  editProfileContent.value = teamProfile.value
+  showEditProfileModal.value = true
+}
+
+// 保存团队介绍
+async function saveProfile() {
+  if (!selectedTeam.value) return
+  try {
+    await adminTeamApi.updateProfileContent(selectedTeam.value.id, editProfileContent.value)
+    teamProfile.value = editProfileContent.value
+    showEditProfileModal.value = false
+    toast.success('团队介绍已更新')
+  } catch (e: any) {
+    console.error('Failed to save profile:', e)
+    const msg = e?.response?.data?.detail || '保存失败'
+    toast.error(msg)
   }
 }
 
