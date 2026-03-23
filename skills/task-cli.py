@@ -742,6 +742,8 @@ def main():
     p.add_argument("--deliverable", help="新交付物")
     p.add_argument("--acceptance", help="新验收标准")
     p.add_argument("--priority", choices=["high", "medium", "low"])
+    p.add_argument("--type", choices=["once", "recurring"], help="新类型")
+    p.add_argument("--remarks", help="新备注")
     p.set_defaults(func=cmd_sub_task_edit)
 
     p = st_sub.add_parser("cancel", help="取消子任务")
