@@ -78,6 +78,9 @@ class SubTaskUpdateRequest(BaseModel):
     priority: Optional[str] = Field(None, description="优先级: high/medium/low")
     type: Optional[str] = Field(None, description="类型: once/recurring")
     remarks: Optional[str] = Field(None, description="备注，如取消原因")
+    status: Optional[str] = Field(None, description="状态: pending/assigned")
+    assigned_agent: Optional[str] = Field(None, description="指派 Agent ID")
+    recurring_config: Optional[dict] = Field(None, description="循环任务配置")
 
 
 # ============================================================
@@ -326,6 +329,8 @@ async def update_sub_task(
             name=req.name, description=req.description,
             deliverable=req.deliverable, acceptance=req.acceptance,
             priority=req.priority, type=req.type, remarks=req.remarks,
+            status=req.status, assigned_agent=req.assigned_agent,
+            recurring_config=req.recurring_config,
         )
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))

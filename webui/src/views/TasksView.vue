@@ -5,6 +5,7 @@ import {
     adminTaskApi,
     subTaskApi,
     taskApi,
+    agentApi,
     type AdminModuleItem,
     type AdminPageResponse,
     type AdminSubTaskDetail,
@@ -86,8 +87,14 @@ const editSubTaskAcceptance = ref('')
 const editSubTaskPriority = ref('')
 const editSubTaskType = ref('')
 const editSubTaskRemarks = ref('')
+const editSubTaskStatus = ref('')
+const editSubTaskAssignedAgent = ref('')
+const editSubTaskRecurringConfig = ref('')
 const savingEditSubTask = ref(false)
 const editSubTaskError = ref('')
+
+// 可用 Agent 列表
+const availableAgents = ref<{ id: string; name: string; role: string }[]>([])
 
 const taskPageData = ref<AdminPageResponse<AdminTaskItem>>(createEmptyPage<AdminTaskItem>())
 const modulePageData = ref<AdminPageResponse<AdminModuleItem>>(createEmptyPage<AdminModuleItem>())
@@ -158,8 +165,23 @@ watch(subTaskStatus, () => {
     }
 })
 
+// 加载可用 Agent 列表
+async function loadAvailableAgents() {
+    try {
+        const res = await agentApi.list({})
+        availableAgents.value = (res.data.items || []).map((a: any) => ({
+            id: a.id,
+            name: a.name,
+            role: a.role,
+        }))
+    } catch (e) {
+        console.error('Failed to load agents:', e)
+    }
+}
+
 onMounted(() => {
     void loadTasks()
+    void loadAvailableAgents()
 })
 
 function createEmptyPage<T>(): AdminPageResponse<T> {
@@ -575,6 +597,11 @@ function openEditSubTaskDialog() {
     editSubTaskPriority.value = selectedSubTask.value.priority ?? ''
     editSubTaskType.value = selectedSubTask.value.type ?? ''
     editSubTaskRemarks.value = selectedSubTask.value.remarks ?? ''
+    editSubTaskStatus.value = selectedSubTask.value.status ?? ''
+    editSubTaskAssignedAgent.value = selectedSubTask.value.assigned_agent ?? ''
+    // recurring_config 是 JSON，转换为字符串方便编辑
+    const rc = selectedSubTask.value.recurring_config
+    editSubTaskRecurringConfig.value = rc ? JSON.stringify(rc, null, 2) : ''
     editSubTaskError.value = ''
     showEditSubTaskDialog.value = true
 }
@@ -595,6 +622,19 @@ async function handleSaveEditSubTask() {
     savingEditSubTask.value = true
     editSubTaskError.value = ''
     try {
+        // 处理 recurring_config - 解析 JSON 字符串
+        let recurringConfig: object | undefined = undefined
+        const rcStr = editSubTaskRecurringConfig.value.trim()
+        if (rcStr) {
+            try {
+                recurringConfig = JSON.parse(rcStr)
+            } catch {
+                editSubTaskError.value = '循环配置格式无效，请输入有效的 JSON'
+                savingEditSubTask.value = false
+                return
+            }
+        }
+
         await subTaskApi.update(selectedSubTask.value.id, {
             name,
             description: editSubTaskDescription.value.trim(),
@@ -603,6 +643,9 @@ async function handleSaveEditSubTask() {
             priority: editSubTaskPriority.value || undefined,
             type: editSubTaskType.value || undefined,
             remarks: editSubTaskRemarks.value || undefined,
+            status: editSubTaskStatus.value || undefined,
+            assigned_agent: editSubTaskAssignedAgent.value || undefined,
+            recurring_config: recurringConfig,
         })
         showEditSubTaskDialog.value = false
         // 刷新子任务详情
@@ -1190,6 +1233,31 @@ async function openSubTaskDetail(subTaskId: string) {
                         <textarea id="edit-subtask-remarks" v-model="editSubTaskRemarks"
                             class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                             placeholder="请输入备注（可选）" :disabled="savingEditSubTask" />
+                    </div>
+                    <div class="space-y-2">
+                        <Label for="edit-subtask-status">状态</Label>
+                        <select id="edit-subtask-status" v-model="editSubTaskStatus"
+                            class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+                            <option value="">请选择状态</option>
+                            <option value="pending">待处理 (pending)</option>
+                            <option value="assigned">已指派 (assigned)</option>
+                        </select>
+                    </div>
+                    <div class="space-y-2">
+                        <Label for="edit-subtask-agent">指派 Agent</Label>
+                        <select id="edit-subtask-agent" v-model="editSubTaskAssignedAgent"
+                            class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+                            <option value="">不指派</option>
+                            <option v-for="agent in availableAgents" :key="agent.id" :value="agent.id">
+                                {{ agent.name }} ({{ agent.role }})
+                            </option>
+                        </select>
+                    </div>
+                    <div class="space-y-2">
+                        <Label for="edit-subtask-recurring">循环配置 (JSON)</Label>
+                        <textarea id="edit-subtask-recurring" v-model="editSubTaskRecurringConfig"
+                            class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm font-mono ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                            placeholder='{"cron": "0 9 * * *", "enabled": true}' :disabled="savingEditSubTask" />
                     </div>
                     <div v-if="editSubTaskError" class="text-sm text-red-500">
                         {{ editSubTaskError }}

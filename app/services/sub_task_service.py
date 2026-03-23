@@ -254,6 +254,9 @@ def update_sub_task(
     priority: str = None,
     type: str = None,
     remarks: str = None,
+    status: str = None,
+    assigned_agent: str = None,
+    recurring_config: dict = None,
 ) -> SubTask:
     """编辑子任务（仅 pending/assigned 状态可编辑）"""
     sub_task = db.query(SubTask).filter(SubTask.id == sub_task_id).first()
@@ -261,6 +264,14 @@ def update_sub_task(
         raise ValueError(f"子任务 {sub_task_id} 不存在")
     if sub_task.status not in ("pending", "assigned"):
         raise ValueError(f"子任务状态为 {sub_task.status}，只有 pending/assigned 状态可编辑")
+
+    # 校验 assigned_agent
+    if assigned_agent is not None:
+        if assigned_agent:
+            agent = db.query(Agent).filter(Agent.id == assigned_agent).first()
+            if not agent:
+                raise ValueError(f"Agent {assigned_agent} 不存在")
+        # 清空 agent 时，允许传空字符串
 
     if name is not None:
         sub_task.name = name
@@ -276,6 +287,24 @@ def update_sub_task(
         sub_task.type = type
     if remarks is not None:
         sub_task.remarks = remarks
+
+    # 处理 status 和 assigned_agent 的联动
+    if assigned_agent is not None:
+        sub_task.assigned_agent = assigned_agent if assigned_agent else None
+        # 如果分配了 agent 且当前是 pending，自动改为 assigned
+        if assigned_agent and sub_task.status == "pending":
+            sub_task.status = "assigned"
+
+    # 如果手动修改了 status
+    if status is not None:
+        if status not in ("pending", "assigned"):
+            raise ValueError(f"只有 pending/assigned 状态可编辑，非法状态: {status}")
+        sub_task.status = status
+
+    # 循环配置
+    if recurring_config is not None:
+        sub_task.recurring_config = recurring_config
+
     db.commit()
     db.refresh(sub_task)
     return sub_task

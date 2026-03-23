@@ -111,6 +111,7 @@ export interface AdminTaskListParams {
   status?: string
   type?: string
   keyword?: string
+  team_id?: string
   sort_by?: string
   sort_order?: string
 }
