@@ -18,6 +18,7 @@ class Team(Base):
     description = Column(Text, default="", comment="团队描述")
     status = Column(String(20), default="active", index=True, comment="状态: active/disabled")
     team_task_id = Column(String(36), nullable=True, index=True, comment="团队初始化任务ID")
+    working_dir = Column(String(500), nullable=True, comment="团队工作目录")
     created_at = Column(DateTime, default=datetime.now, comment="创建时间")
     updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now, comment="更新时间")
 
@@ -74,6 +75,9 @@ class TeamProfileTemplate(Base):
 
 ## 团队简介
 {{team_description}}
+
+## 工作目录
+{{working_dir}}
 
 ## 团队成员
 {{members}}

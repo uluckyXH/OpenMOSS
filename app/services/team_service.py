@@ -1,6 +1,7 @@
 """
 Team Space 业务逻辑
 """
+import os
 import uuid
 from datetime import datetime
 from sqlalchemy.orm import Session
@@ -10,6 +11,7 @@ from app.models.team import Team, TeamMember, TeamProfile, TeamProfileTemplate
 from app.models.agent import Agent
 from app.models.task import Task
 from app.models.sub_task import SubTask
+from app.config import config
 
 # 自我介绍任务描述模板
 TEAM_INTRO_DESCRIPTION = """请根据以下模板完成自我介绍：
@@ -43,18 +45,26 @@ UPDATE_SOUL_DESCRIPTION = """请读取团队介绍信息，并更新你的 SOUL.
 # 团队 CRUD
 # ============================================================
 
-def create_team(db: Session, name: str, description: str = "") -> Team:
+def create_team(db: Session, name: str, description: str = "", working_dir: str = None) -> Team:
     """创建团队"""
     # 检查名称重复
     existing = db.query(Team).filter(Team.name == name).first()
     if existing:
         raise ValueError("团队名称已存在")
 
+    # 生成团队 ID
+    team_id = str(uuid.uuid4())
+
+    # 如果未指定工作目录，使用默认值
+    if not working_dir:
+        working_dir = os.path.join(config.workspace_root, "teams", team_id)
+
     team = Team(
-        id=str(uuid.uuid4()),
+        id=team_id,
         name=name,
         description=description,
         status="active",
+        working_dir=working_dir,
     )
     db.add(team)
     db.commit()
@@ -414,6 +424,7 @@ def generate_team_profile(db: Session, team_id: str) -> TeamProfile:
     # 渲染模板
     rendered = template.replace("{{team_name}}", team.name)
     rendered = rendered.replace("{{team_description}}", team.description or "暂无描述")
+    rendered = rendered.replace("{{working_dir}}", team.working_dir or "未设置")
     rendered = rendered.replace("{{members}}", "\n\n".join(member_blocks))
 
     # 更新或创建 TeamProfile
