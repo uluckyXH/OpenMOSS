@@ -76,6 +76,8 @@ class SubTaskUpdateRequest(BaseModel):
     deliverable: Optional[str] = Field(None, description="交付物描述")
     acceptance: Optional[str] = Field(None, description="验收标准")
     priority: Optional[str] = Field(None, description="优先级: high/medium/low")
+    type: Optional[str] = Field(None, description="类型: once/recurring")
+    remarks: Optional[str] = Field(None, description="备注，如取消原因")
 
 
 # ============================================================
@@ -323,7 +325,7 @@ async def update_sub_task(
             db, sub_task_id,
             name=req.name, description=req.description,
             deliverable=req.deliverable, acceptance=req.acceptance,
-            priority=req.priority,
+            priority=req.priority, type=req.type, remarks=req.remarks,
         )
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))

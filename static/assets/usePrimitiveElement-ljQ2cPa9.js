@@ -1,1 +1,0 @@
-import{c as n}from"./index-DHy0_mHm.js";import{k as m,r}from"./index-CvqigqJ2.js";function o(){const e=r(),t=m(()=>["#text","#comment"].includes(e.value?.$el.nodeName)?e.value?.$el.nextElementSibling:n(e));return{primitiveElement:e,currentElement:t}}export{o as u};

@@ -93,14 +93,15 @@ export interface AdminSubTaskItem {
   assigned_agent_name: string | null
   current_session_id: string | null
   rework_count: number
+  deliverable: string
+  acceptance: string
+  remarks: string | null
   created_at: string | null
   updated_at: string | null
   completed_at: string | null
 }
 
 export interface AdminSubTaskDetail extends AdminSubTaskItem {
-  deliverable: string
-  acceptance: string
 }
 
 export interface AdminTaskListParams {
@@ -233,7 +234,7 @@ export const subTaskApi = {
   list: (params?: { task_id?: string; status?: string; page?: number; page_size?: number }) =>
     api.get('/sub-tasks', { params }),
   get: (id: string) => api.get(`/sub-tasks/${id}`),
-  update: (id: string, data: { name?: string; description?: string; deliverable?: string; acceptance?: string; priority?: string }) =>
+  update: (id: string, data: { name?: string; description?: string; deliverable?: string; acceptance?: string; priority?: string; type?: string; remarks?: string }) =>
     api.put(`/sub-tasks/${id}`, data),
 }
 
@@ -673,7 +674,7 @@ export const adminTeamApi = {
   list: (params?: { page?: number; page_size?: number }) =>
     api.get<TeamPageResponse>('/admin/teams', { params }),
   get: (teamId: string) => api.get<TeamDetail>(`/admin/teams/${teamId}`),
-  create: (data: { name: string; description?: string }) => api.post('/admin/teams', data),
+  create: (data: { name: string; description?: string; working_dir?: string }) => api.post('/admin/teams', data),
   update: (teamId: string, data: { name?: string; description?: string; status?: string }) =>
     api.put(`/admin/teams/${teamId}`, data),
   delete: (teamId: string) => api.delete(`/admin/teams/${teamId}`),

@@ -21,6 +21,7 @@ router = APIRouter(prefix="/admin/teams", tags=["Admin Team"])
 class AdminTeamCreateRequest(BaseModel):
     name: str
     description: str = ""
+    working_dir: str = ""
 
 
 class AdminTeamUpdateRequest(BaseModel):
@@ -57,7 +58,7 @@ async def create_team(
 ):
     """创建团队"""
     try:
-        team = team_service.create_team(db, req.name, req.description)
+        team = team_service.create_team(db, req.name, req.description, req.working_dir or None)
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
     return {"id": team.id, "name": team.name}
@@ -82,6 +83,7 @@ async def get_team(
         "name": team.name,
         "description": team.description,
         "status": team.status,
+        "working_dir": team.working_dir,
         "member_count": member_count,
         "members": members_data,
         "created_at": team.created_at,

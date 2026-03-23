@@ -84,6 +84,8 @@ const editSubTaskDescription = ref('')
 const editSubTaskDeliverable = ref('')
 const editSubTaskAcceptance = ref('')
 const editSubTaskPriority = ref('')
+const editSubTaskType = ref('')
+const editSubTaskRemarks = ref('')
 const savingEditSubTask = ref(false)
 const editSubTaskError = ref('')
 
@@ -571,6 +573,8 @@ function openEditSubTaskDialog() {
     editSubTaskDeliverable.value = selectedSubTask.value.deliverable ?? ''
     editSubTaskAcceptance.value = selectedSubTask.value.acceptance ?? ''
     editSubTaskPriority.value = selectedSubTask.value.priority ?? ''
+    editSubTaskType.value = selectedSubTask.value.type ?? ''
+    editSubTaskRemarks.value = selectedSubTask.value.remarks ?? ''
     editSubTaskError.value = ''
     showEditSubTaskDialog.value = true
 }
@@ -597,6 +601,8 @@ async function handleSaveEditSubTask() {
             deliverable: editSubTaskDeliverable.value.trim(),
             acceptance: editSubTaskAcceptance.value.trim(),
             priority: editSubTaskPriority.value || undefined,
+            type: editSubTaskType.value || undefined,
+            remarks: editSubTaskRemarks.value || undefined,
         })
         showEditSubTaskDialog.value = false
         // 刷新子任务详情
@@ -1169,6 +1175,21 @@ async function openSubTaskDetail(subTaskId: string) {
                         <textarea id="edit-subtask-acceptance" v-model="editSubTaskAcceptance"
                             class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                             placeholder="请输入验收标准（可选）" :disabled="savingEditSubTask" />
+                    </div>
+                    <div class="space-y-2">
+                        <Label for="edit-subtask-type">类型</Label>
+                        <select id="edit-subtask-type" v-model="editSubTaskType"
+                            class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+                            <option value="">请选择类型</option>
+                            <option value="once">一次性 (once)</option>
+                            <option value="recurring">循环 (recurring)</option>
+                        </select>
+                    </div>
+                    <div class="space-y-2">
+                        <Label for="edit-subtask-remarks">备注</Label>
+                        <textarea id="edit-subtask-remarks" v-model="editSubTaskRemarks"
+                            class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                            placeholder="请输入备注（可选）" :disabled="savingEditSubTask" />
                     </div>
                     <div v-if="editSubTaskError" class="text-sm text-red-500">
                         {{ editSubTaskError }}

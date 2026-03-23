@@ -252,6 +252,8 @@ def update_sub_task(
     deliverable: str = None,
     acceptance: str = None,
     priority: str = None,
+    type: str = None,
+    remarks: str = None,
 ) -> SubTask:
     """编辑子任务（仅 pending/assigned 状态可编辑）"""
     sub_task = db.query(SubTask).filter(SubTask.id == sub_task_id).first()
@@ -270,6 +272,10 @@ def update_sub_task(
         sub_task.acceptance = acceptance
     if priority is not None:
         sub_task.priority = priority
+    if type is not None:
+        sub_task.type = type
+    if remarks is not None:
+        sub_task.remarks = remarks
     db.commit()
     db.refresh(sub_task)
     return sub_task

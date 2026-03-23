@@ -21,6 +21,7 @@
           <TableRow>
             <TableHead>团队名称</TableHead>
             <TableHead>描述</TableHead>
+            <TableHead>工作目录</TableHead>
             <TableHead>成员数</TableHead>
             <TableHead>状态</TableHead>
             <TableHead>操作</TableHead>
@@ -30,6 +31,7 @@
           <TableRow v-for="team in teams" :key="team.id">
             <TableCell class="font-medium">{{ team.name }}</TableCell>
             <TableCell class="text-muted-foreground">{{ team.description || '-' }}</TableCell>
+            <TableCell class="text-muted-foreground font-mono text-xs">{{ team.working_dir || '-' }}</TableCell>
             <TableCell>{{ team.member_count }}</TableCell>
             <TableCell>
               <Badge :variant="team.status === 'active' ? 'default' : 'secondary'">
@@ -48,7 +50,7 @@
             </TableCell>
           </TableRow>
           <TableRow v-if="teams.length === 0">
-            <TableCell colspan="5" class="text-center text-muted-foreground py-8">
+            <TableCell colspan="6" class="text-center text-muted-foreground py-8">
               暂无团队，点击上方按钮创建
             </TableCell>
           </TableRow>
@@ -66,6 +68,7 @@
               <div>
                 <h2 class="text-xl font-semibold">{{ selectedTeam?.name }}</h2>
                 <p class="text-sm text-muted-foreground">{{ selectedTeam?.description || '暂无描述' }}</p>
+                <p class="text-xs text-muted-foreground font-mono mt-1">{{ selectedTeam?.working_dir || '未设置工作目录' }}</p>
               </div>
               <Button variant="ghost" size="icon" @click="showDetailSheet = false">
                 <X class="w-5 h-5" />
@@ -144,6 +147,10 @@
               <div>
                 <Label>团队描述</Label>
                 <textarea v-model="newTeam.description" placeholder="请输入团队描述（可选）" class="w-full min-h-[80px] px-3 py-2 rounded-md border bg-background" />
+              </div>
+              <div>
+                <Label>工作目录</Label>
+                <Input v-model="newTeam.working_dir" placeholder="例如: /workspace/teams/my-team" />
               </div>
               <div class="flex justify-end gap-3">
                 <Button type="button" variant="outline" @click="showCreateModal = false">取消</Button>
@@ -277,7 +284,7 @@ const showEditModal = ref(false)
 const showAddMemberModal = ref(false)
 const showTemplateModal = ref(false)
 
-const newTeam = ref({ name: '', description: '' })
+const newTeam = ref({ name: '', description: '', working_dir: '' })
 const editData = ref({ name: '', description: '', status: 'active' })
 const newMember = ref({ agentId: '' })
 const availableAgents = ref<any[]>([])
@@ -359,7 +366,7 @@ async function createTeam() {
   try {
     await adminTeamApi.create(newTeam.value)
     showCreateModal.value = false
-    newTeam.value = { name: '', description: '' }
+    newTeam.value = { name: '', description: '', working_dir: '' }
     await loadTeams()
   } catch (e) {
     console.error('Failed to create team:', e)
