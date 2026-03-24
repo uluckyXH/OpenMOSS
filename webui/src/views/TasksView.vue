@@ -6,6 +6,7 @@ import {
     subTaskApi,
     taskApi,
     agentApi,
+    adminTeamApi,
     type AdminModuleItem,
     type AdminPageResponse,
     type AdminSubTaskDetail,
@@ -95,6 +96,8 @@ const editSubTaskError = ref('')
 
 // 可用 Agent 列表
 const availableAgents = ref<{ id: string; name: string; role: string }[]>([])
+// 编辑子任务时的团队 Agent 列表
+const editTeamAgents = ref<{ id: string; name: string; role: string }[]>([])
 
 const taskPageData = ref<AdminPageResponse<AdminTaskItem>>(createEmptyPage<AdminTaskItem>())
 const modulePageData = ref<AdminPageResponse<AdminModuleItem>>(createEmptyPage<AdminModuleItem>())
@@ -176,6 +179,26 @@ async function loadAvailableAgents() {
         }))
     } catch (e) {
         console.error('Failed to load agents:', e)
+    }
+}
+
+// 加载团队 Agent 列表
+async function loadTeamAgents(teamId: string) {
+    if (!teamId) {
+        editTeamAgents.value = availableAgents.value
+        return
+    }
+    try {
+        const res = await adminTeamApi.get(teamId)
+        const members = res.data.members || []
+        editTeamAgents.value = members.map((m: any) => ({
+            id: m.agent_id,
+            name: m.agent_name,
+            role: m.role,
+        }))
+    } catch (e) {
+        console.error('Failed to load team agents:', e)
+        editTeamAgents.value = availableAgents.value
     }
 }
 
@@ -588,7 +611,7 @@ async function handleSaveEditTask() {
 }
 
 // 编辑子任务相关函数
-function openEditSubTaskDialog() {
+async function openEditSubTaskDialog() {
     if (!selectedSubTask.value) return
     editSubTaskName.value = selectedSubTask.value.name
     editSubTaskDescription.value = selectedSubTask.value.description ?? ''
@@ -603,6 +626,12 @@ function openEditSubTaskDialog() {
     const rc = selectedSubTask.value.recurring_config
     editSubTaskRecurringConfig.value = rc ? JSON.stringify(rc, null, 2) : ''
     editSubTaskError.value = ''
+    // 根据 team_id 加载团队 agent
+    if (selectedSubTask.value.team_id) {
+        await loadTeamAgents(selectedSubTask.value.team_id)
+    } else {
+        editTeamAgents.value = availableAgents.value
+    }
     showEditSubTaskDialog.value = true
 }
 
@@ -1241,6 +1270,12 @@ async function openSubTaskDetail(subTaskId: string) {
                             <option value="">请选择状态</option>
                             <option value="pending">待处理 (pending)</option>
                             <option value="assigned">已指派 (assigned)</option>
+                            <option value="in_progress">执行中 (in_progress)</option>
+                            <option value="review">待审查 (review)</option>
+                            <option value="rework">返工中 (rework)</option>
+                            <option value="blocked">阻塞 (blocked)</option>
+                            <option value="done">已完成 (done)</option>
+                            <option value="cancelled">已取消 (cancelled)</option>
                         </select>
                     </div>
                     <div class="space-y-2">
@@ -1248,7 +1283,7 @@ async function openSubTaskDetail(subTaskId: string) {
                         <select id="edit-subtask-agent" v-model="editSubTaskAssignedAgent"
                             class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
                             <option value="">不指派</option>
-                            <option v-for="agent in availableAgents" :key="agent.id" :value="agent.id">
+                            <option v-for="agent in editTeamAgents" :key="agent.id" :value="agent.id">
                                 {{ agent.name }} ({{ agent.role }})
                             </option>
                         </select>
