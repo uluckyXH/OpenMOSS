@@ -25,6 +25,7 @@ class Team(Base):
     # 关系
     members = relationship("TeamMember", back_populates="team", cascade="all, delete-orphan")
     profile = relationship("TeamProfile", back_populates="team", uselist=False, cascade="all, delete-orphan")
+    knowledge = relationship("TeamKnowledge", back_populates="team", cascade="all, delete-orphan")
 
 
 class TeamMember(Base):
@@ -215,3 +216,19 @@ openclaw agent --agent {agent_id} --message "【提交审核】任务ID：{sub_t
 ## 加入我们
 如需与本团队合作，请联系团队负责人。
 """
+
+
+class TeamKnowledge(Base):
+    """团队知识经验"""
+    __tablename__ = "team_knowledge"
+
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    team_id = Column(String(36), ForeignKey("team.id", ondelete="CASCADE"), nullable=False, index=True)
+    title = Column(String(200), nullable=False, comment="经验标题")
+    content = Column(Text, nullable=False, comment="经验正文")
+    author_agent_id = Column(String(36), nullable=False, comment="作者 Agent ID")
+    created_at = Column(DateTime, default=datetime.now, comment="创建时间")
+    updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now, comment="更新时间")
+
+    # 关系
+    team = relationship("Team", back_populates="knowledge")
