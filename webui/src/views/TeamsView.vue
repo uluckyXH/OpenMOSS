@@ -133,6 +133,65 @@
                 <pre class="text-sm whitespace-pre-wrap font-mono">{{ teamProfile || '暂无内容' }}</pre>
               </div>
             </div>
+
+            <!-- 知识经验区域 -->
+            <div class="space-y-4 pt-4 border-t">
+              <div class="flex justify-between items-center">
+                <h2 class="text-lg font-semibold">知识经验</h2>
+                <div class="flex gap-2">
+                  <Input
+                    v-model="knowledgeSearchQuery"
+                    placeholder="搜索知识..."
+                    class="w-48"
+                    @keyup.enter="searchKnowledge"
+                  />
+                  <Button variant="outline" size="sm" @click="searchKnowledge">搜索</Button>
+                  <Button size="sm" @click="knowledgeMode = 'upload'; showKnowledgeSheet = true">
+                    上传知识
+                  </Button>
+                </div>
+              </div>
+
+              <!-- 搜索结果 -->
+              <div v-if="knowledgeMode === 'search'" class="space-y-2">
+                <div class="flex items-center justify-between">
+                  <span class="text-sm text-muted-foreground">搜索结果 ({{ knowledgeSearchTotal }})</span>
+                  <Button variant="ghost" size="sm" @click="knowledgeMode = 'list'">返回列表</Button>
+                </div>
+                <Card
+                  v-for="item in knowledgeSearchResults"
+                  :key="item.id"
+                  class="cursor-pointer hover:bg-accent"
+                  @click="viewKnowledge(item)"
+                >
+                  <CardHeader class="py-3">
+                    <CardTitle class="text-sm">{{ item.title }}</CardTitle>
+                    <CardDescription>来自: {{ item.team_name }}</CardDescription>
+                  </CardHeader>
+                </Card>
+              </div>
+
+              <!-- 本团队知识列表 -->
+              <div v-if="knowledgeMode === 'list'" class="space-y-2">
+                <div class="flex items-center justify-between">
+                  <span class="text-sm text-muted-foreground">本团队 ({{ knowledgeTotal }})</span>
+                </div>
+                <Card
+                  v-for="item in knowledgeList"
+                  :key="item.id"
+                  class="cursor-pointer hover:bg-accent"
+                  @click="viewKnowledge(item)"
+                >
+                  <CardHeader class="py-3">
+                    <CardTitle class="text-sm">{{ item.title }}</CardTitle>
+                    <CardDescription>作者: {{ item.author_agent_id }}</CardDescription>
+                  </CardHeader>
+                </Card>
+                <div v-if="knowledgeList.length === 0" class="text-center text-muted-foreground py-4">
+                  暂无知识经验
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </Transition>
@@ -283,6 +342,60 @@
         </div>
       </Transition>
     </Teleport>
+
+    <!-- 知识详情/上传侧边栏 -->
+    <Teleport to="body">
+      <Transition name="fade">
+        <div v-if="showKnowledgeSheet" class="fixed inset-0 z-40">
+          <div class="absolute inset-0 bg-black/20" @click="showKnowledgeSheet = false" />
+          <div class="absolute right-0 top-0 h-full w-96 bg-background border-l p-6 overflow-y-auto">
+            <!-- 上传模式 -->
+            <div v-if="knowledgeMode === 'upload'">
+              <h2 class="text-lg font-semibold mb-4">上传知识</h2>
+              <div class="space-y-4">
+                <div>
+                  <Label>标题</Label>
+                  <Input v-model="knowledgeForm.title" placeholder="输入标题" />
+                </div>
+                <div>
+                  <Label>内容</Label>
+                  <Input v-model="knowledgeForm.content" type="textarea" rows="10" placeholder="输入内容" />
+                </div>
+                <Button class="w-full" @click="uploadKnowledge">上传</Button>
+              </div>
+            </div>
+
+            <!-- 查看模式 -->
+            <div v-else-if="selectedKnowledge">
+              <div class="flex justify-between items-start mb-4">
+                <h2 class="text-lg font-semibold">知识详情</h2>
+                <Button variant="ghost" size="icon" @click="showKnowledgeSheet = false">
+                  <X class="h-4 w-4" />
+                </Button>
+              </div>
+              <div class="space-y-4">
+                <div>
+                  <Label>标题</Label>
+                  <p class="text-sm">{{ selectedKnowledge.title }}</p>
+                </div>
+                <div>
+                  <Label>团队</Label>
+                  <p class="text-sm">{{ selectedKnowledge.team_name || selectedKnowledge.team_id }}</p>
+                </div>
+                <div>
+                  <Label>作者</Label>
+                  <p class="text-sm">{{ selectedKnowledge.author_agent_id }}</p>
+                </div>
+                <div>
+                  <Label>内容</Label>
+                  <p class="text-sm whitespace-pre-wrap">{{ selectedKnowledge.content }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
   </div>
 </template>
 
@@ -300,8 +413,9 @@ import {
   TableCell,
 } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
+import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Plus, FileText, Trash2, RefreshCw, X, Pencil } from 'lucide-vue-next'
-import { adminTeamApi, adminAgentApi } from '@/api/client'
+import { adminTeamApi, adminAgentApi, knowledgeApi } from '@/api/client'
 import { toast } from 'vue-sonner'
 
 // 数据
@@ -322,6 +436,17 @@ const availableAgents = ref<any[]>([])
 const teamMembers = ref<any[]>([])  // 所有团队的成员信息
 const templateContent = ref('')
 const editProfileContent = ref('')
+
+// 知识状态
+const knowledgeList = ref<any[]>([])
+const knowledgeTotal = ref(0)
+const knowledgeSearchResults = ref<any[]>([])
+const knowledgeSearchTotal = ref(0)
+const selectedKnowledge = ref<any>(null)
+const showKnowledgeSheet = ref(false)
+const knowledgeForm = ref({ title: '', content: '' })
+const knowledgeSearchQuery = ref('')
+const knowledgeMode = ref<'list' | 'search' | 'upload'>('list')
 
 // 计算每个 agent 的团队归属信息
 const agentTeamInfo = computed(() => {
@@ -516,10 +641,55 @@ async function saveTemplate() {
   }
 }
 
-onMounted(() => {
+// 加载本团队知识列表
+async function loadTeamKnowledge() {
+  try {
+    const res = await knowledgeApi.listMyTeamKnowledge()
+    knowledgeList.value = res.data.items || []
+    knowledgeTotal.value = res.data.total || 0
+  } catch (e) {
+    console.error('Failed to load knowledge:', e)
+  }
+}
+
+// 上传知识
+async function uploadKnowledge() {
+  if (!knowledgeForm.value.title || !knowledgeForm.value.content) return
+  try {
+    await knowledgeApi.uploadKnowledge(knowledgeForm.value)
+    knowledgeForm.value = { title: '', content: '' }
+    showKnowledgeSheet.value = false
+    knowledgeMode.value = 'list'
+    await loadTeamKnowledge()
+  } catch (e) {
+    console.error('Failed to upload knowledge:', e)
+  }
+}
+
+// 搜索知识
+async function searchKnowledge() {
+  if (!knowledgeSearchQuery.value.trim()) return
+  try {
+    const res = await knowledgeApi.searchKnowledge({ q: knowledgeSearchQuery.value })
+    knowledgeSearchResults.value = res.data.items || []
+    knowledgeSearchTotal.value = res.data.total || 0
+    knowledgeMode.value = 'search'
+  } catch (e) {
+    console.error('Failed to search knowledge:', e)
+  }
+}
+
+// 打开知识详情
+function viewKnowledge(item: any) {
+  selectedKnowledge.value = item
+  showKnowledgeSheet.value = true
+}
+
+onMounted(async () => {
   loadTeams()
   loadAvailableAgents()
   loadTemplate()
+  await loadTeamKnowledge()
 })
 </script>
 
