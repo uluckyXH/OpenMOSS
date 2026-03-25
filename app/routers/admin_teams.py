@@ -4,6 +4,7 @@ Admin 端点 - 团队管理
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from typing import Optional
+from datetime import datetime
 from pydantic import BaseModel
 
 from app.auth.dependencies import verify_admin
@@ -247,3 +248,94 @@ async def update_template(
     """更新介绍生成模板"""
     template = team_service.update_template(db, req.get("content", ""))
     return {"message": "模板已更新"}
+
+
+# ============================================================
+# 知识经验管理
+# ============================================================
+
+class KnowledgeCreate(BaseModel):
+    title: str
+    content: str
+    author_agent_id: Optional[str] = None
+
+
+class KnowledgeUpdate(BaseModel):
+    title: Optional[str] = None
+    content: Optional[str] = None
+
+
+class KnowledgeResponse(BaseModel):
+    id: str
+    team_id: str
+    title: str
+    content: str
+    author_agent_id: str
+    created_at: datetime
+    updated_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+@router.get("/{team_id}/knowledge", summary="获取团队知识列表")
+def list_team_knowledge(
+    team_id: str,
+    page: int = Query(1, ge=1),
+    page_size: int = Query(20, ge=1, le=100),
+    db: Session = Depends(get_db)
+):
+    return team_service.list_knowledge(db, team_id, page, page_size)
+
+
+@router.post("/{team_id}/knowledge", summary="创建知识", response_model=KnowledgeResponse)
+def create_team_knowledge(
+    team_id: str,
+    data: KnowledgeCreate,
+    db: Session = Depends(get_db),
+    admin: dict = Depends(verify_admin)
+):
+    author = data.author_agent_id or f"admin-{admin.get('username', 'unknown')}"
+    knowledge = team_service.create_knowledge(db, team_id, author, data.title, data.content)
+    return knowledge
+
+
+@router.get("/{team_id}/knowledge/{knowledge_id}", summary="获取知识详情", response_model=KnowledgeResponse)
+def get_team_knowledge(
+    team_id: str,
+    knowledge_id: str,
+    db: Session = Depends(get_db)
+):
+    knowledge = team_service.get_knowledge(db, knowledge_id)
+    if not knowledge or knowledge.team_id != team_id:
+        raise HTTPException(status_code=404, detail="Knowledge not found")
+    return knowledge
+
+
+@router.put("/{team_id}/knowledge/{knowledge_id}", summary="更新知识", response_model=KnowledgeResponse)
+def update_team_knowledge(
+    team_id: str,
+    knowledge_id: str,
+    data: KnowledgeUpdate,
+    db: Session = Depends(get_db),
+    admin: dict = Depends(verify_admin)
+):
+    knowledge = team_service.get_knowledge(db, knowledge_id)
+    if not knowledge or knowledge.team_id != team_id:
+        raise HTTPException(status_code=404, detail="Knowledge not found")
+    knowledge = team_service.update_knowledge(db, knowledge_id, data.title, data.content)
+    return knowledge
+
+
+@router.delete("/{team_id}/knowledge/{knowledge_id}", summary="删除知识")
+def delete_team_knowledge(
+    team_id: str,
+    knowledge_id: str,
+    db: Session = Depends(get_db),
+    admin: dict = Depends(verify_admin)
+):
+    knowledge = team_service.get_knowledge(db, knowledge_id)
+    if not knowledge or knowledge.team_id != team_id:
+        raise HTTPException(status_code=404, detail="Knowledge not found")
+    team_service.delete_knowledge(db, knowledge_id)
+    return {"status": "deleted", "id": knowledge_id}
