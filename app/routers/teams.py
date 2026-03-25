@@ -112,6 +112,8 @@ def get_my_team_knowledge(
     team = team_service.get_agent_team(db, current_agent["agent_id"])
     if not team:
         raise HTTPException(status_code=404, detail="未找到所属团队")
+    if team.status == "disabled":
+        raise HTTPException(status_code=403, detail="团队已禁用，无法访问")
     return team_service.get_team_knowledge(db, team.id, current_agent["agent_id"])
 
 
@@ -129,6 +131,8 @@ def get_knowledge_detail(
     team = team_service.get_agent_team(db, current_agent["agent_id"])
     if not team or team.id != knowledge.team_id:
         raise HTTPException(status_code=403, detail="无权限访问该知识")
+    if team.status == "disabled":
+        raise HTTPException(status_code=403, detail="团队已禁用，无法访问")
     return knowledge
 
 
@@ -142,6 +146,8 @@ def upload_knowledge(
     team = team_service.get_agent_team(db, current_agent["agent_id"])
     if not team:
         raise HTTPException(status_code=404, detail="未找到所属团队")
+    if team.status == "disabled":
+        raise HTTPException(status_code=403, detail="团队已禁用，无法上传知识")
     knowledge = team_service.create_knowledge(
         db, team.id, current_agent["agent_id"], data.title, data.content
     )
