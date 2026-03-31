@@ -1,15 +1,18 @@
 services:
   openmoss:
+    image: ghcr.io/uluckyxh/openmoss:latest
     build:
       context: .
       dockerfile: Dockerfile
     container_name: openmoss
     ports:
-      - "6565:6565"
+      - "${OPENMOSS_PORT:-6565}:6565"
     environment:
       OPENMOSS_CONFIG: /data/config/config.yaml
     volumes:
       - ./data:/app/data
       - ./docker-data/config:/data/config
-      - ./workspace:/workspace
+      # 如果 OpenClaw 和 OpenMOSS 在同一台机器，取消注释以共享工作目录
+      # - ./workspace:/workspace
     restart: unless-stopped
+

@@ -279,80 +279,136 @@ OpenMOSS/
 
 ## Quick Start
 
-> 📘 **Deploy now:** Follow the [Full Deployment Guide](docs/deployment-guide-en.md) to get OpenMOSS running with your own AI agent team — including Agent setup, Skill configuration, and OpenClaw integration.
+> 📘 **Full deployment:** Follow the [Full Deployment Guide](docs/deployment-guide-en.md) to set up your own AI agent team — including Agent creation, Skill configuration, and OpenClaw integration.
 >
 > 📸 **Visual tutorial:** Check out the [LINUX DO Visual Deployment Guide](https://linux.do/t/topic/1794669) (with screenshots) for a more intuitive walkthrough.
->
-> 🚧 **Coming soon:** Quick Agent onboarding via WebUI is currently being designed. For now, please follow the deployment guide for manual setup.
 
-### Requirements
+### Deployment Options
 
-- Python 3.10+
-- Node.js 18+ (only needed for building the frontend; not required if `static/` directory already exists)
+| Method | Prerequisites | Description |
+| ------ | ------------- | ----------- |
+| ⚡ **One-Click Script** | Python 3.10+ | Single command — auto downloads, installs deps, starts the service |
+| 🐳 **Docker** | Docker | Containerized deployment, no Python needed |
+| 🔧 **Manual** | Python 3.10+ | Full control for developers |
 
-### Docker One-Command Deployment
+### ⚡ One-Click Script (Recommended)
 
-If you don't want to install Python or Node locally, you can run OpenMOSS with Docker:
-
-```bash
-# 1. Clone the project
- git clone https://github.com/uluckyXH/OpenMOSS/ openmoss
- cd openmoss
-
-# 2. Build and start everything
- docker compose up -d --build
-```
-
-After startup:
-
-- Open `http://localhost:6565`
-- First visit redirects to the **Setup Wizard**
-- The container auto-generates config at `./docker-data/config/config.yaml`
-- SQLite data is persisted in `./data/`
-- Agent workspace is mounted to `./workspace/`
-
-Useful commands:
+Just need **Python 3.10+** on your system. One command does everything:
 
 ```bash
-# View logs
- docker compose logs -f
-
-# Stop services
- docker compose down
-
-# Rebuild after upgrade
- docker compose up -d --build
+curl -fsSL https://raw.githubusercontent.com/uluckyXH/OpenMOSS/main/setup.sh | bash
 ```
 
-> If external agents need to reach this instance, set `server.external_url` to your public URL in the setup wizard or settings page.
+> The script automatically: downloads latest code → creates Python venv → installs dependencies → starts the service. First install takes ~1 minute (dependency download); subsequent starts are instant.
 
-### Install & Run
+After successful startup:
+
+```
+  ✅ OpenMOSS is running!
+
+  🌐 Access:     http://localhost:6565
+  📋 API Docs:   http://localhost:6565/docs
+  🛑 Stop:       ./stop.sh
+```
+
+- First visit automatically redirects to the **Setup Wizard**
+- Data is stored in `openmoss/data/`
+- Config file at `openmoss/config.yaml`
+
+**Daily operations:**
+
+```bash
+cd openmoss
+
+./start.sh      # Start
+./stop.sh       # Stop
+
+# Custom port
+OPENMOSS_PORT=8080 ./start.sh
+```
+
+**Update to latest version:**
+
+```bash
+# Just run the same command again — data and config are preserved
+curl -fsSL https://raw.githubusercontent.com/uluckyXH/OpenMOSS/main/setup.sh | bash
+```
+
+> The script auto-detects existing installation → stops running service → updates code (preserves database and config) → restarts.
+
+### 🐳 Docker Deployment
+
+**Option A: Pull pre-built image (fastest, no clone needed)**
+
+```bash
+# 1. Download docker-compose.yml
+mkdir openmoss && cd openmoss
+curl -fsSL https://raw.githubusercontent.com/uluckyXH/OpenMOSS/main/docker-compose.yml -o docker-compose.yml
+
+# 2. Pull image and start
+docker compose up -d
+```
+
+**Option B: Build from source**
 
 ```bash
 # 1. Clone the project
 git clone https://github.com/uluckyXH/OpenMOSS/ openmoss
 cd openmoss
 
-# 2. Install Python dependencies
+# 2. Build and start
+docker compose up -d --build
+```
+
+After startup:
+
+- Open `http://localhost:6565`
+- First visit redirects to the **Setup Wizard**
+- Config auto-generated at `./docker-data/config/config.yaml`
+- SQLite data persisted in `./data/`
+
+Useful commands:
+
+```bash
+docker compose logs -f        # View logs
+docker compose down            # Stop
+docker compose pull            # Pull latest image
+docker compose up -d           # Restart with latest image
+
+# Custom port
+OPENMOSS_PORT=8080 docker compose up -d
+```
+
+> If external agents need to reach this instance, set `server.external_url` to your public URL in the setup wizard or settings page.
+
+### 🔧 Manual Deployment
+
+For advanced users or developers who want full control:
+
+```bash
+# 1. Clone the project
+git clone https://github.com/uluckyXH/OpenMOSS/ openmoss
+cd openmoss
+
+# 2. Create virtual environment (recommended)
+python3 -m venv .venv
+source .venv/bin/activate
+
+# 3. Install Python dependencies
 pip install -r requirements.txt
 
-# 3. Start the server (run from project root)
+# 4. Start the server
 python -m uvicorn app.main:app --host 0.0.0.0 --port 6565
 ```
 
-On first launch:
+### Setup Wizard
 
-1. `config.yaml` is generated from `config.example.yaml`
-2. SQLite database initialized (`data/tasks.db`)
-3. Frontend auto-mounted if `static/` directory exists
-4. **Open `http://localhost:6565` in your browser** — you'll be redirected to the **Setup Wizard**
-
-The Setup Wizard guides you through:
+Regardless of deployment method, the first visit to `http://localhost:6565` will redirect to the Setup Wizard, guiding you through:
 
 - Setting the **admin password**
-- Configuring the **project name** and **workspace directory**
-- Generating or setting the **Agent registration token**
-- Optionally configuring **notification channels**
+- Configuring **project name** and **workspace directory**
+- Generating or customizing the **Agent registration token**
+- Optionally configuring **notification channels** and **external URL**
 
 After completing the wizard:
 
@@ -364,19 +420,21 @@ After completing the wizard:
 
 ### Building the Frontend
 
-If the `static/` directory is not present, build the frontend manually:
+> If using the one-click script or Docker, the frontend is already included — no manual build needed.
+
+Only needed for manual deployment when the `static/` directory is missing (requires Node.js 18+):
 
 ```bash
 cd webui
 npm install
 npm run build
 
-# Clear old files and copy new build output
+# Copy build output
 rm -rf ../static/*
 cp -r dist/* ../static/
 cd ..
 
-# Restart backend, frontend will auto-load
+# Restart backend, frontend auto-loads
 python -m uvicorn app.main:app --host 0.0.0.0 --port 6565
 ```
 

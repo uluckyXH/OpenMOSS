@@ -300,80 +300,136 @@ OpenMOSS/
 
 ## 五、快速启动
 
-> 📘 **立即部署：** 按照 [完整部署指南](docs/deployment-guide.md) 即可搭建你自己的 AI Agent 协作团队——包括 Agent 创建、Skill 配置、OpenClaw 对接的完整流程。
+> 📘 **完整部署：** 按照 [完整部署指南](docs/deployment-guide.md) 即可搭建你自己的 AI Agent 协作团队——包括 Agent 创建、Skill 配置、OpenClaw 对接的完整流程。
 >
 > 📸 **图文教程：** 查看 [LINUX DO 图文部署教程](https://linux.do/t/topic/1794669)（含操作截图）获取更直观的部署指导。
->
-> 🚧 **即将推出：** WebUI 快速 Agent 注册对接入口正在设计构思中，届时 Skill 和角色配置将变得更加轻松。目前请参照部署指南手动配置。
 
-### 环境要求
+### 部署方式对比
 
-- Python 3.10 或更高版本
-- Node.js 18 或更高版本（仅构建前端时需要，如果仓库中已有 `static/` 目录则不需要）
+| 方式 | 前提条件 | 一句话说明 |
+| ---- | -------- | ---------- |
+| ⚡ **一键脚本** | Python 3.10+ | 一条命令，自动下载、安装依赖、启动服务 |
+| 🐳 **Docker** | Docker | 容器化部署，无需安装 Python |
+| 🔧 **手动部署** | Python 3.10+ | 适合开发者，完全手动控制 |
 
-### Docker 一键部署
+### ⚡ 一键脚本部署（推荐）
 
-如果你不想手动安装 Python / Node 依赖，可以直接使用 Docker：
-
-```bash
-# 1. 克隆项目
- git clone https://github.com/uluckyXH/OpenMOSS/ openmoss
- cd openmoss
-
-# 2. 一键构建并启动
- docker compose up -d --build
-```
-
-启动后：
-
-- 访问 `http://localhost:6565`
-- 首次进入会自动跳转到 **Setup Wizard**
-- 容器会自动在 `./docker-data/config/config.yaml` 生成配置文件
-- SQLite 数据保存在 `./data/`
-- Agent 工作目录挂载到 `./workspace/`
-
-常用命令：
+只需要系统中有 **Python 3.10+**，一条命令完成下载、安装和启动：
 
 ```bash
-# 查看日志
- docker compose logs -f
-
-# 停止服务
- docker compose down
-
-# 升级后重新构建
- docker compose up -d --build
+curl -fsSL https://raw.githubusercontent.com/uluckyXH/OpenMOSS/main/setup.sh | bash
 ```
 
-> 如果要让外部 Agent 连接这个实例，请在初始化向导或设置页中把 `server.external_url` 配置为你的公网地址。
+> 脚本会自动完成：下载最新代码 → 创建 Python 虚拟环境 → 安装依赖 → 启动服务。首次安装约需 1 分钟（依赖下载），之后秒启动。
 
-### 安装与启动
+启动成功后：
+
+```
+  ✅ OpenMOSS 已启动！
+
+  🌐 访问地址:   http://localhost:6565
+  📋 API 文档:   http://localhost:6565/docs
+  🛑 停止服务:   ./stop.sh
+```
+
+- 首次访问会自动跳转到 **Setup Wizard（初始化向导）**
+- 数据保存在 `openmoss/data/` 目录
+- 配置文件在 `openmoss/config.yaml`
+
+**日常操作：**
+
+```bash
+cd openmoss
+
+./start.sh      # 启动服务
+./stop.sh       # 停止服务
+
+# 自定义端口
+OPENMOSS_PORT=8080 ./start.sh
+```
+
+**更新到最新版本：**
+
+```bash
+# 再执行一次同样的命令即可，数据和配置会自动保留
+curl -fsSL https://raw.githubusercontent.com/uluckyXH/OpenMOSS/main/setup.sh | bash
+```
+
+> 脚本会自动检测已有安装 → 停止运行中的服务 → 更新代码（保留数据库和配置）→ 重新启动。
+
+### 🐳 Docker 部署
+
+**方式 A：拉取预构建镜像（最快，不用克隆仓库）**
+
+```bash
+# 1. 下载 docker-compose.yml
+mkdir openmoss && cd openmoss
+curl -fsSL https://raw.githubusercontent.com/uluckyXH/OpenMOSS/main/docker-compose.yml -o docker-compose.yml
+
+# 2. 拉取镜像并启动
+docker compose up -d
+```
+
+**方式 B：从源码构建**
 
 ```bash
 # 1. 克隆项目
 git clone https://github.com/uluckyXH/OpenMOSS/ openmoss
 cd openmoss
 
-# 2. 安装 Python 依赖
+# 2. 构建并启动
+docker compose up -d --build
+```
+
+启动后：
+
+- 访问 `http://localhost:6565`
+- 首次进入会自动跳转到 **Setup Wizard**
+- 配置文件自动生成在 `./docker-data/config/config.yaml`
+- SQLite 数据保存在 `./data/`
+
+常用命令：
+
+```bash
+docker compose logs -f        # 查看日志
+docker compose down            # 停止服务
+docker compose pull            # 拉取最新镜像
+docker compose up -d           # 用最新镜像重启
+
+# 自定义端口
+OPENMOSS_PORT=8080 docker compose up -d
+```
+
+> 如果要让外部 Agent 连接这个实例，请在初始化向导或设置页中把 `server.external_url` 配置为你的公网地址。
+
+### 🔧 手动部署
+
+适合需要完全控制的高级用户或开发者：
+
+```bash
+# 1. 克隆项目
+git clone https://github.com/uluckyXH/OpenMOSS/ openmoss
+cd openmoss
+
+# 2. 创建虚拟环境（推荐）
+python3 -m venv .venv
+source .venv/bin/activate
+
+# 3. 安装 Python 依赖
 pip install -r requirements.txt
 
-# 3. 启动服务（在项目根目录下运行）
+# 4. 启动服务
 python -m uvicorn app.main:app --host 0.0.0.0 --port 6565
 ```
 
-首次启动：
+### 初始化向导
 
-1. 自动从 `config.example.yaml` 生成 `config.yaml`
-2. 初始化 SQLite 数据库（`data/tasks.db`）
-3. 如果 `static/` 目录存在，自动挂载前端
-4. **打开浏览器访问 `http://localhost:6565`** — 会自动跳转到**初始化向导**
-
-初始化向导引导你完成：
+无论使用哪种部署方式，首次访问 `http://localhost:6565` 都会自动跳转到初始化向导，引导你完成：
 
 - 设置**管理员密码**
 - 配置**项目名称**和**工作目录**
 - 生成或自定义 **Agent 注册令牌**
-- 可选配置**通知渠道**
+- 可选配置**通知渠道**和**服务外网地址**
 
 完成初始化后：
 
@@ -385,14 +441,16 @@ python -m uvicorn app.main:app --host 0.0.0.0 --port 6565
 
 ### 构建前端
 
-如果仓库中没有 `static/` 目录，需要手动构建前端：
+> 如果使用一键脚本或 Docker 部署，前端已包含在内，无需手动构建。
+
+仅在手动部署且仓库中没有 `static/` 目录时，需要手动构建前端（需要 Node.js 18+）：
 
 ```bash
 cd webui
 npm install
 npm run build
 
-# 清空旧文件并拷贝新构建产物
+# 拷贝构建产物
 rm -rf ../static/*
 cp -r dist/* ../static/
 cd ..
