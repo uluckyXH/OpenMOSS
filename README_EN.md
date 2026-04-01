@@ -232,17 +232,7 @@ OpenMOSS/
 |   |-- services/                   # Business logic layer
 |   +-- schemas/                    # Pydantic serialization models
 |
-|-- webui/                          # Frontend (Vue 3 + shadcn-vue)
-|   |-- src/
-|   |   |-- views/                  # Page views
-|   |   |-- components/             # Components (ui / feed / common)
-|   |   |-- api/                    # API client
-|   |   |-- stores/                 # Pinia state management
-|   |   |-- composables/            # Composables
-|   |   +-- router/                 # Vue Router
-|   +-- dist/                       # Build output (npm run build)
-|
-|-- static/                         # Frontend build output (copied from webui/dist/, served by backend)
+|-- static/                         # WebUI static frontend files (auto-downloaded from GitHub Release on startup)
 |
 |-- prompts/                        # Agent role prompts
 |   |-- templates/                  # Role templates (base templates for creating agents)
@@ -418,25 +408,12 @@ After completing the wizard:
 | `http://localhost:6565/docs`       | Swagger API Docs      |
 | `http://localhost:6565/api/health` | Health Check          |
 
-### Building the Frontend
+### WebUI Auto-Deployment & Updates
 
-> If using the one-click script or Docker, the frontend is already included — no manual build needed.
+**OpenMOSS's WebUI frontend is fully decoupled from the main process (source code is maintained in the `webui` orphan branch).** Regardless of your deployment method:
 
-Only needed for manual deployment when the `static/` directory is missing (requires Node.js 18+):
-
-```bash
-cd webui
-npm install
-npm run build
-
-# Copy build output
-rm -rf ../static/*
-cp -r dist/* ../static/
-cd ..
-
-# Restart backend, frontend auto-loads
-python -m uvicorn app.main:app --host 0.0.0.0 --port 6565
-```
+- 🚀 **Auto-download on startup**: If the `static/` directory is missing frontend files at runtime, the backend automatically pulls the latest pre-compiled package from GitHub Releases and applies it, eliminating manual build steps.
+- 🔄 **Zero-downtime online updates**: Whenever a new frontend version is released, you can detect and update it with one click via the `Settings` page in the WebUI. The entire process requires no backend restarts, seamlessly swapping to the latest interface.
 
 ---
 
@@ -613,16 +590,20 @@ python -m uvicorn app.main:app --host 0.0.0.0 --port 6565 --reload
 
 ### Frontend Development
 
+The WebUI source code is hosted in a separate **`webui` orphan branch**. Please check out this branch independently before development:
+
 ```bash
-cd webui
+# Clone the frontend source branch (recommend placing it in a new directory parallel to backend)
+git clone -b webui https://github.com/uluckyXH/OpenMOSS.git openmoss-webui
+cd openmoss-webui
 
 # Install dependencies
 npm install
 
-# Dev server (http://localhost:5173, auto-proxies /api to :6565)
+# Dev server (http://localhost:5173, auto-proxies /api to local :6565)
 npm run dev
 
-# Production build
+# Production build (outputs to dist/)
 npm run build
 
 # Lint

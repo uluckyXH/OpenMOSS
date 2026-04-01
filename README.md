@@ -253,17 +253,7 @@ OpenMOSS/
 |   |-- services/                   # 业务逻辑层
 |   +-- schemas/                    # Pydantic 序列化模型
 |
-|-- webui/                          # 前端应用（Vue 3 + shadcn-vue）
-|   |-- src/
-|   |   |-- views/                  # 页面视图
-|   |   |-- components/             # 组件（ui / feed / common）
-|   |   |-- api/                    # API 客户端
-|   |   |-- stores/                 # Pinia 状态管理
-|   |   |-- composables/            # 组合式函数
-|   |   +-- router/                 # Vue Router
-|   +-- dist/                       # 构建产物（npm run build 生成）
-|
-|-- static/                         # 前端构建产物（由 webui/dist/ 拷贝而来，后端直接服务）
+|-- static/                         # WebUI 静态前端文件（服务启动时由 webui_updater 自动从 GitHub Release 下载解压）
 |
 |-- prompts/                        # Agent 角色提示词
 |   |-- templates/                  # 角色模板（创建 Agent 时的基础模板）
@@ -439,25 +429,12 @@ python -m uvicorn app.main:app --host 0.0.0.0 --port 6565
 | `http://localhost:6565/docs`       | Swagger API 文档 |
 | `http://localhost:6565/api/health` | 健康检查接口     |
 
-### 构建前端
+### WebUI 自动部署与更新机制
 
-> 如果使用一键脚本或 Docker 部署，前端已包含在内，无需手动构建。
+**OpenMOSS 的 WebUI 前端现已与主程序彻底解耦（前端源码维护在 `webui` 孤儿分支）。** 无论你使用哪种部署方式：
 
-仅在手动部署且仓库中没有 `static/` 目录时，需要手动构建前端（需要 Node.js 18+）：
-
-```bash
-cd webui
-npm install
-npm run build
-
-# 拷贝构建产物
-rm -rf ../static/*
-cp -r dist/* ../static/
-cd ..
-
-# 重启后端，前端会自动加载
-python -m uvicorn app.main:app --host 0.0.0.0 --port 6565
-```
+- 🚀 **首次启动自动下载**：运行时如果 `static/` 目录下缺失前端文件，后端会自动从 GitHub Release 拉取最新预编译包并生效，免去手动编译的烦恼。
+- 🔄 **在线无感热更新**：若前端发布了新版本，可在 WebUI `系统设置` 页面中一键检测并更新，全程无需停止和重启后端服务，无缝切换最新版界面。
 
 ---
 
@@ -635,16 +612,20 @@ python -m uvicorn app.main:app --host 0.0.0.0 --port 6565 --reload
 
 ### 前端开发
 
+WebUI 源码托管在同一个仓库的 **`webui` 独立分支 (orphan branch)** 中。开发前请独立 checkout 此分支：
+
 ```bash
-cd webui
+# 获取并切换到前端源码分支（建议放在一个新目录里与后端同时开发）
+git clone -b webui https://github.com/uluckyXH/OpenMOSS.git openmoss-webui
+cd openmoss-webui
 
 # 安装依赖
 npm install
 
-# 开发服务器（http://localhost:5173，自动代理 /api 到 :6565）
+# 开发服务器（http://localhost:5173，自动代理 /api 到本地 :6565）
 npm run dev
 
-# 构建生产版本
+# 构建生产版本（生成到 dist 目录）
 npm run build
 
 # 代码检查
