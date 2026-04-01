@@ -40,7 +40,7 @@ import {
 const router = useRouter();
 const route = useRoute();
 const auth = useAuthStore();
-const appVersion = __VERSION__;
+const localWebUIVersion = __VERSION__;
 
 const showLogoutConfirm = ref(false);
 const showUrlMissing = ref(false);
@@ -121,7 +121,9 @@ function handleLogout() {
             <div class="font-bold text-base tracking-tight">OpenMOSS</div>
             <div class="flex flex-col items-start gap-1 mt-0.5">
               <span class="text-[11px] text-muted-foreground/60 leading-none">多 Agent 协作平台</span>
-              <span class="text-[9px] font-medium px-1.5 py-0.5 rounded-md bg-blue-50 text-blue-600 border border-blue-200/60 dark:bg-blue-500/10 dark:text-blue-400 dark:border-blue-500/20 leading-none">WebUI v{{ appVersion }}</span>
+              <span
+                class="text-[9px] font-medium px-1.5 py-0.5 rounded-md bg-blue-50 text-blue-600 border border-blue-200/60 dark:bg-blue-500/10 dark:text-blue-400 dark:border-blue-500/20 leading-none">WebUI
+                v{{ localWebUIVersion }}</span>
             </div>
           </div>
         </div>
@@ -131,7 +133,8 @@ function handleLogout() {
 
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel class="px-5 text-[10px] uppercase tracking-widest text-muted-foreground/50 font-semibold">导航</SidebarGroupLabel>
+          <SidebarGroupLabel class="px-5 text-[10px] uppercase tracking-widest text-muted-foreground/50 font-semibold">
+            导航</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu class="space-y-1 px-2">
               <SidebarMenuItem v-for="item in menuItems" :key="item.path">
