@@ -73,3 +73,28 @@ async def verify_admin(
         raise HTTPException(status_code=403, detail="管理员验证失败，请重新登录")
 
     return True
+
+
+def require_admin_or_role(*allowed_roles: str):
+    async def _check(
+        x_admin_token: str = Header(None, alias="X-Admin-Token"),
+        authorization: str = Header(None, alias="authorization"),
+        db: Session = Depends(get_db),
+    ):
+        from app.routers.admin import is_valid_admin_token
+        if x_admin_token is not None and is_valid_admin_token(x_admin_token):
+            return True
+        if authorization is None:
+            raise HTTPException(status_code=401, detail="Authorization 格式错误，需要 Bearer <api_key>")
+        if not authorization.startswith("Bearer "):
+            raise HTTPException(status_code=401, detail="Authorization 格式错误，需要 Bearer <api_key>")
+        api_key = authorization[7:]
+        agent = db.query(Agent).filter(Agent.api_key == api_key).first()
+        if not agent:
+            raise HTTPException(status_code=401, detail="无效的 API Key")
+        if agent.status == "disabled":
+            raise HTTPException(status_code=403, detail="Agent 已禁用，无法操作")
+        if agent.role not in allowed_roles:
+            raise HTTPException(status_code=403, detail=f"该操作仅限 {'/'.join(allowed_roles)} 角色，你的角色是 {agent.role}")
+        return agent
+    return _check

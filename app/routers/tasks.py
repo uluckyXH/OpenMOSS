@@ -8,7 +8,7 @@ from typing import Optional, List
 from datetime import datetime as dt
 
 from app.database import get_db
-from app.auth.dependencies import get_current_agent, verify_admin, require_role
+from app.auth.dependencies import get_current_agent, verify_admin, require_role, require_admin_or_role
 from app.services import task_service
 from app.models.agent import Agent
 
@@ -70,7 +70,7 @@ class ModuleResponse(BaseModel):
 @router.post("", response_model=TaskResponse, summary="创建任务")
 async def create_task(
     req: TaskCreateRequest,
-    agent: Agent = Depends(require_role("planner")),
+    _=Depends(require_admin_or_role("planner")),
     db: Session = Depends(get_db),
 ):
     """规划师创建任务"""
@@ -119,7 +119,7 @@ async def get_task(
 async def update_task_status(
     task_id: str,
     req: TaskStatusRequest,
-    agent: Agent = Depends(require_role("planner")),
+    _=Depends(require_admin_or_role("planner")),
     db: Session = Depends(get_db),
 ):
     """更新任务状态（如 planning → active）"""
@@ -134,7 +134,7 @@ async def update_task_status(
 async def update_task(
     task_id: str,
     req: TaskUpdateRequest,
-    agent: Agent = Depends(require_role("planner")),
+    _=Depends(require_admin_or_role("planner")),
     db: Session = Depends(get_db),
 ):
     """编辑任务名称/描述（仅 planning/active 状态可编辑）"""
@@ -145,15 +145,45 @@ async def update_task(
     return task
 
 
+@router.delete("/{task_id}", summary="删除任务")
+async def delete_task(
+    task_id: str,
+    _=Depends(require_admin_or_role("planner")),
+    db: Session = Depends(get_db),
+):
+    """彻底删除任务（危险操作）"""
+    try:
+        task_service.delete_task(db, task_id)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    return {"message": "任务已删除"}
+
+
 @router.post("/{task_id}/cancel", response_model=TaskResponse, summary="取消任务")
 async def cancel_task(
     task_id: str,
-    agent: Agent = Depends(require_role("planner")),
+    req: dict = {},
+    _=Depends(require_admin_or_role("planner")),
     db: Session = Depends(get_db),
 ):
     """取消任务（已完成/已归档/已取消的不能取消）"""
     try:
         task = task_service.cancel_task(db, task_id)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    return task
+
+
+@router.post("/{task_id}/restart", response_model=TaskResponse, summary="重启任务")
+async def restart_task(
+    task_id: str,
+    req: dict = {},
+    _=Depends(require_admin_or_role("planner")),
+    db: Session = Depends(get_db),
+):
+    """重启已取消的任务"""
+    try:
+        task = task_service.restart_task(db, task_id)
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
     return task
@@ -167,7 +197,7 @@ async def cancel_task(
 async def create_module(
     task_id: str,
     req: ModuleCreateRequest,
-    agent: Agent = Depends(require_role("planner")),
+    _=Depends(require_admin_or_role("planner")),
     db: Session = Depends(get_db),
 ):
     """在任务下创建模块"""

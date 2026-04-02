@@ -6,6 +6,12 @@ from sqlalchemy.orm import Session
 
 from app.models.task import Task
 from app.models.module import Module
+from app.models.sub_task import SubTask
+from app.models.rule import Rule
+from app.models.activity_log import ActivityLog
+from app.models.review_record import ReviewRecord
+from app.models.reward_log import RewardLog
+from app.models.patrol_record import PatrolRecord
 
 
 def create_task(db: Session, name: str, description: str = "", type: str = "once") -> Task:
@@ -84,6 +90,46 @@ def cancel_task(db: Session, task_id: str) -> Task:
     db.commit()
     db.refresh(task)
     return task
+
+
+def restart_task(db: Session, task_id: str, status: str = "active") -> Task:
+    """重启已取消的任务"""
+    if status not in ("planning", "active"):
+        raise ValueError("重启状态仅支持 planning/active")
+
+    task = db.query(Task).filter(Task.id == task_id).first()
+    if not task:
+        raise ValueError(f"任务 {task_id} 不存在")
+    if task.status != "cancelled":
+        raise ValueError(f"任务状态为 {task.status}，只有已取消的任务可以重启")
+
+    task.status = status
+    db.commit()
+    db.refresh(task)
+    return task
+
+
+def delete_task(db: Session, task_id: str) -> None:
+    """彻底删除任务（含关联模块/子任务/规则/日志）"""
+    task = db.query(Task).filter(Task.id == task_id).first()
+    if not task:
+        raise ValueError(f"任务 {task_id} 不存在")
+
+    sub_task_ids = [row[0] for row in db.query(SubTask.id).filter(SubTask.task_id == task_id).all()]
+
+    if sub_task_ids:
+        db.query(Rule).filter(Rule.sub_task_id.in_(sub_task_ids)).delete(synchronize_session=False)
+        db.query(ActivityLog).filter(ActivityLog.sub_task_id.in_(sub_task_ids)).delete(synchronize_session=False)
+        db.query(ReviewRecord).filter(ReviewRecord.sub_task_id.in_(sub_task_ids)).delete(synchronize_session=False)
+        db.query(RewardLog).filter(RewardLog.sub_task_id.in_(sub_task_ids)).delete(synchronize_session=False)
+        db.query(PatrolRecord).filter(PatrolRecord.sub_task_id.in_(sub_task_ids)).delete(synchronize_session=False)
+        db.query(SubTask).filter(SubTask.id.in_(sub_task_ids)).delete(synchronize_session=False)
+
+    db.query(Rule).filter(Rule.task_id == task_id).delete(synchronize_session=False)
+    db.query(Module).filter(Module.task_id == task_id).delete(synchronize_session=False)
+
+    db.delete(task)
+    db.commit()
 
 
 def create_module(db: Session, task_id: str, name: str, description: str = "") -> Module:

@@ -14,6 +14,6 @@ services:
       - ./docker-data/config:/data/config
       - ./docker-data/static:/app/static
       # 如果 OpenClaw 和 OpenMOSS 在同一台机器，取消注释以共享工作目录
-      # - ./workspace:/workspace
+      - ./workspace:/workspace
     restart: unless-stopped
 

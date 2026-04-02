@@ -8,7 +8,7 @@ from typing import Optional, List
 from datetime import datetime as dt
 
 from app.database import get_db
-from app.auth.dependencies import get_current_agent, verify_admin, require_role
+from app.auth.dependencies import get_current_agent, verify_admin, require_role, require_admin_or_role
 from app.services import sub_task_service
 from app.models.agent import Agent
 
@@ -85,7 +85,7 @@ class SubTaskUpdateRequest(BaseModel):
 @router.post("", response_model=SubTaskResponse, summary="创建子任务")
 async def create_sub_task(
     req: SubTaskCreateRequest,
-    agent: Agent = Depends(require_role("planner")),
+    _=Depends(require_admin_or_role("planner")),
     db: Session = Depends(get_db),
 ):
     """规划师创建子任务"""
@@ -300,7 +300,7 @@ async def block_sub_task(
 async def reassign_sub_task(
     sub_task_id: str,
     req: ReassignRequest,
-    agent: Agent = Depends(require_role("planner")),
+    _=Depends(require_admin_or_role("planner")),
     db: Session = Depends(get_db),
 ):
     """规划师重新分配：blocked → assigned"""
@@ -314,7 +314,7 @@ async def reassign_sub_task(
 async def update_sub_task(
     sub_task_id: str,
     req: SubTaskUpdateRequest,
-    agent: Agent = Depends(require_role("planner")),
+    _=Depends(require_admin_or_role("planner")),
     db: Session = Depends(get_db),
 ):
     """编辑子任务（仅 pending/assigned 状态可编辑）"""
@@ -332,7 +332,8 @@ async def update_sub_task(
 @router.post("/{sub_task_id}/cancel", response_model=SubTaskResponse, summary="取消子任务")
 async def cancel_sub_task(
     sub_task_id: str,
-    agent: Agent = Depends(require_role("planner")),
+    req: dict = {},
+    _=Depends(require_admin_or_role("planner")),
     db: Session = Depends(get_db),
 ):
     """取消子任务（已完成/已取消的不能取消）"""
