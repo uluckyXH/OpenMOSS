@@ -82,10 +82,38 @@ class WebUIUpdater:
         from app.config import config
         return config.webui_auto_update
 
-    def _get_release_base_url(self) -> str:
-        """获取 GitHub Release 静态下载 URL"""
+    async def _get_webui_release_base_url(self) -> str:
+        """获取 WebUI Release 的下载 URL
+
+        通过 GitHub API 查找最新的 webui-v* tag 的 Release，
+        避免被后端版本的 Release（v1.x.x）顶掉 latest 指向。
+        如果 API 查询失败，回退到 releases/latest/download。
+        """
         repo = self._get_github_repo()
-        return f"https://github.com/{repo}/releases/latest/download"
+        fallback = f"https://github.com/{repo}/releases/latest/download"
+
+        try:
+            api_url = f"https://api.github.com/repos/{repo}/releases"
+            async with httpx.AsyncClient(
+                follow_redirects=True,
+                timeout=self.MANIFEST_TIMEOUT,
+            ) as client:
+                resp = await client.get(api_url, headers={"Accept": "application/vnd.github+json"})
+                resp.raise_for_status()
+                releases = resp.json()
+
+            # 找最新的 webui-v* tag 的已发布 Release
+            for release in releases:
+                tag = release.get("tag_name", "")
+                if tag.startswith("webui-v") and not release.get("draft") and not release.get("prerelease"):
+                    return f"https://github.com/{repo}/releases/download/{tag}"
+
+            print("[WebUI Updater] 未找到 webui-v* Release，回退到 latest")
+            return fallback
+
+        except Exception as e:
+            print(f"[WebUI Updater] GitHub API 查询失败: {e}，回退到 latest")
+            return fallback
 
     def get_current_version(self) -> Optional[str]:
         """读取当前安装的 WebUI 版本（从 static/webui-manifest.json）"""
@@ -134,7 +162,7 @@ class WebUIUpdater:
 
         # 从 GitHub 下载 manifest
         try:
-            base_url = self._get_release_base_url()
+            base_url = await self._get_webui_release_base_url()
             manifest_url = f"{base_url}/webui-manifest.json"
 
             async with httpx.AsyncClient(
@@ -214,7 +242,7 @@ class WebUIUpdater:
         backup_dir = static_dir.parent / "static.bak"
 
         try:
-            base_url = self._get_release_base_url()
+            base_url = await self._get_webui_release_base_url()
             tar_url = f"{base_url}/webui-dist.tar.gz"
 
             print(f"[WebUI Updater] 开始下载: {tar_url}")
