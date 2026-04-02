@@ -366,12 +366,24 @@ def _backup_static(static_dir: Path, backup_dir: Path) -> None:
         print(f"[WebUI Updater] 已备份当前版本到 {backup_dir}")
 
 
+def _clear_dir_contents(target_dir: Path) -> None:
+    """清空目录内容但保留目录本身（兼容 Docker bind mount）"""
+    if not target_dir.is_dir():
+        return
+    for child in target_dir.iterdir():
+        if child.is_dir():
+            shutil.rmtree(child)
+        else:
+            child.unlink()
+
+
 def _extract_tar(tar_path: str, target_dir: Path) -> None:
     """解压 tar.gz 到目标目录"""
-    # 先清空目标目录
+    # 清空目录内容（保留目录本身，兼容 Docker mount point）
     if target_dir.is_dir():
-        shutil.rmtree(target_dir)
-    target_dir.mkdir(parents=True, exist_ok=True)
+        _clear_dir_contents(target_dir)
+    else:
+        target_dir.mkdir(parents=True, exist_ok=True)
 
     with tarfile.open(tar_path, "r:gz") as tar:
         # 安全检查：防止路径穿越
@@ -389,9 +401,17 @@ def _extract_tar(tar_path: str, target_dir: Path) -> None:
 def _restore_backup(static_dir: Path, backup_dir: Path) -> None:
     """从备份恢复 static 目录"""
     if static_dir.is_dir():
-        shutil.rmtree(static_dir)
+        _clear_dir_contents(static_dir)
+    else:
+        static_dir.mkdir(parents=True, exist_ok=True)
     if backup_dir.is_dir():
-        shutil.copytree(backup_dir, static_dir)
+        # 把备份内容复制回来
+        for child in backup_dir.iterdir():
+            dest = static_dir / child.name
+            if child.is_dir():
+                shutil.copytree(child, dest)
+            else:
+                shutil.copy2(child, dest)
         shutil.rmtree(backup_dir)
         print("[WebUI Updater] 已从备份恢复")
 
