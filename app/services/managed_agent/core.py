@@ -1,5 +1,5 @@
 """
-managed_agent 核心 CRUD 与回填逻辑。
+managed_agent 核心 CRUD 逻辑。
 """
 
 import uuid
@@ -7,7 +7,6 @@ from typing import List, Optional, Tuple
 
 from sqlalchemy.orm import Session
 
-from app.models.agent import Agent
 from app.models.managed_agent import (
     ManagedAgent,
     ManagedAgentCommBinding,
@@ -154,74 +153,3 @@ def delete_managed_agent(db: Session, agent_id: str) -> None:
 
     db.delete(agent)
     db.commit()
-
-
-def auto_backfill_from_runtime(db: Session) -> None:
-    """
-    把已有的运行态 agent 回填到 managed_agent。
-    幂等：通过 runtime_agent_id 去重，多次执行不报错。
-    """
-    agents = db.query(Agent).all()
-    success, skipped, failed = 0, 0, 0
-
-    for runtime_agent in agents:
-        try:
-            existing = db.query(ManagedAgent).filter(
-                ManagedAgent.runtime_agent_id == runtime_agent.id
-            ).first()
-            if existing:
-                skipped += 1
-                continue
-
-            slug = _generate_slug(runtime_agent.name)
-            base_slug = slug
-            counter = 1
-            while db.query(ManagedAgent).filter(ManagedAgent.slug == slug).first():
-                slug = f"{base_slug}-{counter}"
-                counter += 1
-
-            managed = ManagedAgent(
-                id=str(uuid.uuid4()),
-                name=runtime_agent.name,
-                slug=slug,
-                role=runtime_agent.role,
-                description=runtime_agent.description or "",
-                host_platform="openclaw",
-                deployment_mode="bind_existing_agent",
-                host_access_mode="local",
-                status="deployed",
-                runtime_agent_id=runtime_agent.id,
-                config_version=1,
-                deployed_config_version=1,
-            )
-            db.add(managed)
-            db.flush()
-
-            db.add(
-                ManagedAgentHostConfig(
-                    id=str(uuid.uuid4()),
-                    managed_agent_id=managed.id,
-                    host_platform=managed.host_platform,
-                )
-            )
-            db.add(
-                ManagedAgentPromptAsset(
-                    id=str(uuid.uuid4()),
-                    managed_agent_id=managed.id,
-                    template_role=managed.role,
-                    host_render_strategy=_default_render_strategy(
-                        managed.host_platform, managed.deployment_mode
-                    ),
-                    authority_source="database",
-                )
-            )
-
-            db.commit()
-            success += 1
-        except Exception as exc:
-            db.rollback()
-            failed += 1
-            print(f"[ManagedAgent] 回填失败 (跳过): agent={runtime_agent.name}, error={exc}")
-
-    if success or failed:
-        print(f"[ManagedAgent] 回填完成: 成功={success}, 跳过={skipped}, 失败={failed}")

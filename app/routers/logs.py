@@ -2,7 +2,7 @@
 活动日志路由 — Agent 写日志 + 查询日志
 """
 from fastapi import APIRouter, Depends, HTTPException
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 from sqlalchemy.orm import Session
 from typing import Optional, List
 from datetime import datetime as dt, timedelta
@@ -49,6 +49,8 @@ class LogCreateRequest(BaseModel):
 
 
 class LogResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: str
     agent_id: str
     sub_task_id: Optional[str]
@@ -56,9 +58,6 @@ class LogResponse(BaseModel):
     summary: str
     session_id: Optional[str]
     created_at: Optional[dt] = None
-
-    class Config:
-        from_attributes = True
 
 
 # ============================================================
@@ -139,4 +138,3 @@ async def get_my_logs(
     query = _apply_days_filter(query, days)
     actual_limit = min(max(limit or DEFAULT_LIMIT, 1), MAX_LIMIT)
     return query.order_by(ActivityLog.created_at.desc()).limit(actual_limit).all()
-

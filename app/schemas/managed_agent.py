@@ -4,7 +4,7 @@
 from datetime import datetime
 from typing import List, Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 # ============================================================
@@ -39,6 +39,8 @@ class ManagedAgentUpdateRequest(BaseModel):
 
 class ManagedAgentListItem(BaseModel):
     """列表项"""
+    model_config = ConfigDict(from_attributes=True)
+
     id: str
     name: str
     slug: str
@@ -56,9 +58,6 @@ class ManagedAgentListItem(BaseModel):
     data_source: str = "managed"
     created_at: datetime
     updated_at: datetime
-
-    class Config:
-        from_attributes = True
 
 
 class ManagedAgentDetail(ManagedAgentListItem):
@@ -88,6 +87,8 @@ class ManagedAgentHostConfigRequest(BaseModel):
 
 class ManagedAgentHostConfigResponse(BaseModel):
     """宿主平台配置响应"""
+    model_config = ConfigDict(from_attributes=True)
+
     id: str
     managed_agent_id: str
     host_platform: str
@@ -97,9 +98,6 @@ class ManagedAgentHostConfigResponse(BaseModel):
     host_metadata_json: Optional[str] = None
     created_at: datetime
     updated_at: datetime
-
-    class Config:
-        from_attributes = True
 
 
 # ============================================================
@@ -118,6 +116,8 @@ class ManagedAgentPromptAssetRequest(BaseModel):
 
 class ManagedAgentPromptAssetResponse(BaseModel):
     """Prompt 资产响应"""
+    model_config = ConfigDict(from_attributes=True)
+
     id: str
     managed_agent_id: str
     template_role: Optional[str] = None
@@ -128,9 +128,6 @@ class ManagedAgentPromptAssetResponse(BaseModel):
     authority_source: str
     notes: Optional[str] = None
     updated_at: datetime
-
-    class Config:
-        from_attributes = True
 
 
 class ManagedAgentRenderedArtifact(BaseModel):
@@ -165,6 +162,8 @@ class ManagedAgentScheduleRequest(BaseModel):
 
 class ManagedAgentScheduleResponse(BaseModel):
     """定时任务响应"""
+    model_config = ConfigDict(from_attributes=True)
+
     id: str
     managed_agent_id: str
     name: str
@@ -178,9 +177,6 @@ class ManagedAgentScheduleResponse(BaseModel):
     created_at: datetime
     updated_at: datetime
 
-    class Config:
-        from_attributes = True
-
 
 # ============================================================
 # Comm Binding
@@ -188,7 +184,7 @@ class ManagedAgentScheduleResponse(BaseModel):
 
 
 class ManagedAgentCommBindingRequest(BaseModel):
-    """创建/更新通讯平台账号绑定"""
+    """创建/更新宿主通讯渠道配置"""
     provider: Optional[str] = Field(default=None, description="feishu/slack/telegram/wechat/email/webhook")
     binding_key: Optional[str] = Field(default=None, description="平台账号或连接标识")
     display_name: Optional[str] = None
@@ -199,7 +195,9 @@ class ManagedAgentCommBindingRequest(BaseModel):
 
 
 class ManagedAgentCommBindingResponse(BaseModel):
-    """通讯平台账号绑定响应"""
+    """宿主通讯渠道配置响应"""
+    model_config = ConfigDict(from_attributes=True)
+
     id: str
     managed_agent_id: str
     provider: str
@@ -212,9 +210,6 @@ class ManagedAgentCommBindingResponse(BaseModel):
     created_at: datetime
     updated_at: datetime
 
-    class Config:
-        from_attributes = True
-
 
 # ============================================================
 # Bootstrap Token
@@ -223,12 +218,11 @@ class ManagedAgentCommBindingResponse(BaseModel):
 
 class ManagedAgentBootstrapTokenResponse(BaseModel):
     """引导 Token 响应"""
+    model_config = ConfigDict(from_attributes=True)
+
     id: str
     managed_agent_id: str
     token: str
     purpose: str
     expires_at: datetime
     created_at: datetime
-
-    class Config:
-        from_attributes = True

@@ -2,7 +2,7 @@
 子任务路由 — CRUD + 状态操作
 """
 from fastapi import APIRouter, Depends, HTTPException
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 from sqlalchemy.orm import Session
 from typing import Optional, List
 from datetime import datetime as dt
@@ -33,6 +33,8 @@ class SubTaskCreateRequest(BaseModel):
 
 
 class SubTaskResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: str
     task_id: str
     module_id: Optional[str]
@@ -49,9 +51,6 @@ class SubTaskResponse(BaseModel):
     created_at: Optional[dt] = None
     updated_at: Optional[dt] = None
     completed_at: Optional[dt] = None
-
-    class Config:
-        from_attributes = True
 
 
 class ClaimRequest(BaseModel):

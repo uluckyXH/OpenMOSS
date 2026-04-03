@@ -4,7 +4,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from sqlalchemy import func
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from typing import Optional, List
 from datetime import datetime as dt, timedelta
 
@@ -28,6 +28,8 @@ class FeedStatusResponse(BaseModel):
 
 
 class FeedLogResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: str
     timestamp: Optional[dt] = None
     method: str
@@ -38,20 +40,16 @@ class FeedLogResponse(BaseModel):
     request_body: Optional[str] = None
     response_status: Optional[int] = None
 
-    class Config:
-        from_attributes = True
-
 
 class FeedAgentResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: str
     name: str
     role: str
     status: str
     total_score: int
     created_at: Optional[dt] = None
-
-    class Config:
-        from_attributes = True
 
 
 class SubTaskBrief(BaseModel):
@@ -237,4 +235,3 @@ async def feed_agent_summary(db: Session = Depends(get_db)):
         ))
 
     return result
-

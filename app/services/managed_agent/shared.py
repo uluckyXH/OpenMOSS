@@ -145,7 +145,7 @@ def _normalize_schedule_kwargs(
 
 
 def _normalize_comm_binding_kwargs(kwargs: Dict[str, object]) -> Dict[str, object]:
-    """标准化通讯平台账号绑定字段。"""
+    """标准化宿主通讯渠道配置字段。"""
     data = dict(kwargs)
     if data.get("config_payload") is not None:
         data["config_payload_encrypted"] = data["config_payload"]

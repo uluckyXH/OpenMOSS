@@ -1,12 +1,14 @@
 """
 通用分页工具
 """
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from typing import List, Any
 
 
 class PaginatedResult(BaseModel):
     """分页响应的通用结构"""
+    model_config = ConfigDict(from_attributes=True)
+
     items: List[Any] = []
     total: int = 0
     page: int = 1
@@ -14,8 +16,6 @@ class PaginatedResult(BaseModel):
     total_pages: int = 1
     has_more: bool = False
 
-    class Config:
-        from_attributes = True
 
 
 def paginate(query, page: int = 1, page_size: int = 0) -> dict:

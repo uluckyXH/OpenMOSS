@@ -1,5 +1,5 @@
 """
-managed_agent 通讯平台账号绑定服务。
+managed_agent 宿主通讯渠道配置服务。
 """
 
 import uuid
@@ -15,7 +15,7 @@ from .shared import _bump_config_version, _mask, _normalize_comm_binding_kwargs
 
 
 def list_comm_bindings(db: Session, managed_agent_id: str) -> List[ManagedAgentCommBinding]:
-    """获取通讯平台账号绑定。"""
+    """获取宿主通讯渠道配置。"""
     get_managed_agent_or_404(db, managed_agent_id)
     return db.query(ManagedAgentCommBinding).filter(
         ManagedAgentCommBinding.managed_agent_id == managed_agent_id
@@ -23,17 +23,17 @@ def list_comm_bindings(db: Session, managed_agent_id: str) -> List[ManagedAgentC
 
 
 def get_comm_binding_or_404(db: Session, binding_id: str) -> ManagedAgentCommBinding:
-    """获取通讯平台账号绑定，不存在则抛异常。"""
+    """获取宿主通讯渠道配置，不存在则抛异常。"""
     binding = db.query(ManagedAgentCommBinding).filter(
         ManagedAgentCommBinding.id == binding_id
     ).first()
     if not binding:
-        raise ValueError(f"通讯平台账号绑定不存在: {binding_id}")
+        raise ValueError(f"宿主通讯渠道配置不存在: {binding_id}")
     return binding
 
 
 def create_comm_binding(db: Session, managed_agent_id: str, **kwargs) -> ManagedAgentCommBinding:
-    """创建通讯平台账号绑定。"""
+    """创建宿主通讯渠道配置。"""
     agent = get_managed_agent_or_404(db, managed_agent_id)
     normalized = _normalize_comm_binding_kwargs(kwargs)
 
@@ -53,7 +53,7 @@ def create_comm_binding(db: Session, managed_agent_id: str, **kwargs) -> Managed
 
 
 def update_comm_binding(db: Session, binding_id: str, **kwargs) -> ManagedAgentCommBinding:
-    """更新通讯平台账号绑定。"""
+    """更新宿主通讯渠道配置。"""
     binding = get_comm_binding_or_404(db, binding_id)
     agent = get_managed_agent_or_404(db, binding.managed_agent_id)
     normalized = _normalize_comm_binding_kwargs(kwargs)
@@ -74,7 +74,7 @@ def update_comm_binding(db: Session, binding_id: str, **kwargs) -> ManagedAgentC
 
 
 def delete_comm_binding(db: Session, binding_id: str) -> None:
-    """删除通讯平台账号绑定。"""
+    """删除宿主通讯渠道配置。"""
     binding = get_comm_binding_or_404(db, binding_id)
     agent = get_managed_agent_or_404(db, binding.managed_agent_id)
     db.delete(binding)
@@ -83,7 +83,7 @@ def delete_comm_binding(db: Session, binding_id: str) -> None:
 
 
 def serialize_comm_binding(binding: ManagedAgentCommBinding) -> Dict[str, object]:
-    """把通讯平台账号绑定模型转成 API 响应 dict。"""
+    """把宿主通讯渠道配置模型转成 API 响应 dict。"""
     return {
         "id": binding.id,
         "managed_agent_id": binding.managed_agent_id,

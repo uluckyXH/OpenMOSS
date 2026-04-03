@@ -1,29 +1,52 @@
 """
 OpenMOSS 任务调度中间件 — 数据库初始化
 """
+import os
+from pathlib import Path
+
 from sqlalchemy import create_engine
+from sqlalchemy.engine import make_url
 from sqlalchemy.orm import sessionmaker, declarative_base
 
 from app.config import config
 
-# 确保数据目录存在
-import os
-db_dir = os.path.dirname(config.database_path)
-if db_dir:
-    os.makedirs(db_dir, exist_ok=True)
+Base = declarative_base()
 
-# SQLAlchemy 引擎
-DATABASE_URL = f"sqlite:///{config.database_path}"
 
-engine = create_engine(
-    DATABASE_URL,
-    connect_args={"check_same_thread": False},  # SQLite 需要
-    echo=False,
-)
+def build_database_url() -> str:
+    """构建正式环境使用的数据库 URL。"""
+    return config.database_url
+
+
+def build_engine_options(database_url: str) -> dict:
+    """按数据库类型返回 SQLAlchemy engine 参数。"""
+    options = {"echo": False}
+    if make_url(database_url).get_backend_name() == "sqlite":
+        # SQLite 在当前线程模型下需要显式关闭线程检查
+        options["connect_args"] = {"check_same_thread": False}
+    return options
+
+
+def ensure_database_ready(database_url: str) -> None:
+    """确保数据库运行前置条件满足。"""
+    url = make_url(database_url)
+
+    if url.get_backend_name() != "sqlite":
+        return
+
+    if not url.database or url.database == ":memory:":
+        return
+
+    Path(url.database).parent.mkdir(parents=True, exist_ok=True)
+
+
+DATABASE_URL = build_database_url()
+ENGINE_OPTIONS = build_engine_options(DATABASE_URL)
+ensure_database_ready(DATABASE_URL)
+
+engine = create_engine(DATABASE_URL, **ENGINE_OPTIONS)
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-Base = declarative_base()
 
 
 def get_db():

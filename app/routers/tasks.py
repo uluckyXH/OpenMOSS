@@ -2,7 +2,7 @@
 任务路由 — 任务和模块的 CRUD
 """
 from fastapi import APIRouter, Depends, HTTPException
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 from sqlalchemy.orm import Session
 from typing import Optional, List
 from datetime import datetime as dt
@@ -27,6 +27,8 @@ class TaskCreateRequest(BaseModel):
 
 
 class TaskResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: str
     name: str
     description: str
@@ -34,9 +36,6 @@ class TaskResponse(BaseModel):
     status: str
     created_at: Optional[dt] = None
     updated_at: Optional[dt] = None
-
-    class Config:
-        from_attributes = True
 
 
 class TaskStatusRequest(BaseModel):
@@ -54,13 +53,12 @@ class ModuleCreateRequest(BaseModel):
 
 
 class ModuleResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: str
     task_id: str
     name: str
     description: str
-
-    class Config:
-        from_attributes = True
 
 
 # ============================================================

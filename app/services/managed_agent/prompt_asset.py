@@ -9,11 +9,13 @@ from typing import Dict, Optional
 from sqlalchemy.orm import Session
 
 from app.models.managed_agent import ManagedAgentPromptAsset
+from app.services.host_renderers import get_renderer
 
 from .core import get_managed_agent_or_404
 from .shared import (
     _bump_config_version,
     _default_render_strategy,
+    _ensure_host_config,
     _ensure_prompt_asset,
     _normalize_prompt_asset_kwargs,
 )
@@ -83,20 +85,15 @@ def reset_prompt_from_template(db: Session, managed_agent_id: str) -> ManagedAge
 def render_prompt_preview(db: Session, managed_agent_id: str) -> Dict[str, object]:
     """按宿主平台渲染 Prompt 预览。"""
     agent = get_managed_agent_or_404(db, managed_agent_id)
+    host_config = _ensure_host_config(db, agent)
     prompt_asset = _ensure_prompt_asset(db, agent)
+    renderer = get_renderer(agent.host_platform)
 
-    if agent.host_platform == "openclaw":
-        artifacts = [
-            {"name": "AGENTS.md", "content": prompt_asset.system_prompt_content or ""},
-            {"name": "SOUL.md", "content": prompt_asset.persona_prompt_content or ""},
-            {"name": "IDENTITY.md", "content": prompt_asset.identity_content or ""},
-        ]
-    else:
-        artifacts = [
-            {"name": "system_prompt.txt", "content": prompt_asset.system_prompt_content or ""},
-            {"name": "persona_prompt.txt", "content": prompt_asset.persona_prompt_content or ""},
-            {"name": "identity.txt", "content": prompt_asset.identity_content or ""},
-        ]
+    artifacts = renderer.render_prompt_artifacts(
+        managed_agent=agent,
+        host_config=host_config,
+        prompt_asset=prompt_asset,
+    )
 
     return {
         "host_platform": agent.host_platform,

@@ -1,6 +1,7 @@
 """
 Agent 业务逻辑
 """
+from datetime import datetime
 import uuid
 import secrets
 from sqlalchemy import func
@@ -8,6 +9,7 @@ from sqlalchemy.orm import Session
 
 from app.models.agent import Agent
 from app.models.activity_log import ActivityLog
+from app.models.managed_agent import AgentRuntimePresence
 from app.models.patrol_record import PatrolRecord
 from app.models.request_log import RequestLog
 from app.models.review_record import ReviewRecord
@@ -74,6 +76,40 @@ def list_agents(db: Session, role: str = None, status: str = None) -> list:
 def get_agent_by_id(db: Session, agent_id: str) -> Agent:
     """根据 ID 获取 Agent"""
     return db.query(Agent).filter(Agent.id == agent_id).first()
+
+
+def upsert_agent_presence(
+    db: Session,
+    agent_id: str,
+    heartbeat_ip: str | None = None,
+    at: datetime | None = None,
+) -> AgentRuntimePresence:
+    """写入或更新 Agent 心跳。"""
+    agent = db.query(Agent).filter(Agent.id == agent_id).first()
+    if not agent:
+        raise ValueError(f"Agent {agent_id} 不存在")
+
+    heartbeat_at = at or datetime.now()
+    presence = db.query(AgentRuntimePresence).filter(
+        AgentRuntimePresence.agent_id == agent_id
+    ).first()
+
+    if not presence:
+        presence = AgentRuntimePresence(
+            id=str(uuid.uuid4()),
+            agent_id=agent_id,
+        )
+        db.add(presence)
+
+    presence.last_heartbeat_at = heartbeat_at
+    if heartbeat_ip is not None:
+        presence.last_heartbeat_ip = heartbeat_ip
+
+    db.commit()
+    db.refresh(presence)
+    return presence
+
+
 def update_agent_profile(
     db: Session,
     agent_id: str,

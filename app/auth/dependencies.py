@@ -2,6 +2,8 @@
 鉴权依赖注入 — Agent API Key 鉴权 & 管理员鉴权
 两套鉴权完全隔离，互不通用
 """
+from typing import Optional
+
 from fastapi import Header, Depends, HTTPException
 from sqlalchemy.orm import Session
 
@@ -59,7 +61,11 @@ def require_role(*allowed_roles: str):
 # ============================================================
 
 async def verify_admin(
-    x_admin_token: str = Header(..., alias="X-Admin-Token", description="管理员登录后获取的 session token"),
+    x_admin_token: Optional[str] = Header(
+        None,
+        alias="X-Admin-Token",
+        description="管理员登录后获取的 session token",
+    ),
 ) -> bool:
     """
     验证管理员 session token。
@@ -67,9 +73,9 @@ async def verify_admin(
     用法：在路由参数里加 _: bool = Depends(verify_admin)
     """
     # 延迟导入避免循环引用
-    from app.routers.admin import is_valid_admin_token
+    from app.routers.admin.auth import is_valid_admin_token
 
-    if not is_valid_admin_token(x_admin_token):
+    if not x_admin_token or not is_valid_admin_token(x_admin_token):
         raise HTTPException(status_code=403, detail="管理员验证失败，请重新登录")
 
     return True

@@ -80,7 +80,7 @@ class ManagedAgentPromptAsset(Base):
         String(50), default="host_default",
         comment="宿主平台渲染策略: host_default / openclaw_workspace_files / openclaw_inline_schedule"
     )
-    authority_source = Column(String(30), default="database", comment="database / imported_legacy")
+    authority_source = Column(String(30), default="database", comment="当前阶段固定 database，预留扩展")
     notes = Column(Text, nullable=True, comment="内部备注")
     updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now, comment="更新时间")
 
@@ -104,7 +104,7 @@ class ManagedAgentSchedule(Base):
 
 
 class ManagedAgentCommBinding(Base):
-    """通讯平台账号绑定（1:N）"""
+    """宿主通讯渠道配置（1:N）"""
     __tablename__ = "managed_agent_comm_binding"
 
     id = Column(String(36), primary_key=True, default=_uuid)

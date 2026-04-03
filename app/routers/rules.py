@@ -2,7 +2,7 @@
 规则提示词路由 — CRUD + 合并获取
 """
 from fastapi import APIRouter, Depends, HTTPException
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 from sqlalchemy.orm import Session
 from typing import Optional, List
 from datetime import datetime as dt
@@ -33,6 +33,8 @@ class RuleUpdateRequest(BaseModel):
 
 
 class RuleResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: str
     scope: str
     task_id: Optional[str]
@@ -40,9 +42,6 @@ class RuleResponse(BaseModel):
     content: str
     created_at: Optional[dt] = None
     updated_at: Optional[dt] = None
-
-    class Config:
-        from_attributes = True
 
 
 class MergedRulesResponse(BaseModel):

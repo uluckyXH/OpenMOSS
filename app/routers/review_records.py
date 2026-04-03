@@ -2,7 +2,7 @@
 审查记录路由 — 审查提交 + 查询
 """
 from fastapi import APIRouter, Depends, HTTPException
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 from sqlalchemy.orm import Session
 from typing import Optional, List
 from datetime import datetime as dt
@@ -30,6 +30,8 @@ class ReviewCreateRequest(BaseModel):
 
 
 class ReviewResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: str
     sub_task_id: str
     reviewer_agent: str
@@ -40,9 +42,6 @@ class ReviewResponse(BaseModel):
     comment: str
     rework_agent: Optional[str]
     created_at: Optional[dt] = None
-
-    class Config:
-        from_attributes = True
 
 
 # ============================================================

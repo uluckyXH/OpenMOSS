@@ -1,6 +1,7 @@
 fastapi>=0.104.0
 uvicorn[standard]>=0.24.0
 sqlalchemy>=2.0.0
+pydantic>=2.0.0,<3.0.0
 pyyaml>=6.0
 httpx>=0.25.0
 bcrypt>=4.0.0

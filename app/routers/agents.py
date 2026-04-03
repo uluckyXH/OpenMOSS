@@ -1,8 +1,10 @@
 """
 Agent 路由 — 注册、查询、管理
 """
-from fastapi import APIRouter, Depends, Header, HTTPException
-from pydantic import BaseModel, Field
+from datetime import datetime
+
+from fastapi import APIRouter, Depends, Header, HTTPException, Request
+from pydantic import BaseModel, ConfigDict, Field
 from sqlalchemy.orm import Session
 from typing import Optional, List
 
@@ -27,15 +29,14 @@ class AgentRegisterRequest(BaseModel):
 
 
 class AgentResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: str
     name: str
     role: str
     description: str
     status: str
     total_score: int
-
-    class Config:
-        from_attributes = True
 
 
 class AgentRegisterResponse(BaseModel):
@@ -48,6 +49,29 @@ class AgentRegisterResponse(BaseModel):
 
 class AgentStatusRequest(BaseModel):
     status: str = Field(..., description="状态: active/disabled")
+
+
+class AgentHeartbeatResponse(BaseModel):
+    agent_id: str
+    heartbeat_at: datetime
+    heartbeat_ip: Optional[str] = None
+    message: str = "心跳已记录"
+
+
+def _resolve_request_ip(request: Request) -> Optional[str]:
+    """按常见代理头顺序解析请求来源 IP。"""
+    x_forwarded_for = request.headers.get("X-Forwarded-For")
+    if x_forwarded_for:
+        return x_forwarded_for.split(",")[0].strip() or None
+
+    x_real_ip = request.headers.get("X-Real-IP")
+    if x_real_ip:
+        return x_real_ip.strip() or None
+
+    if request.client:
+        return request.client.host
+
+    return None
 
 
 # ============================================================
@@ -139,6 +163,26 @@ async def update_status(
     return agent
 
 
+@router.post("/me/heartbeat", response_model=AgentHeartbeatResponse, summary="Agent 上报心跳")
+async def report_heartbeat(
+    request: Request,
+    agent: Agent = Depends(get_current_agent),
+    db: Session = Depends(get_db),
+):
+    """Agent 使用当前 API Key 上报在线心跳。"""
+    presence = agent_service.upsert_agent_presence(
+        db,
+        agent_id=agent.id,
+        heartbeat_ip=_resolve_request_ip(request),
+    )
+
+    return AgentHeartbeatResponse(
+        agent_id=agent.id,
+        heartbeat_at=presence.last_heartbeat_at,
+        heartbeat_ip=presence.last_heartbeat_ip,
+    )
+
+
 # ============================================================
 # Agent 获取自己的 SKILL.md（API Key 已自动填入）
 # ============================================================
@@ -164,4 +208,3 @@ async def get_my_skill(
     content = content.replace("<注册后填入>", agent.api_key)
 
     return PlainTextResponse(content, media_type="text/plain; charset=utf-8")
-

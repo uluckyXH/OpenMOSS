@@ -303,7 +303,7 @@ def list_comm_bindings(
     _: bool = Depends(verify_admin),
     db: Session = Depends(get_db),
 ):
-    """获取通讯平台账号绑定。"""
+    """获取宿主通讯渠道配置。"""
     try:
         bindings = svc.list_comm_bindings(db, agent_id)
         return [
@@ -321,7 +321,7 @@ def create_comm_binding(
     _: bool = Depends(verify_admin),
     db: Session = Depends(get_db),
 ):
-    """创建通讯平台账号绑定。"""
+    """创建宿主通讯渠道配置。"""
     try:
         binding = svc.create_comm_binding(
             db,
@@ -341,11 +341,11 @@ def update_comm_binding(
     _: bool = Depends(verify_admin),
     db: Session = Depends(get_db),
 ):
-    """更新通讯平台账号绑定。"""
+    """更新宿主通讯渠道配置。"""
     try:
         binding = svc.get_comm_binding_or_404(db, binding_id)
         if binding.managed_agent_id != agent_id:
-            raise HTTPException(status_code=404, detail="通讯平台账号绑定不存在")
+            raise HTTPException(status_code=404, detail="宿主通讯渠道配置不存在")
         binding = svc.update_comm_binding(
             db,
             binding_id,
@@ -363,11 +363,11 @@ def delete_comm_binding(
     _: bool = Depends(verify_admin),
     db: Session = Depends(get_db),
 ):
-    """删除通讯平台账号绑定。"""
+    """删除宿主通讯渠道配置。"""
     try:
         binding = svc.get_comm_binding_or_404(db, binding_id)
         if binding.managed_agent_id != agent_id:
-            raise HTTPException(status_code=404, detail="通讯平台账号绑定不存在")
+            raise HTTPException(status_code=404, detail="宿主通讯渠道配置不存在")
         svc.delete_comm_binding(db, binding_id)
     except ValueError as exc:
         raise HTTPException(status_code=404, detail=str(exc))

@@ -37,7 +37,7 @@ server:
 
 # 数据库配置
 database:
-  type: sqlite
+  type: sqlite # 当前正式环境仅支持 sqlite
   path: "./data/tasks.db"
 
 # 宿主公共工作目录

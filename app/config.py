@@ -193,12 +193,36 @@ class AppConfig:
         return bool(self._data.get("server", {}).get("external_url", ""))
 
     @property
-    def database_path(self) -> str:
-        return self._data.get("database", {}).get("path", "./data/tasks.db")
+    def database_config(self) -> dict:
+        """数据库原始配置。"""
+        return self._data.get("database", {})
 
     @property
     def database_type(self) -> str:
-        return self._data.get("database", {}).get("type", "sqlite")
+        """数据库类型。
+
+        当前正式环境只落地 sqlite，但这里先统一成标准入口。
+        """
+        return str(self.database_config.get("type", "sqlite")).strip().lower() or "sqlite"
+
+    @property
+    def database_path(self) -> str:
+        """sqlite 数据库文件路径。"""
+        return str(self.database_config.get("path", "./data/tasks.db")).strip() or "./data/tasks.db"
+
+    @property
+    def database_url(self) -> str:
+        """标准化数据库 URL。
+
+        当前版本正式环境仅支持 sqlite，因此只从 `database.path`
+        生成 sqlite URL，其他数据库类型后续再正式接入。
+        """
+        if self.database_type == "sqlite":
+            if self.database_path == ":memory:":
+                return "sqlite:///:memory:"
+            return f"sqlite:///{self.database_path}"
+
+        raise ValueError(f"当前版本正式环境仅支持 sqlite，暂不支持数据库类型: {self.database_type}")
 
     @property
     def registration_token(self) -> str:

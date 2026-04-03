@@ -2,7 +2,7 @@
 积分路由 — 积分概要 + 积分记录查询
 """
 from fastapi import APIRouter, Depends, HTTPException
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 from sqlalchemy.orm import Session
 from typing import Optional, List
 from datetime import datetime as dt
@@ -32,15 +32,14 @@ class ScoreSummaryResponse(BaseModel):
 
 
 class RewardLogResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: str
     agent_id: str
     sub_task_id: Optional[str]
     reason: str
     score_delta: int
     created_at: Optional[dt] = None
-
-    class Config:
-        from_attributes = True
 
 
 class LeaderboardItem(BaseModel):
@@ -169,4 +168,3 @@ async def adjust_score(
         return log
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
-

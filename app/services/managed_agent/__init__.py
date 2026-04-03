@@ -14,7 +14,6 @@ from .comm_binding import (
     update_comm_binding,
 )
 from .core import (
-    auto_backfill_from_runtime,
     create_managed_agent,
     delete_managed_agent,
     get_managed_agent,
@@ -23,6 +22,7 @@ from .core import (
     update_managed_agent,
 )
 from .host_config import get_host_config, serialize_host_config, update_host_config
+from .migration import auto_backfill_from_runtime, build_migration_report
 from .prompt_asset import (
     get_prompt_asset,
     render_prompt_preview,
@@ -39,6 +39,7 @@ from .schedule import (
 
 __all__ = [
     "auto_backfill_from_runtime",
+    "build_migration_report",
     "create_comm_binding",
     "create_managed_agent",
     "create_schedule",
