@@ -554,6 +554,8 @@ workspace:
 webui:
   public_feed: false # 活动流展示页公开开关（true=任何人可访问）
   feed_retention_days: 7 # 请求日志保留天数（超期自动清理）
+  auto_update: true # 启用 WebUI 自动更新（启动时如无前端也会自动拉取）
+  github_repo: "uluckyXH/OpenMOSS" # GitHub 仓库（用于下载 WebUI Release）
 
 # 初始化标记（由 Setup Wizard 自动设置，请勿手动修改）
 setup:
@@ -562,24 +564,26 @@ setup:
 
 ### 配置项说明
 
-| 配置项                      | 默认值            | 必填   | 说明                                                                               |
-| --------------------------- | ----------------- | ------ | ---------------------------------------------------------------------------------- |
-| `project.name`              | `OpenMOSS`        | 否     | 项目名称                                                                           |
-| `admin.password`            | `admin123`        | **是** | 管理员密码，首次启动后自动加密为 bcrypt 格式                                       |
-| `agent.registration_token`  | —                 | **是** | Agent 注册令牌，建议使用随机字符串                                                 |
-| `agent.allow_registration`  | `true`            | 否     | 关闭后 Agent 无法自注册，只能管理员创建                                            |
-| `server.host`               | `0.0.0.0`         | 否     | 服务监听地址                                                                       |
-| `server.port`               | `6565`            | 否     | 服务监听端口                                                                       |
-| `server.external_url`       | `""`              | 否     | 服务外网访问地址（Agent 对接用，如 `https://moss.example.com`）                           |
-| `database.type`             | `sqlite`          | 否     | 数据库类型（目前仅支持 SQLite）                                                    |
-| `database.path`             | `./data/tasks.db` | 否     | 数据库文件路径                                                                     |
-| `notification.enabled`      | `false`           | 否     | 是否启用通知推送                                                                   |
-| `notification.channels`     | `[]`              | 否     | 通知渠道列表，格式 `渠道类型:目标ID`                                               |
-| `notification.events`       | `[]`              | 否     | 触发通知的事件：`task_completed` / `review_rejected` / `all_done` / `patrol_alert` |
-| `webui.public_feed`         | `false`           | 否     | 活动流公开开关                                                                     |
-| `webui.feed_retention_days` | `7`               | 否     | 请求日志保留天数                                                                   |
-| `workspace.root`            | `./workspace`     | **是** | Agent 工作目录根路径                                                               |
-| `setup.initialized`         | `false`           | 否     | 初始化标记，由 Setup Wizard 自动设置，请勿手动修改                                       |
+| 配置项                      | 默认值                | 必填   | 说明                                                                               |
+| --------------------------- | ------------------- | ------ | ---------------------------------------------------------------------------------- |
+| `project.name`              | `OpenMOSS`          | 否     | 项目名称                                                                           |
+| `admin.password`            | `admin123`          | **是** | 管理员密码，首次启动后自动加密为 bcrypt 格式                                       |
+| `agent.registration_token`  | —                   | **是** | Agent 注册令牌，建议使用随机字符串                                                 |
+| `agent.allow_registration`  | `true`              | 否     | 关闭后 Agent 无法自注册，只能管理员创建                                            |
+| `server.host`               | `0.0.0.0`           | 否     | 服务监听地址                                                                       |
+| `server.port`               | `6565`              | 否     | 服务监听端口                                                                       |
+| `server.external_url`       | `""`                | 否     | 服务外网访问地址（Agent 对接用，如 `https://moss.example.com`）                           |
+| `database.type`             | `sqlite`            | 否     | 数据库类型（目前仅支持 SQLite）                                                    |
+| `database.path`             | `./data/tasks.db`   | 否     | 数据库文件路径                                                                     |
+| `notification.enabled`      | `false`             | 否     | 是否启用通知推送                                                                   |
+| `notification.channels`     | `[]`                | 否     | 通知渠道列表，格式 `渠道类型:目标ID`                                               |
+| `notification.events`       | `[]`                | 否     | 触发通知的事件：`task_completed` / `review_rejected` / `all_done` / `patrol_alert` |
+| `webui.public_feed`         | `false`             | 否     | 活动流公开开关                                                                     |
+| `webui.feed_retention_days` | `7`                 | 否     | 请求日志保留天数                                                                   |
+| `webui.auto_update`         | `true`              | 否     | 启用 WebUI 自动更新（启动时如无前端也会自动拉取）                                       |
+| `webui.github_repo`         | `uluckyXH/OpenMOSS` | 否     | GitHub 仓库（用于下载 WebUI Release; 若想自己独立维护一套个性化 webUI，可以配置自己 fork 的仓库）|
+| `workspace.root`            | `./workspace`       | **是** | Agent 工作目录根路径                                                               |
+| `setup.initialized`         | `false`             | 否     | 初始化标记，由 Setup Wizard 自动设置，请勿手动修改                                       |
 
 > **⚠️ 首次部署务必修改：** `admin.password`、`agent.registration_token`、`workspace.root`
 

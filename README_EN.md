@@ -553,6 +553,8 @@ workspace:
 webui:
   public_feed: false # Set to true to make activity feed publicly accessible
   feed_retention_days: 7 # Request log retention period (auto-cleanup)
+  auto_update: true # Enable WebUI automatic update (will automatically pull if there is no frontend at startup)
+  github_repo: "uluckyXH/OpenMOSS" # GitHub repository (for downloading WebUI releases)
 
 # Initialization flag (set automatically by Setup Wizard, do not modify manually)
 setup:
@@ -561,24 +563,26 @@ setup:
 
 ### Config Reference
 
-| Key                         | Default           | Required | Description                                              |
-| --------------------------- | ----------------- | -------- | -------------------------------------------------------- |
-| `project.name`              | `OpenMOSS`        | No       | Project name                                             |
-| `admin.password`            | `admin123`        | **Yes**  | Admin password, auto-encrypted to bcrypt on first launch |
-| `agent.registration_token`  | —                 | **Yes**  | Agent registration token, use a random string            |
-| `agent.allow_registration`  | `true`            | No       | Disable to prevent agent self-registration               |
-| `server.host`               | `0.0.0.0`         | No       | Server listen address                                    |
-| `server.port`               | `6565`            | No       | Server listen port                                       |
-| `server.external_url`       | `""`              | No       | External URL for agent access (e.g. `https://moss.example.com`) |
-| `database.type`             | `sqlite`          | No       | Database type (SQLite only for now)                      |
-| `database.path`             | `./data/tasks.db` | No       | Database file path                                       |
-| `notification.enabled`      | `false`           | No       | Enable notification push                                 |
-| `notification.channels`     | `[]`              | No       | Notification channel list, format: `type:target_id`      |
-| `notification.events`       | `[]`              | No       | Events that trigger notifications                        |
-| `webui.public_feed`         | `false`           | No       | Make activity feed publicly accessible                   |
-| `webui.feed_retention_days` | `7`               | No       | Request log retention days                               |
-| `workspace.root`            | `./workspace`     | **Yes**  | Agent working directory root path                        |
-| `setup.initialized`         | `false`           | No       | Initialization flag, set by Setup Wizard automatically   |
+| Key                         | Default             | Required | Description                                              |
+| --------------------------- | ------------------- | -------- | -------------------------------------------------------- |
+| `project.name`              | `OpenMOSS`          | No       | Project name                                             |
+| `admin.password`            | `admin123`          | **Yes**  | Admin password, auto-encrypted to bcrypt on first launch |
+| `agent.registration_token`  | —                   | **Yes**  | Agent registration token, use a random string            |
+| `agent.allow_registration`  | `true`              | No       | Disable to prevent agent self-registration               |
+| `server.host`               | `0.0.0.0`           | No       | Server listen address                                    |
+| `server.port`               | `6565`              | No       | Server listen port                                       |
+| `server.external_url`       | `""`                | No       | External URL for agent access (e.g. `https://moss.example.com`) |
+| `database.type`             | `sqlite`            | No       | Database type (SQLite only for now)                      |
+| `database.path`             | `./data/tasks.db`   | No       | Database file path                                       |
+| `notification.enabled`      | `false`             | No       | Enable notification push                                 |
+| `notification.channels`     | `[]`                | No       | Notification channel list, format: `type:target_id`      |
+| `notification.events`       | `[]`                | No       | Events that trigger notifications                        |
+| `webui.public_feed`         | `false`             | No       | Make activity feed publicly accessible                   |
+| `webui.feed_retention_days` | `7`                 | No       | Request log retention days                               |
+| `webui.auto_update`         | `true`              | No       | Enable WebUI automatic update (will automatically pull if there is no frontend at startup)|
+| `webui.github_repo`         | `uluckyXH/OpenMOSS` | No       | GitHub repository (used for downloading WebUI releases; If you want to independently maintain a personalized webUI, you can configure your own fork repository|
+| `workspace.root`            | `./workspace`       | **Yes**  | Agent working directory root path                        |
+| `setup.initialized`         | `false`             | No       | Initialization flag, set by Setup Wizard automatically   |
 
 > **⚠️ Must change on first deploy:** `admin.password`, `agent.registration_token`, `workspace.root`
 
