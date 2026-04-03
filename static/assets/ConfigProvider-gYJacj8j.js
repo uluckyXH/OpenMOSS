@@ -1,1 +1,0 @@
-import{c as t}from"./createContext-C43t4g3c.js";function o(){let e=document.activeElement;if(e==null)return null;for(;e!=null&&e.shadowRoot!=null&&e.shadowRoot.activeElement!=null;)e=e.shadowRoot.activeElement;return e}const[l]=t("ConfigProvider");export{o as g,l as i};
