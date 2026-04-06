@@ -5,6 +5,7 @@ import uuid
 from datetime import datetime
 from sqlalchemy.orm import Session
 
+from app.exceptions import ConflictError, NotFoundError
 from app.models.sub_task import SubTask
 from app.models.task import Task
 from app.models.module import Module
@@ -39,21 +40,21 @@ def create_sub_task(
     """创建子任务"""
     task = db.query(Task).filter(Task.id == task_id).first()
     if not task:
-        raise ValueError(f"任务 {task_id} 不存在")
+        raise NotFoundError(f"任务 {task_id} 不存在")
 
     # 校验 module_id
     if module_id:
         module = db.query(Module).filter(Module.id == module_id).first()
         if not module:
-            raise ValueError(f"模块 {module_id} 不存在")
+            raise NotFoundError(f"模块 {module_id} 不存在")
         if module.task_id != task_id:
-            raise ValueError(f"模块 {module_id} 不属于任务 {task_id}")
+            raise ConflictError(f"模块 {module_id} 不属于任务 {task_id}")
 
     # 校验 assigned_agent
     if assigned_agent:
         agent = db.query(Agent).filter(Agent.id == assigned_agent).first()
         if not agent:
-            raise ValueError(f"Agent {assigned_agent} 不存在")
+            raise NotFoundError(f"Agent {assigned_agent} 不存在")
 
     # 如果指定了 Agent，默认状态为 assigned
     initial_status = "assigned" if assigned_agent else "pending"
@@ -106,11 +107,11 @@ def _change_status(db: Session, sub_task_id: str, new_status: str, auto_commit: 
     """内部方法：状态转移（含校验）"""
     sub_task = db.query(SubTask).filter(SubTask.id == sub_task_id).first()
     if not sub_task:
-        raise ValueError(f"子任务 {sub_task_id} 不存在")
+        raise NotFoundError(f"子任务 {sub_task_id} 不存在")
 
     allowed = VALID_TRANSITIONS.get(sub_task.status, [])
     if new_status not in allowed:
-        raise ValueError(
+        raise ConflictError(
             f"状态转移不合法：{sub_task.status} → {new_status}，"
             f"允许: {', '.join(allowed) if allowed else '无（终态）'}"
         )
@@ -150,10 +151,10 @@ def start_sub_task(db: Session, sub_task_id: str, session_id: str = None) -> Sub
     """开始执行：assigned/rework → in_progress"""
     sub_task = db.query(SubTask).filter(SubTask.id == sub_task_id).first()
     if not sub_task:
-        raise ValueError(f"子任务 {sub_task_id} 不存在")
+        raise NotFoundError(f"子任务 {sub_task_id} 不存在")
 
     if sub_task.status not in ("assigned", "rework"):
-        raise ValueError(
+        raise ConflictError(
             f"状态转移不合法：{sub_task.status} → in_progress，"
             f"仅 assigned/rework 状态可以开始执行"
         )
@@ -180,13 +181,13 @@ def rework_sub_task(db: Session, sub_task_id: str, rework_agent: str = None, aut
     """驳回返工：review → rework"""
     sub_task = db.query(SubTask).filter(SubTask.id == sub_task_id).first()
     if not sub_task:
-        raise ValueError(f"子任务 {sub_task_id} 不存在")
+        raise NotFoundError(f"子任务 {sub_task_id} 不存在")
 
     kwargs = {}
     if rework_agent:
         agent = db.query(Agent).filter(Agent.id == rework_agent).first()
         if not agent:
-            raise ValueError(f"Agent {rework_agent} 不存在")
+            raise NotFoundError(f"Agent {rework_agent} 不存在")
         kwargs["assigned_agent"] = rework_agent
     kwargs["rework_count"] = sub_task.rework_count + 1
 
@@ -202,9 +203,9 @@ def update_session(db: Session, sub_task_id: str, session_id: str) -> SubTask:
     """更新子任务的当前会话 ID（仅 in_progress 状态可用）"""
     sub_task = db.query(SubTask).filter(SubTask.id == sub_task_id).first()
     if not sub_task:
-        raise ValueError(f"子任务 {sub_task_id} 不存在")
+        raise NotFoundError(f"子任务 {sub_task_id} 不存在")
     if sub_task.status != "in_progress":
-        raise ValueError(f"只有 in_progress 状态才能更新会话，当前: {sub_task.status}")
+        raise ConflictError(f"只有 in_progress 状态才能更新会话，当前: {sub_task.status}")
 
     sub_task.current_session_id = session_id
     db.commit()
@@ -216,10 +217,10 @@ def block_sub_task(db: Session, sub_task_id: str) -> SubTask:
     """巡查标记异常：in_progress → blocked（特殊操作，跳过状态机）"""
     sub_task = db.query(SubTask).filter(SubTask.id == sub_task_id).first()
     if not sub_task:
-        raise ValueError(f"子任务 {sub_task_id} 不存在")
+        raise NotFoundError(f"子任务 {sub_task_id} 不存在")
 
     if sub_task.status not in ("in_progress", "assigned", "rework"):
-        raise ValueError(f"只能对 in_progress/assigned/rework 状态的子任务标记 blocked")
+        raise ConflictError(f"只能对 in_progress/assigned/rework 状态的子任务标记 blocked")
 
     sub_task.status = "blocked"
     sub_task.current_session_id = None  # 清空会话
@@ -233,7 +234,7 @@ def reassign_sub_task(db: Session, sub_task_id: str, agent_id: str) -> SubTask:
     # 校验 Agent 存在
     agent = db.query(Agent).filter(Agent.id == agent_id).first()
     if not agent:
-        raise ValueError(f"Agent {agent_id} 不存在")
+        raise NotFoundError(f"Agent {agent_id} 不存在")
 
     sub_task = _change_status(db, sub_task_id, "pending")
     sub_task.assigned_agent = agent_id
@@ -256,9 +257,9 @@ def update_sub_task(
     """编辑子任务（仅 pending/assigned 状态可编辑）"""
     sub_task = db.query(SubTask).filter(SubTask.id == sub_task_id).first()
     if not sub_task:
-        raise ValueError(f"子任务 {sub_task_id} 不存在")
+        raise NotFoundError(f"子任务 {sub_task_id} 不存在")
     if sub_task.status not in ("pending", "assigned"):
-        raise ValueError(f"子任务状态为 {sub_task.status}，只有 pending/assigned 状态可编辑")
+        raise ConflictError(f"子任务状态为 {sub_task.status}，只有 pending/assigned 状态可编辑")
 
     if name is not None:
         sub_task.name = name
@@ -279,9 +280,9 @@ def cancel_sub_task(db: Session, sub_task_id: str) -> SubTask:
     """取消子任务"""
     sub_task = db.query(SubTask).filter(SubTask.id == sub_task_id).first()
     if not sub_task:
-        raise ValueError(f"子任务 {sub_task_id} 不存在")
+        raise NotFoundError(f"子任务 {sub_task_id} 不存在")
     if sub_task.status in ("done", "cancelled"):
-        raise ValueError(f"子任务状态为 {sub_task.status}，无法取消")
+        raise ConflictError(f"子任务状态为 {sub_task.status}，无法取消")
 
     sub_task.status = "cancelled"
     sub_task.current_session_id = None

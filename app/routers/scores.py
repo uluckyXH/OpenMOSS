@@ -9,6 +9,7 @@ from datetime import datetime as dt
 
 from app.database import get_db
 from app.auth.dependencies import get_current_agent, verify_admin
+from app.exceptions import BusinessError
 from app.services import reward_service
 from app.models.agent import Agent
 
@@ -91,8 +92,8 @@ async def get_agent_score(
     """管理员查看指定 Agent 积分"""
     try:
         return reward_service.get_agent_score(db, agent_id)
-    except ValueError as e:
-        raise HTTPException(status_code=404, detail=str(e))
+    except BusinessError as e:
+        raise HTTPException(status_code=e.status_code, detail=str(e))
 
 
 @router.get("/me/logs", summary="查看我的积分明细")
@@ -166,5 +167,5 @@ async def adjust_score(
             sub_task_id=req.sub_task_id,
         )
         return log
-    except ValueError as e:
-        raise HTTPException(status_code=404, detail=str(e))
+    except BusinessError as e:
+        raise HTTPException(status_code=e.status_code, detail=str(e))

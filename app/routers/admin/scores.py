@@ -31,10 +31,7 @@ def _raise_admin_score_query_error(exc: Exception) -> None:
 def _raise_admin_score_write_error(exc: Exception) -> None:
     """统一处理管理端积分写操作异常"""
     if isinstance(exc, admin_score_service.AdminScoreWriteError):
-        detail = str(exc)
-        if "不存在" in detail:
-            raise HTTPException(status_code=404, detail=detail)
-        raise HTTPException(status_code=400, detail=detail)
+        raise HTTPException(status_code=exc.status_code, detail=str(exc))
     raise exc
 
 

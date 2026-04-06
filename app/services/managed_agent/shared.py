@@ -87,8 +87,8 @@ def _ensure_prompt_asset(db: Session, agent: ManagedAgent) -> ManagedAgentPrompt
 def _normalize_host_config_kwargs(kwargs: Dict[str, object]) -> Dict[str, object]:
     """标准化宿主配置字段。"""
     data = dict(kwargs)
-    if data.get("host_config_payload") is not None:
-        data["host_config_payload_encrypted"] = data["host_config_payload"]
+    if "host_config_payload" in data:
+        data["host_config_payload_encrypted"] = data.pop("host_config_payload")
     return {
         key: value
         for key, value in data.items()
@@ -104,6 +104,9 @@ def _normalize_host_config_kwargs(kwargs: Dict[str, object]) -> Dict[str, object
 def _normalize_prompt_asset_kwargs(kwargs: Dict[str, object]) -> Dict[str, object]:
     """标准化 Prompt 资产字段。"""
     data = dict(kwargs)
+    for field_name in {"system_prompt_content", "persona_prompt_content", "identity_content"}:
+        if field_name in data and data[field_name] is None:
+            data[field_name] = ""
 
     return {
         key: value
@@ -124,9 +127,8 @@ def _normalize_schedule_kwargs(
 ) -> Dict[str, object]:
     """标准化定时任务字段。"""
     data = dict(kwargs)
-
-    if data.get("schedule_type") is None:
-        data["schedule_type"] = "interval"
+    if "schedule_message_content" in data and data["schedule_message_content"] is None:
+        data["schedule_message_content"] = ""
 
     return {
         key: value
@@ -147,8 +149,8 @@ def _normalize_schedule_kwargs(
 def _normalize_comm_binding_kwargs(kwargs: Dict[str, object]) -> Dict[str, object]:
     """标准化宿主通讯渠道配置字段。"""
     data = dict(kwargs)
-    if data.get("config_payload") is not None:
-        data["config_payload_encrypted"] = data["config_payload"]
+    if "config_payload" in data:
+        data["config_payload_encrypted"] = data.pop("config_payload")
 
     return {
         key: value

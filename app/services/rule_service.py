@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 
 from app.models.rule import Rule
 from app.config import config
+from app.exceptions import ConflictError, NotFoundError, ValidationError
 
 
 def create_rule(
@@ -18,18 +19,18 @@ def create_rule(
     """创建规则"""
     valid_scopes = {"global", "task", "sub_task"}
     if scope not in valid_scopes:
-        raise ValueError(f"无效作用域 '{scope}'，可选: {', '.join(valid_scopes)}")
+        raise ValidationError(f"无效作用域 '{scope}'，可选: {', '.join(valid_scopes)}")
 
     if scope == "task" and not task_id:
-        raise ValueError("task 级别规则必须指定 task_id")
+        raise ValidationError("task 级别规则必须指定 task_id")
     if scope == "sub_task" and not sub_task_id:
-        raise ValueError("sub_task 级别规则必须指定 sub_task_id")
+        raise ValidationError("sub_task 级别规则必须指定 sub_task_id")
 
     # 全局规则只允许一条
     if scope == "global":
         existing = db.query(Rule).filter(Rule.scope == "global").first()
         if existing:
-            raise ValueError("全局规则已存在，请编辑现有规则而非新建")
+            raise ConflictError("全局规则已存在，请编辑现有规则而非新建")
 
     rule = Rule(
         id=str(uuid.uuid4()),
@@ -48,7 +49,7 @@ def update_rule(db: Session, rule_id: str, content: str) -> Rule:
     """更新规则内容"""
     rule = db.query(Rule).filter(Rule.id == rule_id).first()
     if not rule:
-        raise ValueError(f"规则 {rule_id} 不存在")
+        raise NotFoundError(f"规则 {rule_id} 不存在")
 
     rule.content = content
     db.commit()
@@ -60,7 +61,7 @@ def delete_rule(db: Session, rule_id: str) -> bool:
     """删除规则"""
     rule = db.query(Rule).filter(Rule.id == rule_id).first()
     if not rule:
-        raise ValueError(f"规则 {rule_id} 不存在")
+        raise NotFoundError(f"规则 {rule_id} 不存在")
 
     db.delete(rule)
     db.commit()

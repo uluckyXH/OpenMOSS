@@ -8,6 +8,7 @@ from typing import Dict, Optional
 
 from sqlalchemy.orm import Session
 
+from app.exceptions import BusinessError
 from app.models.managed_agent import ManagedAgentPromptAsset
 from app.services.host_renderers import get_renderer
 
@@ -36,7 +37,7 @@ def update_prompt_asset(db: Session, managed_agent_id: str, **kwargs) -> Managed
 
     changed = False
     for key, value in normalized.items():
-        if value is not None and hasattr(prompt_asset, key) and getattr(prompt_asset, key) != value:
+        if hasattr(prompt_asset, key) and getattr(prompt_asset, key) != value:
             setattr(prompt_asset, key, value)
             changed = True
 
@@ -64,7 +65,7 @@ def reset_prompt_from_template(db: Session, managed_agent_id: str) -> ManagedAge
     template_file = next((path for path in candidate_files if os.path.exists(path)), None)
 
     if not template_file:
-        raise ValueError(f"角色模板不存在: {role}")
+        raise BusinessError(f"角色模板不存在: {role}")
 
     with open(template_file, "r", encoding="utf-8") as f:
         prompt_asset.system_prompt_content = f.read()

@@ -2,9 +2,24 @@
 配置态 Agent 请求/响应 Schema
 """
 from datetime import datetime
-from typing import List, Optional
+from typing import List, Literal, Optional
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, model_validator
+
+
+ManagedAgentRole = Literal["planner", "executor", "reviewer", "patrol"]
+ManagedAgentHostPlatform = Literal["openclaw", "codex_cli", "claude_code", "generic_api_agent"]
+ManagedAgentDeploymentMode = Literal["create_sub_agent", "bind_existing_agent", "bind_main_agent"]
+ManagedAgentHostAccessMode = Literal["local", "remote"]
+ManagedAgentStatus = Literal["draft", "configured", "deployed", "disabled", "archived"]
+ManagedAgentHostRenderStrategy = Literal[
+    "host_default",
+    "openclaw_workspace_files",
+    "openclaw_inline_schedule",
+]
+ManagedAgentScheduleType = Literal["interval", "cron"]
+ManagedAgentCommProvider = Literal["feishu", "slack", "telegram", "wechat", "email", "webhook"]
+ManagedAgentBootstrapPurpose = Literal["download_script", "register_runtime"]
 
 
 # ============================================================
@@ -16,11 +31,14 @@ class ManagedAgentCreateRequest(BaseModel):
     """创建配置态 Agent"""
     name: str = Field(..., min_length=1, max_length=100, description="名称")
     slug: str = Field(..., min_length=1, max_length=100, description="稳定标识")
-    role: str = Field(..., description="角色: planner/executor/reviewer/patrol")
+    role: ManagedAgentRole = Field(..., description="角色: planner/executor/reviewer/patrol")
     description: str = Field(default="", description="描述")
-    host_platform: str = Field(default="openclaw", description="宿主平台")
-    deployment_mode: str = Field(..., description="create_sub_agent/bind_existing_agent/bind_main_agent")
-    host_access_mode: str = Field(default="local", description="local/remote")
+    host_platform: ManagedAgentHostPlatform = Field(default="openclaw", description="宿主平台")
+    deployment_mode: ManagedAgentDeploymentMode = Field(
+        ...,
+        description="create_sub_agent/bind_existing_agent/bind_main_agent",
+    )
+    host_access_mode: ManagedAgentHostAccessMode = Field(default="local", description="local/remote")
 
     # 新结构推荐字段
     host_agent_identifier: Optional[str] = Field(default=None, description="宿主平台中的 Agent 标识")
@@ -31,10 +49,24 @@ class ManagedAgentUpdateRequest(BaseModel):
     """更新配置态 Agent"""
     name: Optional[str] = Field(default=None, max_length=100)
     description: Optional[str] = None
-    host_platform: Optional[str] = None
-    deployment_mode: Optional[str] = None
-    host_access_mode: Optional[str] = None
-    status: Optional[str] = None
+    host_platform: Optional[ManagedAgentHostPlatform] = None
+    deployment_mode: Optional[ManagedAgentDeploymentMode] = None
+    host_access_mode: Optional[ManagedAgentHostAccessMode] = None
+    status: Optional[ManagedAgentStatus] = None
+
+    @model_validator(mode="after")
+    def validate_nullable_fields(self):
+        non_nullable_fields = {
+            "name",
+            "host_platform",
+            "deployment_mode",
+            "host_access_mode",
+            "status",
+        }
+        for field_name in non_nullable_fields:
+            if field_name in self.model_fields_set and getattr(self, field_name) is None:
+                raise ValueError(f"{field_name} 不能为 null")
+        return self
 
 
 class ManagedAgentListItem(BaseModel):
@@ -44,12 +76,12 @@ class ManagedAgentListItem(BaseModel):
     id: str
     name: str
     slug: str
-    role: str
+    role: ManagedAgentRole
     description: str
-    host_platform: str
-    deployment_mode: str
-    host_access_mode: str
-    status: str
+    host_platform: ManagedAgentHostPlatform
+    deployment_mode: ManagedAgentDeploymentMode
+    host_access_mode: ManagedAgentHostAccessMode
+    status: ManagedAgentStatus
     runtime_agent_id: Optional[str] = None
     config_version: int
     deployed_config_version: Optional[int] = None
@@ -110,8 +142,17 @@ class ManagedAgentPromptAssetRequest(BaseModel):
     system_prompt_content: Optional[str] = None
     persona_prompt_content: Optional[str] = None
     identity_content: Optional[str] = None
-    host_render_strategy: Optional[str] = Field(default=None, description="host_default/openclaw_workspace_files/openclaw_inline_schedule")
+    host_render_strategy: Optional[ManagedAgentHostRenderStrategy] = Field(
+        default=None,
+        description="host_default/openclaw_workspace_files/openclaw_inline_schedule",
+    )
     notes: Optional[str] = None
+
+    @model_validator(mode="after")
+    def validate_nullable_fields(self):
+        if "host_render_strategy" in self.model_fields_set and self.host_render_strategy is None:
+            raise ValueError("host_render_strategy 不能为 null")
+        return self
 
 
 class ManagedAgentPromptAssetResponse(BaseModel):
@@ -124,7 +165,7 @@ class ManagedAgentPromptAssetResponse(BaseModel):
     system_prompt_content: str
     persona_prompt_content: str
     identity_content: str
-    host_render_strategy: str
+    host_render_strategy: ManagedAgentHostRenderStrategy
     authority_source: str
     notes: Optional[str] = None
     updated_at: datetime
@@ -139,7 +180,7 @@ class ManagedAgentRenderedArtifact(BaseModel):
 class ManagedAgentPromptRenderPreviewResponse(BaseModel):
     """Prompt 渲染预览"""
     host_platform: str
-    host_render_strategy: str
+    host_render_strategy: ManagedAgentHostRenderStrategy
     artifacts: List[ManagedAgentRenderedArtifact]
 
 
@@ -148,16 +189,42 @@ class ManagedAgentPromptRenderPreviewResponse(BaseModel):
 # ============================================================
 
 
-class ManagedAgentScheduleRequest(BaseModel):
-    """创建/更新定时任务"""
+class ManagedAgentScheduleCreateRequest(BaseModel):
+    """创建定时任务"""
     name: str = Field(..., min_length=1, max_length=200)
     enabled: bool = True
-    schedule_type: str = Field(default="interval", description="interval/cron")
+    schedule_type: ManagedAgentScheduleType = Field(default="interval", description="interval/cron")
     schedule_expr: str = Field(default="15m", description="间隔或 cron 表达式")
     timeout_seconds: int = Field(default=1800, ge=60)
     model_override: Optional[str] = None
     execution_options_json: Optional[str] = None
     schedule_message_content: str = Field(default="", description="唤醒提示词")
+
+
+class ManagedAgentScheduleUpdateRequest(BaseModel):
+    """更新定时任务"""
+    name: Optional[str] = Field(default=None, min_length=1, max_length=200)
+    enabled: Optional[bool] = None
+    schedule_type: Optional[ManagedAgentScheduleType] = Field(default=None, description="interval/cron")
+    schedule_expr: Optional[str] = Field(default=None, description="间隔或 cron 表达式")
+    timeout_seconds: Optional[int] = Field(default=None, ge=60)
+    model_override: Optional[str] = None
+    execution_options_json: Optional[str] = None
+    schedule_message_content: Optional[str] = Field(default=None, description="唤醒提示词")
+
+    @model_validator(mode="after")
+    def validate_nullable_fields(self):
+        non_nullable_fields = {
+            "name",
+            "enabled",
+            "schedule_type",
+            "schedule_expr",
+            "timeout_seconds",
+        }
+        for field_name in non_nullable_fields:
+            if field_name in self.model_fields_set and getattr(self, field_name) is None:
+                raise ValueError(f"{field_name} 不能为 null")
+        return self
 
 
 class ManagedAgentScheduleResponse(BaseModel):
@@ -168,7 +235,7 @@ class ManagedAgentScheduleResponse(BaseModel):
     managed_agent_id: str
     name: str
     enabled: bool
-    schedule_type: str
+    schedule_type: ManagedAgentScheduleType
     schedule_expr: str
     timeout_seconds: int
     model_override: Optional[str] = None
@@ -183,15 +250,37 @@ class ManagedAgentScheduleResponse(BaseModel):
 # ============================================================
 
 
-class ManagedAgentCommBindingRequest(BaseModel):
-    """创建/更新宿主通讯渠道配置"""
-    provider: Optional[str] = Field(default=None, description="feishu/slack/telegram/wechat/email/webhook")
-    binding_key: Optional[str] = Field(default=None, description="平台账号或连接标识")
+class ManagedAgentCommBindingCreateRequest(BaseModel):
+    """创建宿主通讯渠道配置"""
+    provider: ManagedAgentCommProvider = Field(description="feishu/slack/telegram/wechat/email/webhook")
+    binding_key: str = Field(description="平台账号或连接标识")
     display_name: Optional[str] = None
     enabled: bool = True
     routing_policy_json: Optional[str] = None
     metadata_json: Optional[str] = None
     config_payload: Optional[str] = Field(default=None, description="平台配置文本，当前先原样存储")
+
+
+class ManagedAgentCommBindingUpdateRequest(BaseModel):
+    """更新宿主通讯渠道配置"""
+    provider: Optional[ManagedAgentCommProvider] = Field(
+        default=None,
+        description="feishu/slack/telegram/wechat/email/webhook",
+    )
+    binding_key: Optional[str] = Field(default=None, description="平台账号或连接标识")
+    display_name: Optional[str] = None
+    enabled: Optional[bool] = None
+    routing_policy_json: Optional[str] = None
+    metadata_json: Optional[str] = None
+    config_payload: Optional[str] = Field(default=None, description="平台配置文本，当前先原样存储")
+
+    @model_validator(mode="after")
+    def validate_nullable_fields(self):
+        non_nullable_fields = {"provider", "binding_key", "enabled"}
+        for field_name in non_nullable_fields:
+            if field_name in self.model_fields_set and getattr(self, field_name) is None:
+                raise ValueError(f"{field_name} 不能为 null")
+        return self
 
 
 class ManagedAgentCommBindingResponse(BaseModel):
@@ -200,7 +289,7 @@ class ManagedAgentCommBindingResponse(BaseModel):
 
     id: str
     managed_agent_id: str
-    provider: str
+    provider: ManagedAgentCommProvider
     binding_key: str
     display_name: Optional[str] = None
     enabled: bool
@@ -223,6 +312,6 @@ class ManagedAgentBootstrapTokenResponse(BaseModel):
     id: str
     managed_agent_id: str
     token: str
-    purpose: str
+    purpose: ManagedAgentBootstrapPurpose
     expires_at: datetime
     created_at: datetime

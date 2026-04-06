@@ -28,7 +28,7 @@ def update_host_config(db: Session, managed_agent_id: str, **kwargs) -> ManagedA
 
     changed = False
     for key, value in normalized.items():
-        if value is not None and hasattr(host_config, key) and getattr(host_config, key) != value:
+        if hasattr(host_config, key) and getattr(host_config, key) != value:
             setattr(host_config, key, value)
             changed = True
 

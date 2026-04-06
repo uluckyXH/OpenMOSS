@@ -8,10 +8,13 @@ managed_agent 子系统服务包
 from .comm_binding import (
     create_comm_binding,
     delete_comm_binding,
+    delete_comm_binding_for_agent,
     get_comm_binding_or_404,
+    get_comm_binding_for_agent_or_404,
     list_comm_bindings,
     serialize_comm_binding,
     update_comm_binding,
+    update_comm_binding_for_agent,
 )
 from .core import (
     create_managed_agent,
@@ -32,9 +35,12 @@ from .prompt_asset import (
 from .schedule import (
     create_schedule,
     delete_schedule,
+    delete_schedule_for_agent,
     get_schedule_or_404,
+    get_schedule_for_agent_or_404,
     list_schedules,
     update_schedule,
+    update_schedule_for_agent,
 )
 
 __all__ = [
@@ -44,14 +50,18 @@ __all__ = [
     "create_managed_agent",
     "create_schedule",
     "delete_comm_binding",
+    "delete_comm_binding_for_agent",
     "delete_managed_agent",
     "delete_schedule",
+    "delete_schedule_for_agent",
     "get_comm_binding_or_404",
+    "get_comm_binding_for_agent_or_404",
     "get_host_config",
     "get_managed_agent",
     "get_managed_agent_or_404",
     "get_prompt_asset",
     "get_schedule_or_404",
+    "get_schedule_for_agent_or_404",
     "list_comm_bindings",
     "list_managed_agents",
     "list_schedules",
@@ -60,8 +70,10 @@ __all__ = [
     "serialize_comm_binding",
     "serialize_host_config",
     "update_comm_binding",
+    "update_comm_binding_for_agent",
     "update_host_config",
     "update_managed_agent",
     "update_prompt_asset",
     "update_schedule",
+    "update_schedule_for_agent",
 ]

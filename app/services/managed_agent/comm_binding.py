@@ -8,6 +8,7 @@ from typing import Dict, List
 
 from sqlalchemy.orm import Session
 
+from app.exceptions import BusinessError, NotFoundError
 from app.models.managed_agent import ManagedAgentCommBinding
 
 from .core import get_managed_agent_or_404
@@ -28,7 +29,22 @@ def get_comm_binding_or_404(db: Session, binding_id: str) -> ManagedAgentCommBin
         ManagedAgentCommBinding.id == binding_id
     ).first()
     if not binding:
-        raise ValueError(f"宿主通讯渠道配置不存在: {binding_id}")
+        raise NotFoundError(f"宿主通讯渠道配置不存在: {binding_id}")
+    return binding
+
+
+def get_comm_binding_for_agent_or_404(
+    db: Session,
+    managed_agent_id: str,
+    binding_id: str,
+) -> ManagedAgentCommBinding:
+    """获取属于指定 Agent 的宿主通讯渠道配置。"""
+    binding = db.query(ManagedAgentCommBinding).filter(
+        ManagedAgentCommBinding.id == binding_id,
+        ManagedAgentCommBinding.managed_agent_id == managed_agent_id,
+    ).first()
+    if not binding:
+        raise NotFoundError(f"宿主通讯渠道配置不存在: {binding_id}")
     return binding
 
 
@@ -38,7 +54,7 @@ def create_comm_binding(db: Session, managed_agent_id: str, **kwargs) -> Managed
     normalized = _normalize_comm_binding_kwargs(kwargs)
 
     if not normalized.get("provider") or not normalized.get("binding_key"):
-        raise ValueError("provider 和 binding_key 不能为空")
+        raise BusinessError("provider 和 binding_key 不能为空")
 
     binding = ManagedAgentCommBinding(
         id=str(uuid.uuid4()),
@@ -60,7 +76,7 @@ def update_comm_binding(db: Session, binding_id: str, **kwargs) -> ManagedAgentC
 
     changed = False
     for key, value in normalized.items():
-        if value is not None and hasattr(binding, key) and getattr(binding, key) != value:
+        if hasattr(binding, key) and getattr(binding, key) != value:
             setattr(binding, key, value)
             changed = True
 
@@ -73,6 +89,17 @@ def update_comm_binding(db: Session, binding_id: str, **kwargs) -> ManagedAgentC
     return binding
 
 
+def update_comm_binding_for_agent(
+    db: Session,
+    managed_agent_id: str,
+    binding_id: str,
+    **kwargs,
+) -> ManagedAgentCommBinding:
+    """更新属于指定 Agent 的宿主通讯渠道配置。"""
+    binding = get_comm_binding_for_agent_or_404(db, managed_agent_id, binding_id)
+    return update_comm_binding(db, binding.id, **kwargs)
+
+
 def delete_comm_binding(db: Session, binding_id: str) -> None:
     """删除宿主通讯渠道配置。"""
     binding = get_comm_binding_or_404(db, binding_id)
@@ -80,6 +107,12 @@ def delete_comm_binding(db: Session, binding_id: str) -> None:
     db.delete(binding)
     _bump_config_version(db, agent)
     db.commit()
+
+
+def delete_comm_binding_for_agent(db: Session, managed_agent_id: str, binding_id: str) -> None:
+    """删除属于指定 Agent 的宿主通讯渠道配置。"""
+    binding = get_comm_binding_for_agent_or_404(db, managed_agent_id, binding_id)
+    delete_comm_binding(db, binding.id)
 
 
 def serialize_comm_binding(binding: ManagedAgentCommBinding) -> Dict[str, object]:

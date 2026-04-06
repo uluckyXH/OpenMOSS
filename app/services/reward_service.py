@@ -5,6 +5,7 @@ import uuid
 from sqlalchemy.orm import Session
 from sqlalchemy import func, update
 
+from app.exceptions import NotFoundError
 from app.models.reward_log import RewardLog
 from app.models.agent import Agent
 
@@ -30,7 +31,7 @@ def add_reward(
     """写入一条积分变更记录，并同步更新 Agent 的 total_score"""
     agent = db.query(Agent).filter(Agent.id == agent_id).first()
     if not agent:
-        raise ValueError(f"Agent {agent_id} 不存在")
+        raise NotFoundError(f"Agent {agent_id} 不存在")
 
     # 写入记录
     log = RewardLog(
@@ -77,7 +78,7 @@ def get_agent_score(db: Session, agent_id: str) -> dict:
     """获取 Agent 的积分概要（含排名）"""
     agent = db.query(Agent).filter(Agent.id == agent_id).first()
     if not agent:
-        raise ValueError(f"Agent {agent_id} 不存在")
+        raise NotFoundError(f"Agent {agent_id} 不存在")
 
     # 统计加分/扣分次数
     logs = db.query(RewardLog).filter(RewardLog.agent_id == agent_id).all()

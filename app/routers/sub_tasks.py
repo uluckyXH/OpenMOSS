@@ -9,6 +9,7 @@ from datetime import datetime as dt
 
 from app.database import get_db
 from app.auth.dependencies import get_current_agent, verify_admin, require_role
+from app.exceptions import BusinessError
 from app.services import sub_task_service
 from app.models.agent import Agent
 
@@ -101,8 +102,8 @@ async def create_sub_task(
             assigned_agent=req.assigned_agent,
             type=req.type,
         )
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+    except BusinessError as e:
+        raise HTTPException(status_code=e.status_code, detail=str(e))
     return sub_task
 
 
@@ -224,8 +225,8 @@ async def claim_sub_task(
     """执行者认领子任务：pending → assigned"""
     try:
         return sub_task_service.claim_sub_task(db, sub_task_id, agent.id, req.session_id)
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+    except BusinessError as e:
+        raise HTTPException(status_code=e.status_code, detail=str(e))
 
 
 @router.post("/{sub_task_id}/start", response_model=SubTaskResponse, summary="开始执行")
@@ -238,8 +239,8 @@ async def start_sub_task(
     """开始执行子任务：assigned/rework → in_progress"""
     try:
         return sub_task_service.start_sub_task(db, sub_task_id, req.session_id)
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+    except BusinessError as e:
+        raise HTTPException(status_code=e.status_code, detail=str(e))
 
 
 @router.post("/{sub_task_id}/submit", response_model=SubTaskResponse, summary="提交成果")
@@ -251,8 +252,8 @@ async def submit_sub_task(
     """提交成果：in_progress → review"""
     try:
         return sub_task_service.submit_sub_task(db, sub_task_id)
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+    except BusinessError as e:
+        raise HTTPException(status_code=e.status_code, detail=str(e))
 
 
 @router.post("/{sub_task_id}/complete", response_model=SubTaskResponse, summary="审查通过")
@@ -264,8 +265,8 @@ async def complete_sub_task(
     """审查通过：review → done"""
     try:
         return sub_task_service.complete_sub_task(db, sub_task_id)
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+    except BusinessError as e:
+        raise HTTPException(status_code=e.status_code, detail=str(e))
 
 
 @router.post("/{sub_task_id}/rework", response_model=SubTaskResponse, summary="驳回返工")
@@ -278,8 +279,8 @@ async def rework_sub_task(
     """驳回返工：review → rework"""
     try:
         return sub_task_service.rework_sub_task(db, sub_task_id, req.rework_agent)
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+    except BusinessError as e:
+        raise HTTPException(status_code=e.status_code, detail=str(e))
 
 
 @router.post("/{sub_task_id}/block", response_model=SubTaskResponse, summary="标记异常")
@@ -291,8 +292,8 @@ async def block_sub_task(
     """巡查 Agent 标记异常：→ blocked"""
     try:
         return sub_task_service.block_sub_task(db, sub_task_id)
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+    except BusinessError as e:
+        raise HTTPException(status_code=e.status_code, detail=str(e))
 
 
 @router.post("/{sub_task_id}/reassign", response_model=SubTaskResponse, summary="重新分配")
@@ -305,8 +306,8 @@ async def reassign_sub_task(
     """规划师重新分配：blocked → assigned"""
     try:
         return sub_task_service.reassign_sub_task(db, sub_task_id, req.agent_id)
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+    except BusinessError as e:
+        raise HTTPException(status_code=e.status_code, detail=str(e))
 
 
 @router.put("/{sub_task_id}", response_model=SubTaskResponse, summary="编辑子任务")
@@ -324,8 +325,8 @@ async def update_sub_task(
             deliverable=req.deliverable, acceptance=req.acceptance,
             priority=req.priority,
         )
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+    except BusinessError as e:
+        raise HTTPException(status_code=e.status_code, detail=str(e))
 
 
 @router.post("/{sub_task_id}/cancel", response_model=SubTaskResponse, summary="取消子任务")
@@ -337,8 +338,8 @@ async def cancel_sub_task(
     """取消子任务（已完成/已取消的不能取消）"""
     try:
         return sub_task_service.cancel_sub_task(db, sub_task_id)
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+    except BusinessError as e:
+        raise HTTPException(status_code=e.status_code, detail=str(e))
 
 
 class SessionUpdateRequest(BaseModel):
@@ -355,5 +356,5 @@ async def update_session(
     """更新 in_progress 子任务的当前会话 ID（cron 唤醒后绑定新会话）"""
     try:
         return sub_task_service.update_session(db, sub_task_id, req.session_id)
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+    except BusinessError as e:
+        raise HTTPException(status_code=e.status_code, detail=str(e))

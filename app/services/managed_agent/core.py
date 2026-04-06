@@ -7,8 +7,10 @@ from typing import List, Optional, Tuple
 
 from sqlalchemy.orm import Session
 
+from app.exceptions import BusinessError, NotFoundError
 from app.models.managed_agent import (
     ManagedAgent,
+    ManagedAgentBootstrapToken,
     ManagedAgentCommBinding,
     ManagedAgentHostConfig,
     ManagedAgentPromptAsset,
@@ -33,7 +35,7 @@ def create_managed_agent(
     """创建配置态 Agent。"""
     existing = db.query(ManagedAgent).filter(ManagedAgent.slug == slug).first()
     if existing:
-        raise ValueError(f"slug '{slug}' 已被使用")
+        raise BusinessError(f"slug '{slug}' 已被使用")
 
     agent = ManagedAgent(
         id=str(uuid.uuid4()),
@@ -83,7 +85,7 @@ def get_managed_agent_or_404(db: Session, agent_id: str) -> ManagedAgent:
     """获取配置态 Agent，不存在则抛异常。"""
     agent = get_managed_agent(db, agent_id)
     if not agent:
-        raise ValueError(f"配置态 Agent 不存在: {agent_id}")
+        raise NotFoundError(f"配置态 Agent 不存在: {agent_id}")
     return agent
 
 
@@ -117,7 +119,10 @@ def update_managed_agent(db: Session, agent_id: str, **kwargs) -> ManagedAgent:
     changed = False
 
     for key, value in kwargs.items():
-        if value is not None and hasattr(agent, key) and getattr(agent, key) != value:
+        if key == "description" and value is None:
+            value = ""
+
+        if hasattr(agent, key) and getattr(agent, key) != value:
             setattr(agent, key, value)
             changed = True
 
@@ -149,6 +154,9 @@ def delete_managed_agent(db: Session, agent_id: str) -> None:
     ).delete()
     db.query(ManagedAgentCommBinding).filter(
         ManagedAgentCommBinding.managed_agent_id == agent_id
+    ).delete()
+    db.query(ManagedAgentBootstrapToken).filter(
+        ManagedAgentBootstrapToken.managed_agent_id == agent_id
     ).delete()
 
     db.delete(agent)

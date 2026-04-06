@@ -10,6 +10,7 @@ from typing import Optional, List
 
 from app.database import get_db
 from app.auth.dependencies import get_current_agent, verify_admin
+from app.exceptions import BusinessError
 from app.services import agent_service
 from app.models.agent import Agent
 from app.config import config
@@ -92,8 +93,8 @@ async def register_agent(
 
     try:
         agent = agent_service.register_agent(db, req.name, req.role, req.description)
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+    except BusinessError as e:
+        raise HTTPException(status_code=e.status_code, detail=str(e))
 
     return AgentRegisterResponse(
         id=agent.id,
@@ -116,8 +117,8 @@ async def create_agent(
     """管理员直接创建 Agent"""
     try:
         agent = agent_service.register_agent(db, req.name, req.role, req.description)
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+    except BusinessError as e:
+        raise HTTPException(status_code=e.status_code, detail=str(e))
 
     return AgentRegisterResponse(
         id=agent.id,
@@ -157,8 +158,8 @@ async def update_status(
     """管理员更新 Agent 状态"""
     try:
         agent = agent_service.update_agent_status(db, agent_id, req.status)
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+    except BusinessError as e:
+        raise HTTPException(status_code=e.status_code, detail=str(e))
 
     return agent
 

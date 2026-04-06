@@ -6,9 +6,11 @@ from sqlalchemy.orm import Session
 
 from app.auth.dependencies import verify_admin
 from app.database import get_db
+from app.exceptions import BusinessError
 from app.schemas.managed_agent import (
-    ManagedAgentCommBindingRequest,
+    ManagedAgentCommBindingCreateRequest,
     ManagedAgentCommBindingResponse,
+    ManagedAgentCommBindingUpdateRequest,
     ManagedAgentCreateRequest,
     ManagedAgentDetail,
     ManagedAgentHostConfigRequest,
@@ -18,8 +20,9 @@ from app.schemas.managed_agent import (
     ManagedAgentPromptAssetRequest,
     ManagedAgentPromptAssetResponse,
     ManagedAgentPromptRenderPreviewResponse,
-    ManagedAgentScheduleRequest,
+    ManagedAgentScheduleCreateRequest,
     ManagedAgentScheduleResponse,
+    ManagedAgentScheduleUpdateRequest,
     ManagedAgentUpdateRequest,
 )
 from app.services import managed_agent as svc
@@ -78,8 +81,8 @@ def create_agent(
             workdir_path=req.workdir_path,
         )
         return ManagedAgentDetail.model_validate(agent)
-    except ValueError as exc:
-        raise HTTPException(status_code=400, detail=str(exc))
+    except BusinessError as exc:
+        raise HTTPException(status_code=exc.status_code, detail=str(exc))
 
 
 @router.get("/{agent_id}", response_model=ManagedAgentDetail)
@@ -110,11 +113,11 @@ def update_agent(
         agent = svc.update_managed_agent(
             db,
             agent_id,
-            **req.model_dump(exclude_none=True),
+            **req.model_dump(include=req.model_fields_set),
         )
         return ManagedAgentDetail.model_validate(agent)
-    except ValueError as exc:
-        raise HTTPException(status_code=400, detail=str(exc))
+    except BusinessError as exc:
+        raise HTTPException(status_code=exc.status_code, detail=str(exc))
 
 
 @router.delete("/{agent_id}", status_code=204)
@@ -126,8 +129,8 @@ def delete_agent(
     """删除配置态 Agent（硬删除）。"""
     try:
         svc.delete_managed_agent(db, agent_id)
-    except ValueError as exc:
-        raise HTTPException(status_code=404, detail=str(exc))
+    except BusinessError as exc:
+        raise HTTPException(status_code=exc.status_code, detail=str(exc))
 
 
 @router.get("/{agent_id}/host-config", response_model=ManagedAgentHostConfigResponse)
@@ -156,11 +159,11 @@ def update_host_config(
         host_config = svc.update_host_config(
             db,
             agent_id,
-            **req.model_dump(exclude_none=True),
+            **req.model_dump(include=req.model_fields_set),
         )
         return ManagedAgentHostConfigResponse.model_validate(svc.serialize_host_config(host_config))
-    except ValueError as exc:
-        raise HTTPException(status_code=400, detail=str(exc))
+    except BusinessError as exc:
+        raise HTTPException(status_code=exc.status_code, detail=str(exc))
 
 
 @router.get("/{agent_id}/prompt-asset", response_model=ManagedAgentPromptAssetResponse)
@@ -189,11 +192,11 @@ def update_prompt_asset(
         prompt_asset = svc.update_prompt_asset(
             db,
             agent_id,
-            **req.model_dump(exclude_none=True),
+            **req.model_dump(include=req.model_fields_set),
         )
         return ManagedAgentPromptAssetResponse.model_validate(prompt_asset)
-    except ValueError as exc:
-        raise HTTPException(status_code=400, detail=str(exc))
+    except BusinessError as exc:
+        raise HTTPException(status_code=exc.status_code, detail=str(exc))
 
 
 @router.post("/{agent_id}/prompt-asset/reset-from-template", response_model=ManagedAgentPromptAssetResponse)
@@ -206,8 +209,8 @@ def reset_prompt_asset(
     try:
         prompt_asset = svc.reset_prompt_from_template(db, agent_id)
         return ManagedAgentPromptAssetResponse.model_validate(prompt_asset)
-    except ValueError as exc:
-        raise HTTPException(status_code=400, detail=str(exc))
+    except BusinessError as exc:
+        raise HTTPException(status_code=exc.status_code, detail=str(exc))
 
 
 @router.post("/{agent_id}/prompt-asset/render-preview", response_model=ManagedAgentPromptRenderPreviewResponse)
@@ -220,8 +223,8 @@ def render_prompt_preview(
     try:
         preview = svc.render_prompt_preview(db, agent_id)
         return ManagedAgentPromptRenderPreviewResponse.model_validate(preview)
-    except ValueError as exc:
-        raise HTTPException(status_code=400, detail=str(exc))
+    except BusinessError as exc:
+        raise HTTPException(status_code=exc.status_code, detail=str(exc))
 
 
 @router.get("/{agent_id}/schedules", response_model=list[ManagedAgentScheduleResponse])
@@ -234,14 +237,14 @@ def list_schedules(
     try:
         schedules = svc.list_schedules(db, agent_id)
         return [ManagedAgentScheduleResponse.model_validate(item) for item in schedules]
-    except ValueError as exc:
-        raise HTTPException(status_code=404, detail=str(exc))
+    except BusinessError as exc:
+        raise HTTPException(status_code=exc.status_code, detail=str(exc))
 
 
 @router.post("/{agent_id}/schedules", response_model=ManagedAgentScheduleResponse, status_code=201)
 def create_schedule(
     agent_id: str,
-    req: ManagedAgentScheduleRequest,
+    req: ManagedAgentScheduleCreateRequest,
     _: bool = Depends(verify_admin),
     db: Session = Depends(get_db),
 ):
@@ -250,34 +253,32 @@ def create_schedule(
         schedule = svc.create_schedule(
             db,
             agent_id,
-            **req.model_dump(exclude_none=True),
+            **req.model_dump(),
         )
         return ManagedAgentScheduleResponse.model_validate(schedule)
-    except ValueError as exc:
-        raise HTTPException(status_code=400, detail=str(exc))
+    except BusinessError as exc:
+        raise HTTPException(status_code=exc.status_code, detail=str(exc))
 
 
 @router.put("/{agent_id}/schedules/{schedule_id}", response_model=ManagedAgentScheduleResponse)
 def update_schedule(
     agent_id: str,
     schedule_id: str,
-    req: ManagedAgentScheduleRequest,
+    req: ManagedAgentScheduleUpdateRequest,
     _: bool = Depends(verify_admin),
     db: Session = Depends(get_db),
 ):
     """更新定时任务。"""
     try:
-        schedule = svc.get_schedule_or_404(db, schedule_id)
-        if schedule.managed_agent_id != agent_id:
-            raise HTTPException(status_code=404, detail="定时任务不存在")
-        schedule = svc.update_schedule(
+        schedule = svc.update_schedule_for_agent(
             db,
+            agent_id,
             schedule_id,
-            **req.model_dump(exclude_none=True),
+            **req.model_dump(include=req.model_fields_set),
         )
         return ManagedAgentScheduleResponse.model_validate(schedule)
-    except ValueError as exc:
-        raise HTTPException(status_code=400, detail=str(exc))
+    except BusinessError as exc:
+        raise HTTPException(status_code=exc.status_code, detail=str(exc))
 
 
 @router.delete("/{agent_id}/schedules/{schedule_id}", status_code=204)
@@ -289,12 +290,9 @@ def delete_schedule(
 ):
     """删除定时任务。"""
     try:
-        schedule = svc.get_schedule_or_404(db, schedule_id)
-        if schedule.managed_agent_id != agent_id:
-            raise HTTPException(status_code=404, detail="定时任务不存在")
-        svc.delete_schedule(db, schedule_id)
-    except ValueError as exc:
-        raise HTTPException(status_code=404, detail=str(exc))
+        svc.delete_schedule_for_agent(db, agent_id, schedule_id)
+    except BusinessError as exc:
+        raise HTTPException(status_code=exc.status_code, detail=str(exc))
 
 
 @router.get("/{agent_id}/comm-bindings", response_model=list[ManagedAgentCommBindingResponse])
@@ -310,14 +308,14 @@ def list_comm_bindings(
             ManagedAgentCommBindingResponse.model_validate(svc.serialize_comm_binding(item))
             for item in bindings
         ]
-    except ValueError as exc:
-        raise HTTPException(status_code=404, detail=str(exc))
+    except BusinessError as exc:
+        raise HTTPException(status_code=exc.status_code, detail=str(exc))
 
 
 @router.post("/{agent_id}/comm-bindings", response_model=ManagedAgentCommBindingResponse, status_code=201)
 def create_comm_binding(
     agent_id: str,
-    req: ManagedAgentCommBindingRequest,
+    req: ManagedAgentCommBindingCreateRequest,
     _: bool = Depends(verify_admin),
     db: Session = Depends(get_db),
 ):
@@ -326,34 +324,32 @@ def create_comm_binding(
         binding = svc.create_comm_binding(
             db,
             agent_id,
-            **req.model_dump(exclude_none=True),
+            **req.model_dump(),
         )
         return ManagedAgentCommBindingResponse.model_validate(svc.serialize_comm_binding(binding))
-    except ValueError as exc:
-        raise HTTPException(status_code=400, detail=str(exc))
+    except BusinessError as exc:
+        raise HTTPException(status_code=exc.status_code, detail=str(exc))
 
 
 @router.put("/{agent_id}/comm-bindings/{binding_id}", response_model=ManagedAgentCommBindingResponse)
 def update_comm_binding(
     agent_id: str,
     binding_id: str,
-    req: ManagedAgentCommBindingRequest,
+    req: ManagedAgentCommBindingUpdateRequest,
     _: bool = Depends(verify_admin),
     db: Session = Depends(get_db),
 ):
     """更新宿主通讯渠道配置。"""
     try:
-        binding = svc.get_comm_binding_or_404(db, binding_id)
-        if binding.managed_agent_id != agent_id:
-            raise HTTPException(status_code=404, detail="宿主通讯渠道配置不存在")
-        binding = svc.update_comm_binding(
+        binding = svc.update_comm_binding_for_agent(
             db,
+            agent_id,
             binding_id,
-            **req.model_dump(exclude_none=True),
+            **req.model_dump(include=req.model_fields_set),
         )
         return ManagedAgentCommBindingResponse.model_validate(svc.serialize_comm_binding(binding))
-    except ValueError as exc:
-        raise HTTPException(status_code=400, detail=str(exc))
+    except BusinessError as exc:
+        raise HTTPException(status_code=exc.status_code, detail=str(exc))
 
 
 @router.delete("/{agent_id}/comm-bindings/{binding_id}", status_code=204)
@@ -365,9 +361,6 @@ def delete_comm_binding(
 ):
     """删除宿主通讯渠道配置。"""
     try:
-        binding = svc.get_comm_binding_or_404(db, binding_id)
-        if binding.managed_agent_id != agent_id:
-            raise HTTPException(status_code=404, detail="宿主通讯渠道配置不存在")
-        svc.delete_comm_binding(db, binding_id)
-    except ValueError as exc:
-        raise HTTPException(status_code=404, detail=str(exc))
+        svc.delete_comm_binding_for_agent(db, agent_id, binding_id)
+    except BusinessError as exc:
+        raise HTTPException(status_code=exc.status_code, detail=str(exc))

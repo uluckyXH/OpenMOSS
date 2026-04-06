@@ -4,6 +4,7 @@
 import uuid
 from sqlalchemy.orm import Session
 
+from app.exceptions import ConflictError, NotFoundError, ValidationError
 from app.models.review_record import ReviewRecord
 from app.models.sub_task import SubTask
 from app.models.agent import Agent
@@ -27,28 +28,28 @@ def create_review(
     """
     # 校验 result
     if result not in ("approved", "rejected"):
-        raise ValueError(f"无效结果 '{result}'，可选: approved, rejected")
+        raise ValidationError(f"无效结果 '{result}'，可选: approved, rejected")
 
     # 校验 score
     if not (1 <= score <= 5):
-        raise ValueError(f"评分必须 1-5，当前: {score}")
+        raise ValidationError(f"评分必须 1-5，当前: {score}")
 
     # 驳回时 issues 必填
     if result == "rejected" and not issues.strip():
-        raise ValueError("驳回时必须填写问题描述（issues）")
+        raise ValidationError("驳回时必须填写问题描述（issues）")
 
     # 校验子任务存在且状态为 review
     sub_task = db.query(SubTask).filter(SubTask.id == sub_task_id).first()
     if not sub_task:
-        raise ValueError(f"子任务 {sub_task_id} 不存在")
+        raise NotFoundError(f"子任务 {sub_task_id} 不存在")
     if sub_task.status != "review":
-        raise ValueError(f"子任务状态为 {sub_task.status}，只有 review 状态才能审查")
+        raise ConflictError(f"子任务状态为 {sub_task.status}，只有 review 状态才能审查")
 
     # 校验返工 Agent
     if rework_agent:
         agent = db.query(Agent).filter(Agent.id == rework_agent).first()
         if not agent:
-            raise ValueError(f"Agent {rework_agent} 不存在")
+            raise NotFoundError(f"Agent {rework_agent} 不存在")
 
     # 记录被审查的执行者（在状态变更前保存，避免后续被修改）
     executor_agent_id = sub_task.assigned_agent

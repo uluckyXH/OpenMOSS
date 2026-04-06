@@ -8,6 +8,7 @@ from typing import List
 
 from sqlalchemy.orm import Session
 
+from app.exceptions import NotFoundError
 from app.models.managed_agent import ManagedAgentSchedule
 
 from .core import get_managed_agent_or_404
@@ -28,7 +29,22 @@ def get_schedule_or_404(db: Session, schedule_id: str) -> ManagedAgentSchedule:
         ManagedAgentSchedule.id == schedule_id
     ).first()
     if not schedule:
-        raise ValueError(f"定时任务不存在: {schedule_id}")
+        raise NotFoundError(f"定时任务不存在: {schedule_id}")
+    return schedule
+
+
+def get_schedule_for_agent_or_404(
+    db: Session,
+    managed_agent_id: str,
+    schedule_id: str,
+) -> ManagedAgentSchedule:
+    """获取属于指定 Agent 的定时任务。"""
+    schedule = db.query(ManagedAgentSchedule).filter(
+        ManagedAgentSchedule.id == schedule_id,
+        ManagedAgentSchedule.managed_agent_id == managed_agent_id,
+    ).first()
+    if not schedule:
+        raise NotFoundError(f"定时任务不存在: {schedule_id}")
     return schedule
 
 
@@ -57,7 +73,7 @@ def update_schedule(db: Session, schedule_id: str, **kwargs) -> ManagedAgentSche
 
     changed = False
     for key, value in normalized.items():
-        if value is not None and hasattr(schedule, key) and getattr(schedule, key) != value:
+        if hasattr(schedule, key) and getattr(schedule, key) != value:
             setattr(schedule, key, value)
             changed = True
 
@@ -70,6 +86,17 @@ def update_schedule(db: Session, schedule_id: str, **kwargs) -> ManagedAgentSche
     return schedule
 
 
+def update_schedule_for_agent(
+    db: Session,
+    managed_agent_id: str,
+    schedule_id: str,
+    **kwargs,
+) -> ManagedAgentSchedule:
+    """更新属于指定 Agent 的定时任务。"""
+    schedule = get_schedule_for_agent_or_404(db, managed_agent_id, schedule_id)
+    return update_schedule(db, schedule.id, **kwargs)
+
+
 def delete_schedule(db: Session, schedule_id: str) -> None:
     """删除定时任务。"""
     schedule = get_schedule_or_404(db, schedule_id)
@@ -77,3 +104,9 @@ def delete_schedule(db: Session, schedule_id: str) -> None:
     db.delete(schedule)
     _bump_config_version(db, agent)
     db.commit()
+
+
+def delete_schedule_for_agent(db: Session, managed_agent_id: str, schedule_id: str) -> None:
+    """删除属于指定 Agent 的定时任务。"""
+    schedule = get_schedule_for_agent_or_404(db, managed_agent_id, schedule_id)
+    delete_schedule(db, schedule.id)

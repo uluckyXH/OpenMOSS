@@ -9,6 +9,7 @@ from datetime import datetime as dt
 
 from app.database import get_db
 from app.auth.dependencies import get_current_agent, verify_admin, require_role
+from app.exceptions import BusinessError
 from app.services import task_service
 from app.models.agent import Agent
 
@@ -74,8 +75,8 @@ async def create_task(
     """规划师创建任务"""
     try:
         task = task_service.create_task(db, req.name, req.description, req.type)
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+    except BusinessError as e:
+        raise HTTPException(status_code=e.status_code, detail=str(e))
     return task
 
 
@@ -123,8 +124,8 @@ async def update_task_status(
     """更新任务状态（如 planning → active）"""
     try:
         task = task_service.update_task_status(db, task_id, req.status)
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+    except BusinessError as e:
+        raise HTTPException(status_code=e.status_code, detail=str(e))
     return task
 
 
@@ -138,8 +139,8 @@ async def update_task(
     """编辑任务名称/描述（仅 planning/active 状态可编辑）"""
     try:
         task = task_service.update_task(db, task_id, name=req.name, description=req.description)
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+    except BusinessError as e:
+        raise HTTPException(status_code=e.status_code, detail=str(e))
     return task
 
 
@@ -152,8 +153,8 @@ async def cancel_task(
     """取消任务（已完成/已归档/已取消的不能取消）"""
     try:
         task = task_service.cancel_task(db, task_id)
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+    except BusinessError as e:
+        raise HTTPException(status_code=e.status_code, detail=str(e))
     return task
 
 
@@ -171,8 +172,8 @@ async def create_module(
     """在任务下创建模块"""
     try:
         module = task_service.create_module(db, task_id, req.name, req.description)
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+    except BusinessError as e:
+        raise HTTPException(status_code=e.status_code, detail=str(e))
     return module
 
 

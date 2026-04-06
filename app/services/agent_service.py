@@ -2,13 +2,15 @@
 Agent 业务逻辑
 """
 from datetime import datetime
-import uuid
 import secrets
-from sqlalchemy import func
+import uuid
+
+from sqlalchemy import func, update
 from sqlalchemy.orm import Session
 
-from app.models.agent import Agent
+from app.exceptions import ConflictError, NotFoundError, ValidationError
 from app.models.activity_log import ActivityLog
+from app.models.agent import Agent
 from app.models.managed_agent import AgentRuntimePresence
 from app.models.patrol_record import PatrolRecord
 from app.models.request_log import RequestLog
@@ -31,12 +33,11 @@ def register_agent(
     """注册新 Agent，生成 API Key"""
     valid_roles = {"planner", "executor", "reviewer", "patrol"}
     if role not in valid_roles:
-        raise ValueError(f"无效角色 '{role}'，可选: {', '.join(valid_roles)}")
+        raise ValidationError(f"无效角色 '{role}'，可选: {', '.join(valid_roles)}")
 
-    # 防止重复注册
     existing = db.query(Agent).filter(Agent.name == name).first()
     if existing:
-        raise ValueError(f"名称 '{name}' 已被注册")
+        raise ConflictError(f"名称 '{name}' 已被注册")
 
     agent = Agent(
         id=str(uuid.uuid4()),
@@ -55,7 +56,7 @@ def reset_agent_api_key(db: Session, agent_id: str) -> Agent:
     """重置 Agent 的 API Key"""
     agent = db.query(Agent).filter(Agent.id == agent_id).first()
     if not agent:
-        raise ValueError(f"Agent {agent_id} 不存在")
+        raise NotFoundError(f"Agent {agent_id} 不存在")
 
     agent.api_key = generate_api_key()
     db.commit()
@@ -87,7 +88,7 @@ def upsert_agent_presence(
     """写入或更新 Agent 心跳。"""
     agent = db.query(Agent).filter(Agent.id == agent_id).first()
     if not agent:
-        raise ValueError(f"Agent {agent_id} 不存在")
+        raise NotFoundError(f"Agent {agent_id} 不存在")
 
     heartbeat_at = at or datetime.now()
     presence = db.query(AgentRuntimePresence).filter(
@@ -120,19 +121,18 @@ def update_agent_profile(
     """更新 Agent 名称/角色/描述"""
     agent = db.query(Agent).filter(Agent.id == agent_id).first()
     if not agent:
-        raise ValueError(f"Agent {agent_id} 不存在")
+        raise NotFoundError(f"Agent {agent_id} 不存在")
 
     if name:
-        # 防重复名
         existing = db.query(Agent).filter(Agent.name == name, Agent.id != agent_id).first()
         if existing:
-            raise ValueError(f"名称 '{name}' 已被注册")
+            raise ConflictError(f"名称 '{name}' 已被注册")
         agent.name = name
 
     if role:
         valid_roles = {"planner", "executor", "reviewer", "patrol"}
         if role not in valid_roles:
-            raise ValueError(f"无效角色 '{role}'，可选: {', '.join(valid_roles)}")
+            raise ValidationError(f"无效角色 '{role}'，可选: {', '.join(valid_roles)}")
         agent.role = role
 
     if description is not None:
@@ -147,11 +147,11 @@ def update_agent_status(db: Session, agent_id: str, status: str) -> Agent:
     """更新 Agent 状态"""
     valid_statuses = {"active", "disabled"}
     if status not in valid_statuses:
-        raise ValueError(f"无效状态 '{status}'，可选: {', '.join(valid_statuses)}")
+        raise ValidationError(f"无效状态 '{status}'，可选: {', '.join(valid_statuses)}")
 
     agent = db.query(Agent).filter(Agent.id == agent_id).first()
     if not agent:
-        raise ValueError(f"Agent {agent_id} 不存在")
+        raise NotFoundError(f"Agent {agent_id} 不存在")
 
     agent.status = status
     db.commit()
@@ -163,7 +163,7 @@ def get_agent_related_counts(db: Session, agent_id: str) -> dict:
     """查询 Agent 关联数据的数量，用于删除前的风险展示"""
     agent = db.query(Agent).filter(Agent.id == agent_id).first()
     if not agent:
-        raise ValueError(f"Agent {agent_id} 不存在")
+        raise NotFoundError(f"Agent {agent_id} 不存在")
 
     return {
         "agent_id": agent.id,
@@ -181,26 +181,22 @@ def delete_agent(db: Session, agent_id: str, confirm_name: str) -> dict:
     """安全删除 Agent，级联清理所有关联数据"""
     agent = db.query(Agent).filter(Agent.id == agent_id).first()
     if not agent:
-        raise ValueError(f"Agent {agent_id} 不存在")
+        raise NotFoundError(f"Agent {agent_id} 不存在")
 
     if confirm_name != agent.name:
-        raise ValueError(f"确认名称不匹配，请输入「{agent.name}」以确认删除")
+        raise ValidationError(f"确认名称不匹配，请输入「{agent.name}」以确认删除")
 
-    # 统计并级联删除
     counts = get_agent_related_counts(db, agent_id)
 
-    # 解除子任务关联（不删除子任务本身，只清空 assigned_agent）
     db.query(SubTask).filter(SubTask.assigned_agent == agent_id).update(
         {SubTask.assigned_agent: None}, synchronize_session=False
     )
-    # 删除关联记录
     db.query(ReviewRecord).filter(ReviewRecord.reviewer_agent == agent_id).delete(synchronize_session=False)
     db.query(RewardLog).filter(RewardLog.agent_id == agent_id).delete(synchronize_session=False)
     db.query(ActivityLog).filter(ActivityLog.agent_id == agent_id).delete(synchronize_session=False)
     db.query(PatrolRecord).filter(PatrolRecord.agent_id == agent_id).delete(synchronize_session=False)
     db.query(RequestLog).filter(RequestLog.agent_id == agent_id).delete(synchronize_session=False)
 
-    # 删除 Agent 本身
     db.delete(agent)
     db.commit()
 

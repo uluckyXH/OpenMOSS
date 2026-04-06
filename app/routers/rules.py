@@ -10,6 +10,7 @@ from fastapi import Request
 
 from app.database import get_db
 from app.auth.dependencies import get_current_agent, verify_admin
+from app.exceptions import BusinessError
 from app.services import rule_service
 from app.models.agent import Agent
 
@@ -169,8 +170,8 @@ async def create_rule(
             db, scope=req.scope, content=req.content,
             task_id=req.task_id, sub_task_id=req.sub_task_id,
         )
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+    except BusinessError as e:
+        raise HTTPException(status_code=e.status_code, detail=str(e))
     return rule
 
 
@@ -184,8 +185,8 @@ async def update_rule(
     """管理员更新规则内容"""
     try:
         rule = rule_service.update_rule(db, rule_id, req.content)
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+    except BusinessError as e:
+        raise HTTPException(status_code=e.status_code, detail=str(e))
     return rule
 
 
@@ -198,6 +199,6 @@ async def delete_rule(
     """管理员删除规则"""
     try:
         rule_service.delete_rule(db, rule_id)
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+    except BusinessError as e:
+        raise HTTPException(status_code=e.status_code, detail=str(e))
     return {"message": "规则已删除"}

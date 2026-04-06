@@ -11,6 +11,7 @@ from fastapi.staticfiles import StaticFiles
 from app.database import init_db
 from app.config import config
 from app.auth.dependencies import get_current_agent
+from app.exceptions import BusinessError
 from app.routers.admin import (
     auth_router as admin_auth,
     agents_router as admin_agents,
@@ -114,10 +115,17 @@ app.add_middleware(
 # 全局异常处理
 # ============================================================
 
+@app.exception_handler(BusinessError)
+async def business_error_handler(request: Request, exc: BusinessError):
+    """显式业务异常 → 按约定状态码返回。"""
+    return JSONResponse(status_code=exc.status_code, content={"detail": exc.detail})
+
+
 @app.exception_handler(ValueError)
 async def value_error_handler(request: Request, exc: ValueError):
-    """业务逻辑错误 → 400"""
-    return JSONResponse(status_code=400, content={"detail": str(exc)})
+    """未显式收口的 ValueError → 安全兜底，不暴露内部细节。"""
+    traceback.print_exc()
+    return JSONResponse(status_code=400, content={"detail": "请求参数或业务状态非法"})
 
 
 @app.exception_handler(Exception)

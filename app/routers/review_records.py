@@ -9,6 +9,7 @@ from datetime import datetime as dt
 
 from app.database import get_db
 from app.auth.dependencies import get_current_agent, require_role
+from app.exceptions import BusinessError
 from app.services import review_service
 from app.models.agent import Agent
 
@@ -66,8 +67,8 @@ async def create_review(
             comment=req.comment,
             rework_agent=req.rework_agent,
         )
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+    except BusinessError as e:
+        raise HTTPException(status_code=e.status_code, detail=str(e))
     return record
 
 
