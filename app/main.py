@@ -204,6 +204,8 @@ app.mount("/assets", StaticFiles(directory=_assets_dir), name="webui-assets")
 # 所有未匹配路径 → 先尝试返回静态文件，再回退到 index.html（SPA 前端路由）
 @app.get("/{full_path:path}", include_in_schema=False)
 async def serve_spa(full_path: str):
+    if full_path == "api" or full_path.startswith("api/"):
+        return JSONResponse(status_code=404, content={"detail": "Not Found"})
     # 先检查是否有对应的静态文件（如 logo-200.png, favicon.ico 等）
     static_file = os.path.join(_webui_dist, full_path)
     if full_path and os.path.isfile(static_file):

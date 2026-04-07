@@ -8,6 +8,8 @@
 - 承接 `task-cli.py` 的源码拆分
 - 记录 `task-cli` 模块化改造进度
 
+旧 [task-cli.py](/Volumes/MacSSD/Repositories/OpenMOSS/skills/task-cli.py) 的公共逻辑会逐步迁到这里，最后再收成兼容入口，不会直接丢弃。
+
 ## 1. 目录说明
 
 ```text
@@ -69,78 +71,82 @@ tools/
 
 #### B-1. 运行时配置
 
-- [ ] 从旧 `skills/task-cli.py` 拆出 `BASE_URL`
-- [ ] 从旧 `skills/task-cli.py` 拆出 `CLI_VERSION`
-- [ ] 定义 `DEFAULT_API_KEY / AGENT_ID / AGENT_ROLE / CLI_PROFILE` 的运行时入口
+- [x] 从旧 `skills/task-cli.py` 拆出 `BASE_URL`
+- [x] 从旧 `skills/task-cli.py` 拆出 `CLI_VERSION`
+- [x] 定义 `DEFAULT_API_KEY / AGENT_ID / AGENT_ROLE / CLI_PROFILE` 的运行时入口
 
 #### B-2. HTTP 请求封装
 
-- [ ] 拆出 `_headers`
-- [ ] 拆出 `_request`
-- [ ] 统一错误输出
+- [x] 拆出 `_headers`
+- [x] 拆出 `_request`
+- [x] 统一错误输出
 
 #### B-3. 输出封装
 
-- [ ] 拆出 `_print_json`
-- [ ] 拆出 `_extract_items`
-- [ ] 统一列表与分页输出
+- [x] 拆出 `_print_json`
+- [x] 拆出 `_extract_items`
+- [x] 统一列表与分页输出
 
 #### B-4. CLI 入口骨架
 
-- [ ] 在 `main.py` 建立 argparse 主入口
-- [ ] 建立统一子命令挂载入口
-- [ ] 暂不迁入具体命令逻辑
+- [x] 在 `main.py` 建立 argparse 主入口
+- [x] 建立统一子命令挂载入口
+- [x] 暂不迁入具体命令逻辑
 
 ### C. 命令域拆分
 
 #### C-1. 第一批命令域
 
-- [ ] `rules`
-- [ ] `tasks`
-- [ ] `sub_tasks`
+- [x] `rules`
+- [x] `tasks`
+- [x] `sub_tasks`
 
 #### C-2. 第二批命令域
 
-- [ ] `modules`
-- [ ] `reviews`
-- [ ] `scores`
-- [ ] `logs`
+- [x] `modules`
+- [x] `reviews`
+- [x] `scores`
+- [x] `logs`
 
 #### C-3. 第三批命令域
 
-- [ ] `notifications`
-- [ ] `agents`
-- [ ] `admin`
+- [x] `notifications`
+- [x] `agents`
+- [ ] `admin`（旧 `task-cli.py` 暂无对应命令）
 
 ### D. 命令注册表与 Profile
 
 #### D-1. 命令注册表
 
-- [ ] 定义 `COMMAND_REGISTRY`
-- [ ] 为各命令补 `group / summary / visible_in_profiles`
-- [ ] 让 help 从注册表读取
+- [x] 定义 `COMMAND_REGISTRY`
+- [x] 为现有命令补 `group / summary / visible_in_profiles`
+- [x] 让 `help` 从注册表读取
 
 #### D-2. 角色 Profile
 
-- [ ] 建立 `planner` Profile
-- [ ] 建立 `executor` Profile
-- [ ] 建立 `reviewer` Profile
-- [ ] 建立 `patrol` Profile
-- [ ] 让 help 按 Profile 输出
+- [x] 建立 `planner` Profile
+- [x] 建立 `executor` Profile
+- [x] 建立 `reviewer` Profile
+- [x] 建立 `patrol` Profile
+- [x] 让 `help` 按 Profile 输出
 
 ### E. 兼容入口与交付
 
 #### E-1. 兼容入口
 
-- [ ] 让 `skills/task-cli.py` 收成兼容入口
-- [ ] 保持现有 `--key` 调用兼容
-- [ ] 不打断现有下载与打包链路
+- [x] 让 `skills/task-cli.py` 收成兼容入口
+- [x] 保持现有 `--key` 调用兼容
+- [x] 不打断现有下载与打包链路
 
 #### E-2. Skill 包标准化
 
-- [ ] 增加 `scripts/`
-- [ ] 增加 `references/`
-- [ ] 改造 `skills/pack-skills.py`
+- [x] 已为现有 4 个角色 Skill 建立 `scripts/`
+- [x] 已为现有 4 个角色 Skill 建立 `scripts/task_cli/`
+- [x] 已为现有 4 个角色 Skill 建立 `references/`
+- [x] 已增加 `scripts/task-cli.py` 兼容占位入口
+- [x] 已改造 `skills/pack-skills.py`，打包时注入共享 `task_cli` 源码
+- [ ] `SKILL.md` 收口为更精简的 Skill 说明
+- [ ] 更细命令说明下沉到 `references/`
 
 #### E-3. Bootstrap 对接
 
@@ -153,16 +159,27 @@ tools/
 | 大模块 | 当前状态 |
 |---|---|
 | A. 目录骨架 | 已完成 |
-| B. 基础能力拆分 | 未开始 |
-| C. 命令域拆分 | 未开始 |
-| D. 命令注册表与 Profile | 未开始 |
-| E. 兼容入口与交付 | 未开始 |
+| B. 基础能力拆分 | 已完成 |
+| C. 命令域拆分 | 已完成（旧 CLI 现有命令域） |
+| D. 命令注册表与 Profile | 已完成 |
+| E. 兼容入口与交付 | 进行中（E-1 已完成，E-2 已完成目录骨架与打包器改造，E-3 未开始） |
+
+B 模块当前测试结果：
+
+- `tests/services/test_task_cli_runtime.py` → `4 passed`
+- `tests/services/test_task_cli_foundation.py` → `8 passed`
+- `tests/services/test_task_cli_commands_c1.py` → `6 passed`
+- `tests/services/test_task_cli_commands_c2.py` → `5 passed`
+- `tests/services/test_task_cli_commands_c3.py` → `3 passed`
+- `tests/services/test_task_cli_registry.py` → `4 passed`
+- `tests/services/test_task_cli_profiles.py` → `5 passed`
+- `tests/services/test_task_cli_app.py` → `3 passed`
+- `tests/services/test_pack_skills.py` → `2 passed`
 
 ## 5. 下一步
 
-下一步只做 `B. 基础能力拆分`：
+当前已完成 `E-1. 兼容入口`，`E-2` 已完成目录骨架与打包器改造，下一步继续完善 `E-2. Skill 包标准化`：
 
-- 先拆 `runtime.py`
-- 再拆 `http.py`
-- 再拆 `output.py`
-- 暂时不碰具体命令域
+- 先继续收口各角色 `SKILL.md`
+- 再把更细命令说明下沉到 `references/`
+- 最后再接 Bootstrap 的 `task-cli / skill-bundle` 交付
