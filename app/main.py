@@ -26,6 +26,7 @@ from app.routers.admin import (
 )
 from app.routers import (
     agents,
+    bootstrap,
     feed,
     review_records,
     rules,
@@ -159,6 +160,7 @@ async def get_notification_config(agent=Depends(get_current_agent)):
 API_PREFIX = "/api"
 # --- Agent 侧 API ---
 app.include_router(agents.router, prefix=API_PREFIX)
+app.include_router(bootstrap.router, prefix=API_PREFIX)
 app.include_router(tasks.router, prefix=API_PREFIX)
 app.include_router(sub_tasks.router, prefix=API_PREFIX)
 app.include_router(rules.router, prefix=API_PREFIX)

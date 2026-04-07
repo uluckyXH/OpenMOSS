@@ -63,6 +63,9 @@ class OpenClawRenderer(BaseHostRenderer):
         thinking_mode = execution_options.get("thinking_mode")
         announce = execution_options.get("announce", True)
         schedule_flag = "--every" if schedule.schedule_type != "cron" else "--cron"
+        schedule_message = (
+            schedule.schedule_message_content or self._default_schedule_message(host_config.workdir_path)
+        )
 
         command_args = [
             "openclaw",
@@ -77,7 +80,7 @@ class OpenClawRenderer(BaseHostRenderer):
             "--agent",
             str(host_config.host_agent_identifier),
             "--message",
-            schedule.schedule_message_content or self._default_schedule_message(host_config.workdir_path),
+            schedule_message,
             "--timeout-seconds",
             str(schedule.timeout_seconds),
         ]
@@ -98,6 +101,7 @@ class OpenClawRenderer(BaseHostRenderer):
             "host_render_strategy": prompt_asset.host_render_strategy,
             "schedule_type": schedule.schedule_type,
             "schedule_expr": schedule.schedule_expr,
+            "schedule_message": schedule_message,
             "prompt_artifacts": self.render_prompt_artifacts(
                 managed_agent=managed_agent,
                 host_config=host_config,
