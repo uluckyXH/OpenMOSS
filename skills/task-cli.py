@@ -34,6 +34,7 @@ try:
     from tools.task_cli.http import (
         build_agent_headers,
         build_registration_headers,
+        request_bytes,
         request_json,
         request_text,
     )
@@ -46,7 +47,10 @@ try:
 except ImportError:
     import json
     import argparse
+    import shutil
+    import tempfile
     from urllib import error, parse, request
+    import zipfile
 
     CliAppContext = None
     run_cli = None
@@ -81,6 +85,22 @@ except ImportError:
                 return resp.status, resp.read().decode("utf-8")
         except error.HTTPError as exc:
             return exc.code, exc.read().decode("utf-8", errors="replace")
+        except error.URLError:
+            raise ConnectionError(url) from None
+
+    def request_bytes(method, *, base_url, path, headers, params=None, json_body=None):
+        url = f"{base_url}/api{path}"
+        if params:
+            url = f"{url}?{parse.urlencode(params)}"
+        data = None
+        if json_body is not None:
+            data = json.dumps(json_body).encode("utf-8")
+        req = request.Request(url, data=data, headers=headers, method=method.upper())
+        try:
+            with request.urlopen(req) as resp:
+                return resp.status, resp.read()
+        except error.HTTPError as exc:
+            return exc.code, exc.read()
         except error.URLError:
             raise ConnectionError(url) from None
 
@@ -688,26 +708,88 @@ def cmd_agent_list(args):
 # ============================================================
 
 def cmd_update(args):
-    """自动更新 task-cli.py 和 SKILL.md"""
+    """自动更新当前 Skill Bundle。"""
     import pathlib
+    import runpy
 
     headers = _headers(args.key)
+    cli_path = pathlib.Path(__file__).resolve()
 
-    # 下载最新 CLI
-    print("⬇️  下载最新 task-cli.py ...")
+    if cli_path.parent.name == "scripts" and (cli_path.parent.parent / "SKILL.md").exists():
+        layout = "bundle"
+        skill_root = cli_path.parent.parent
+    else:
+        layout = "legacy"
+        skill_root = cli_path.parent
+
+    def _extract_bundle_root(temp_dir):
+        roots = [path for path in temp_dir.iterdir() if path.is_dir()]
+        if len(roots) != 1:
+            raise RuntimeError("skill-bundle 结构无效，无法定位根目录")
+        return roots[0]
+
+    def _apply_bundle(bundle_bytes):
+        with tempfile.TemporaryDirectory(prefix="openmoss-skill-bundle-") as tmp_dir:
+            tmp_root = pathlib.Path(tmp_dir)
+            bundle_path = tmp_root / "bundle.zip"
+            bundle_path.write_bytes(bundle_bytes)
+            extract_dir = tmp_root / "extract"
+            extract_dir.mkdir(parents=True, exist_ok=True)
+            with zipfile.ZipFile(bundle_path, "r") as zip_file:
+                zip_file.extractall(extract_dir)
+
+            source_root = _extract_bundle_root(extract_dir)
+            shutil.rmtree(skill_root / "references", ignore_errors=True)
+            shutil.rmtree(skill_root / "scripts" / "task_cli", ignore_errors=True)
+            skill_root.mkdir(parents=True, exist_ok=True)
+            for path in sorted(source_root.rglob("*")):
+                rel_path = path.relative_to(source_root)
+                dest = skill_root / rel_path
+                if path.is_dir():
+                    dest.mkdir(parents=True, exist_ok=True)
+                    continue
+                dest.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(path, dest)
+
+        if layout == "legacy":
+            cli_path.write_text(
+                """#!/usr/bin/env python3
+from __future__ import annotations
+
+import runpy
+from pathlib import Path
+
+
+def main() -> int:
+    entry = Path(__file__).resolve().parent / "scripts" / "task-cli.py"
+    if not entry.exists():
+        raise SystemExit("未找到新的 Skill Bundle 入口: scripts/task-cli.py")
+    runpy.run_path(str(entry), run_name="__main__")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
+""",
+                encoding="utf-8",
+            )
+
+    print("⬇️  下载最新 Skill Bundle ...")
     try:
-        status_code, text = request_text(
+        status_code, content = request_bytes(
             "get",
             base_url=BASE_URL,
-            path="/tools/cli",
+            path="/agents/me/skill-bundle",
             headers=headers,
         )
         if status_code == 200:
-            cli_path = pathlib.Path(__file__).resolve()
-            cli_path.write_text(text, encoding="utf-8")
-            print("✅ task-cli.py 已更新")
-        else:
-            print(f"❌ 下载失败 ({status_code}): {text[:200]}")
+            _apply_bundle(content)
+            print("✅ Skill Bundle 已更新")
+            print(f"   目录: {skill_root}")
+            if layout == "legacy":
+                print("ℹ️  旧版单文件目录已迁移到 Skill Bundle 结构，标准入口为 scripts/task-cli.py")
+            return
+        print(f"❌ 下载失败 ({status_code}): {content.decode('utf-8', errors='replace')[:200]}")
     except Exception as e:
         print(f"❌ 下载失败: {e}")
 
@@ -1086,6 +1168,7 @@ def main():
             request=_request,
             request_json=request_json,
             request_text=request_text,
+            request_bytes=request_bytes,
             build_agent_headers=build_agent_headers,
             build_registration_headers=build_registration_headers,
             print_json=print_json,

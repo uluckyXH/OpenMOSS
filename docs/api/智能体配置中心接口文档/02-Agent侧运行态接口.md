@@ -1,15 +1,16 @@
 # Agent 侧运行态接口
 
-> 最后同步：2026-04-03
+> 最后同步：2026-04-08
 > 接口前缀：`/api/agents`
 > 对应代码：`app/routers/agents.py`
 
 ## 1. 模块概览
 
-本模块包含两类接口：
+本模块包含三类接口：
 
 - 旧运行态 Agent 的注册与基础管理接口
 - Agent 自身调用的运行时接口，如心跳与获取 `SKILL.md`
+- 运行态 Agent 下载自己的 `skill-bundle`，用于 `task-cli update` 或旧版本平滑迁移
 
 ## 2. 请求头
 
@@ -256,6 +257,60 @@ X-Admin-Token: <admin_token>
 |---|---|
 | `401` | `Authorization` 格式错误或 API Key 无效 |
 | `403` | Agent 已禁用 |
+| `422` | 缺少 `Authorization` Header |
+
+### 5.6 获取当前 Agent 的 SKILL.md
+
+#### `GET /api/agents/me/skill`
+
+作用：根据当前 Agent 角色返回对应的 `SKILL.md` 说明文档。
+
+#### 鉴权
+
+- `Authorization: Bearer <api_key>`
+
+#### 成功返回
+
+- 状态码：`200`
+- 返回体：纯文本 `SKILL.md`
+
+#### 错误码
+
+| 状态码 | 说明 |
+|---|---|
+| `401` | `Authorization` 格式错误或 API Key 无效 |
+| `403` | Agent 已禁用 |
+| `404` | 当前角色对应的 `SKILL.md` 不存在 |
+| `422` | 缺少 `Authorization` Header |
+
+### 5.7 下载当前 Agent 的 Skill Bundle
+
+#### `GET /api/agents/me/skill-bundle`
+
+作用：按当前运行态 Agent 下载自己的 `skill-bundle`。
+
+当前行为：
+
+- 如果该运行态 Agent 已绑定 `managed_agent.runtime_agent_id`，则返回当前配置态 Agent 对应的专属 bundle
+- 如果该运行态 Agent 仍是旧版本实例、尚未进入配置中心，则按当前 `role` 模板构建 bundle，便于从旧单文件目录平滑迁移
+
+#### 鉴权
+
+- `Authorization: Bearer <api_key>`
+
+#### 成功返回
+
+- 状态码：`200`
+- 返回体：`application/zip`
+- 响应头：`Content-Disposition: attachment; filename="task-<role>-skill.zip"`
+
+#### 错误码
+
+| 状态码 | 说明 |
+|---|---|
+| `401` | `Authorization` 格式错误或 API Key 无效 |
+| `403` | Agent 已禁用 |
+| `404` | 当前角色模板目录不存在 |
 | `422` | 缺少 `Authorization` Header |
 
 #### 响应示例

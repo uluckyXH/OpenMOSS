@@ -1,6 +1,6 @@
-# OpenMOSS 任务调度中间件 — 配置文件模板
-# 复制此文件为 config.yaml 并修改配置
-# Docker 部署时，容器会默认将宿主公共工作目录挂载到 /workspace
+# OpenMOSS 配置文件模板
+# 复制此文件为 config.yaml 并按实际环境修改
+# Docker 部署时，宿主工作目录通常会挂载到 /workspace
 
 # 项目名称
 project:
@@ -8,49 +8,64 @@ project:
 
 # 管理员配置
 admin:
-  password: "admin123" # 首次启动后自动替换为 MD5 加密
+  # 管理员密码。
+  # 首次安装可填明文，完成初始化后系统会保存为 bcrypt 哈希；
+  # 这里保留一个 bcrypt 示例值，避免误以为必须使用固定默认密码。
+  password: "bcrypt:$2b$12$FkErd29tASo19tO0UAx/8OqNuf5FKM3.RAbcCuLyFFsyo1KcsBa3O"
 
 # Agent 注册
 agent:
-  registration_token: "openclaw-register-2024" # Agent 自动注册令牌
-  allow_registration: true # Agent 自注册开关（false=关闭自注册，只能由管理员创建）
+  # 旧运行态 Agent 自注册令牌
+  registration_token: "openclaw-register-2024"
+  # 是否允许旧运行态 Agent 通过 /api/agents/register 自注册
+  allow_registration: true
 
-# 全局通知配置（OpenMOSS 内置消息，Agent 通过 GET /config/notification 获取后自行发送）
+# 全局通知配置
+# 当前仍是系统级配置，不属于 Agent 管理一期
 notification:
   enabled: false
   # 目标渠道：格式为 渠道类型:目标ID
   channels: []
-    # - "chat:oc_1f99abbba2bf0f8733377893d976ffa5"   # 飞书群（把 Agent 拉进群/艾特一次即可获取 chat_id）
-    # - "user:ou_xxxxxxxxxxxxxxxxxxxxxxxxxxxx"        # 飞书私聊（open_id）
+    # - "chat:oc_1f99abbba2bf0f8733377893d976ffa5"  # 飞书群 chat_id
+    # - "user:ou_xxxxxxxxxxxxxxxxxxxxxxxxxxxx"       # 飞书私聊 open_id
   # 触发通知的事件类型
   events:
-    - task_completed # 子任务完成时通知
+    - task_completed  # 子任务完成时通知
     - review_rejected # 审查驳回（返工）时通知
-    - all_done # 整个任务所有子任务全部完成时通知
-    - patrol_alert # 巡查发现异常时通知
+    - all_done        # 整个任务所有子任务全部完成时通知
+    - patrol_alert    # 巡查发现异常时通知
 
 # 服务配置
 server:
   port: 6565
   host: "0.0.0.0"
-  external_url: ""  # 服务外网访问地址（Agent 对接用，如 https://moss.example.com）
+  # 服务外部访问地址，Agent / Bootstrap / shell / skill-bundle 对接都依赖它
+  # 例如: https://moss.example.com
+  external_url: ""
 
 # 数据库配置
 database:
-  type: sqlite # 当前正式环境仅支持 sqlite
+  # 当前正式环境仍以 sqlite 为主，多数据库扩展后续再补
+  type: "sqlite"
   path: "./data/tasks.db"
 
-# 宿主公共工作目录
+# 宿主工作目录
 workspace:
-  root: "/workspace" # 指宿主部署机上的共享工作目录，不是 OpenMOSS 服务端自己的本地目录
+  # 指宿主部署机上的共享工作目录，不是 OpenMOSS 服务端自己的本地目录
+  root: "/workspace"
 
 # WebUI 配置
 webui:
-  public_feed: false # 活动流展示页公开开关（true=任何人可访问）
-  feed_retention_days: 7 # 请求日志保留天数（超期自动清理）
-  auto_update: true # 启用 WebUI 自动更新（启动时如无前端也会自动拉取）
-  github_repo: "uluckyXH/OpenMOSS" # GitHub 仓库（用于下载 WebUI Release）
+  # 活动流页面是否公开
+  public_feed: false
+  # 请求日志保留天数
+  feed_retention_days: 7
+  # 启动时如本地缺少前端产物，是否自动尝试拉取 WebUI
+  auto_update: true
+  # 用于自动下载 WebUI Release 的 GitHub 仓库
+  github_repo: "uluckyXH/OpenMOSS"
 
-# 初始化标记（由 Setup Wizard 自动设置，请勿手动修改）
+# 初始化标记
+# 由 Setup Wizard / 初始化流程维护，通常不要手工修改
 setup:
   initialized: false

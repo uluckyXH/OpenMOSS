@@ -2,7 +2,7 @@
 
 > 最后同步：2026-04-08
 > 适用范围：智能体配置中心重构当前已落地后端接口
-> 当前代码状态：已实现配置态 Agent 管理主链、Agent 心跳接口、Bootstrap Token 管理、脚本预览、接入说明、Bootstrap 注册/脚本下载闭环，以及 `skill-bundle` 下载接口；`task-cli.py` 单文件下载尚未落地
+> 当前代码状态：已实现配置态 Agent 管理主链、Agent 心跳接口、Bootstrap Token 管理、脚本预览、接入说明、Bootstrap 注册/脚本下载闭环，以及 `skill-bundle` 下载接口；运行态 Agent 也已支持下载自己的 `skill-bundle`；`task-cli.py` 单文件下载尚未落地
 
 ## 1. 文档说明
 
@@ -58,6 +58,7 @@
 - `PUT /api/agents/{agent_id}/status`
 - `POST /api/agents/me/heartbeat`
 - `GET /api/agents/me/skill`
+- `GET /api/agents/me/skill-bundle`
 
 ### 2.3 Bootstrap 接口
 

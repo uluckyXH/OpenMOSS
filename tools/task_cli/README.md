@@ -129,6 +129,7 @@ tools/
 - [x] 建立 `reviewer` Profile
 - [x] 建立 `patrol` Profile
 - [x] 让 `help` 按 Profile 输出
+- [x] 已修正 `st block` 与 `score` 子命令的角色可见性，使 Patrol / Reviewer / Executor 的 help 与当前工作流和 references 对齐
 
 ### E. 兼容入口与交付
 
@@ -155,6 +156,8 @@ tools/
 - [x] 已增加 `skill-bundle` 渲染服务
 - [x] 已增加 `skill-bundle` 下载交付
 - [x] Shell 已改为下载 Skill 包
+- [x] `update` 已改为优先更新整个 Skill Bundle
+- [x] 旧单文件目录可通过 `update` 迁移到标准 Skill Bundle 结构
 
 ## 4. 当前状态汇总
 
@@ -173,12 +176,13 @@ B 模块当前测试结果：
 - `tests/services/test_task_cli_commands_c1.py` → `6 passed`
 - `tests/services/test_task_cli_commands_c2.py` → `5 passed`
 - `tests/services/test_task_cli_commands_c3.py` → `3 passed`
-- `tests/services/test_task_cli_registry.py` → `4 passed`
-- `tests/services/test_task_cli_profiles.py` → `5 passed`
-- `tests/services/test_task_cli_app.py` → `5 passed`
+- `tests/services/test_task_cli_registry.py` → `7 passed`
+- `tests/services/test_task_cli_profiles.py` → `7 passed`
+- `tests/services/test_task_cli_app.py` → `7 passed`
 - `tests/services/test_task_cli_launcher.py` → `2 passed`
 - `tests/services/test_skill_bundle_service.py` → `2 passed`
 - `tests/services/test_pack_skills.py` → `2 passed`
+- `tests/api/test_agents_skill_bundle_api.py` → `1 passed`
 
 ## 5. 下一步
 

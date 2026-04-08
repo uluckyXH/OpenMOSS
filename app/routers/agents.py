@@ -3,7 +3,7 @@ Agent 路由 — 注册、查询、管理
 """
 from datetime import datetime
 
-from fastapi import APIRouter, Depends, Header, HTTPException, Request
+from fastapi import APIRouter, Depends, Header, HTTPException, Request, Response
 from pydantic import BaseModel, ConfigDict, Field
 from sqlalchemy.orm import Session
 from typing import Optional, List
@@ -12,6 +12,7 @@ from app.database import get_db
 from app.auth.dependencies import get_current_agent, verify_admin
 from app.exceptions import BusinessError
 from app.services import agent_service
+from app.services.bootstrap_service import build_skill_bundle_zip_for_runtime_agent
 from app.models.agent import Agent
 from app.config import config
 
@@ -192,7 +193,7 @@ async def report_heartbeat(
 async def get_my_skill(
     agent: Agent = Depends(get_current_agent),
 ):
-    """根据 Agent 角色返回对应的 SKILL.md，`<注册后填入>` 自动替换为实际 API Key。"""
+    """根据 Agent 角色返回当前 SKILL.md 说明文档。"""
     from pathlib import Path
     from fastapi.responses import PlainTextResponse
 
@@ -205,7 +206,29 @@ async def get_my_skill(
 
     content = skill_path.read_text(encoding="utf-8")
 
-    # 替换 API Key 占位符
+    # 兼容旧占位符约定；新版本 SKILL.md 已不依赖该替换。
     content = content.replace("<注册后填入>", agent.api_key)
 
     return PlainTextResponse(content, media_type="text/plain; charset=utf-8")
+
+
+@router.get("/me/skill-bundle", summary="下载当前 Agent 对应的 Skill Bundle")
+async def download_my_skill_bundle(
+    agent: Agent = Depends(get_current_agent),
+    db: Session = Depends(get_db),
+):
+    """按当前运行态 Agent 下载 Skill Bundle。
+
+    若该 Agent 已绑定 managed_agent，则返回专属 bundle；
+    若仍是旧版本运行态实例，则按当前 role 模板构建 bundle，便于平滑迁移。
+    """
+    try:
+        bundle_name, bundle_zip = build_skill_bundle_zip_for_runtime_agent(db, agent)
+    except BusinessError as exc:
+        raise HTTPException(status_code=exc.status_code, detail=str(exc))
+
+    return Response(
+        content=bundle_zip,
+        media_type="application/zip",
+        headers={"Content-Disposition": f'attachment; filename="{bundle_name}"'},
+    )

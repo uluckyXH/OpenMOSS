@@ -35,7 +35,7 @@ def _stdlib_request(
     headers: dict[str, str],
     *,
     json_body: Any = None,
-) -> tuple[int, str]:
+) -> tuple[int, bytes]:
     data = None
     if json_body is not None:
         data = json.dumps(json_body).encode("utf-8")
@@ -43,9 +43,9 @@ def _stdlib_request(
     req = request.Request(url, data=data, headers=headers, method=method.upper())
     try:
         with request.urlopen(req) as resp:
-            return resp.status, resp.read().decode("utf-8")
+            return resp.status, resp.read()
     except error.HTTPError as exc:
-        return exc.code, exc.read().decode("utf-8", errors="replace")
+        return exc.code, exc.read()
     except error.URLError:
         raise ConnectionError(url) from None
 
@@ -60,6 +60,27 @@ def request_text(
     json_body: Any = None,
 ) -> tuple[int, str]:
     """发送请求并返回原始文本。"""
+    status_code, content = request_bytes(
+        method,
+        base_url=base_url,
+        path=path,
+        headers=headers,
+        params=params,
+        json_body=json_body,
+    )
+    return status_code, content.decode("utf-8", errors="replace")
+
+
+def request_bytes(
+    method: str,
+    *,
+    base_url: str,
+    path: str,
+    headers: dict[str, str],
+    params: Optional[dict[str, Any]] = None,
+    json_body: Any = None,
+) -> tuple[int, bytes]:
+    """发送请求并返回原始字节。"""
     url = _build_url(base_url, path, params=params)
 
     try:
@@ -69,7 +90,10 @@ def request_text(
 
     try:
         response = getattr(requests, method.lower())(url, headers=headers, json=json_body)
-        return response.status_code, response.text
+        content = getattr(response, "content", None)
+        if content is None:
+            content = getattr(response, "text", "").encode("utf-8")
+        return response.status_code, content
     except requests.ConnectionError:
         raise ConnectionError(url) from None
 

@@ -17,6 +17,7 @@ import io
 import json
 import secrets
 import shlex
+from types import SimpleNamespace
 import uuid
 import zipfile
 from datetime import datetime, timedelta
@@ -28,7 +29,7 @@ from sqlalchemy.orm import Session
 from app.config import config
 from app.exceptions import ConflictError, ForbiddenError, NotFoundError, ValidationError
 from app.models.agent import Agent
-from app.models.managed_agent import ManagedAgentBootstrapToken
+from app.models.managed_agent import ManagedAgent, ManagedAgentBootstrapToken
 from app.services.agent_service import generate_api_key
 from app.services.host_renderers import get_renderer
 from app.services.managed_agent import (
@@ -690,6 +691,42 @@ def build_skill_bundle_zip_for_managed_agent(
     return bundle_name, bundle_zip
 
 
+def build_skill_bundle_zip_for_runtime_agent(
+    db: Session,
+    runtime_agent: Agent,
+    *,
+    base_url: Optional[str] = None,
+    cli_version: Optional[int] = None,
+) -> tuple[str, bytes]:
+    """按运行态 Agent 构建 Skill Bundle。
+
+    优先复用已绑定的 managed_agent；若旧版本运行态尚未进入配置中心，
+    则回退到按角色 Skill 模板构建 bundle，便于旧单文件 CLI 平滑迁移。
+    """
+    managed_agent = (
+        db.query(ManagedAgent)
+        .filter(ManagedAgent.runtime_agent_id == runtime_agent.id)
+        .first()
+    )
+    if managed_agent is None:
+        managed_agent = SimpleNamespace(
+            id=None,
+            name=runtime_agent.name,
+            role=runtime_agent.role,
+            description=runtime_agent.description or "",
+        )
+
+    bundle_name = f"{get_skill_bundle_dir_name(runtime_agent.role or managed_agent.role)}.zip"
+    bundle_zip = build_skill_bundle_zip(
+        managed_agent=managed_agent,
+        runtime_agent=runtime_agent,
+        runtime_api_key=runtime_agent.api_key,
+        base_url=base_url,
+        cli_version=cli_version,
+    )
+    return bundle_name, bundle_zip
+
+
 def bootstrap_register(
     db: Session,
     managed_agent_id: str,
@@ -751,6 +788,7 @@ __all__ = [
     "render_task_cli_launcher",
     "build_skill_bundle_zip",
     "build_skill_bundle_zip_for_managed_agent",
+    "build_skill_bundle_zip_for_runtime_agent",
     "revoke_bootstrap_token",
     "serialize_bootstrap_token",
     "validate_bootstrap_token",
