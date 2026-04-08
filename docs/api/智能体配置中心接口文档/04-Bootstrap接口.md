@@ -1,6 +1,6 @@
 # Bootstrap 接口
 
-> 最后同步：2026-04-07
+> 最后同步：2026-04-08
 > 接口前缀：`/api/bootstrap`
 > 对应代码：`app/routers/bootstrap.py`
 
@@ -9,6 +9,7 @@
 当前已实现：
 
 - 脚本下载
+- Skill Bundle 下载
 - 运行态注册闭环
 
 当前未实现：
@@ -116,6 +117,50 @@ Content-Type: application/json
   "message": "Bootstrap 注册成功，请保存 API Key"
 }
 ```
+
+### 4.3 下载当前 Agent 专属 Skill Bundle
+
+#### `GET /api/bootstrap/agents/{managed_agent_id}/skill-bundle`
+
+作用：使用 `download_script` 类型的 Bootstrap Token 下载当前配置态 Agent 对应的专属 Skill Bundle。返回 zip 压缩包，包含：
+
+- `SKILL.md`
+- `scripts/task-cli.py`
+- `scripts/task_cli/...`
+- `references/...`
+
+当前约束：
+
+- 该配置态 Agent 必须已经完成运行态注册
+- 返回的 `scripts/task-cli.py` 已注入当前运行态 Agent 的默认 `api_key`
+
+#### Path 参数
+
+| 参数 | 类型 | 必填 | 说明 |
+|---|---|---|---|
+| `managed_agent_id` | string | 是 | 配置态 Agent ID |
+
+#### Header
+
+| Header | 必填 | 说明 |
+|---|---|---|
+| `X-Bootstrap-Token` | 是 | `download_script` 类型 token |
+
+#### 成功返回
+
+- 状态码：`200`
+- 返回体：zip 二进制流
+- `Content-Type`：`application/zip`
+- `Content-Disposition`：附件下载，文件名如 `task-executor-skill.zip`
+
+#### 错误码
+
+| 状态码 | 说明 |
+|---|---|
+| `403` | `X-Bootstrap-Token` 无效、已过期，或 purpose 不为 `download_script` |
+| `404` | 配置态 Agent 不存在 |
+| `409` | 当前配置态 Agent 尚未完成运行态注册，无法生成 Skill Bundle |
+| `422` | 缺少 `X-Bootstrap-Token` |
 
 ## 5. 当前未实现接口
 

@@ -5,85 +5,35 @@ description: 巡查 Skill — 通过 CLI 工具巡查任务状态、标记异常
 
 # Task Patrol Skill
 
-你可以使用 `task-cli.py` 工具来巡查任务状态。该工具位于本 Skill 目录下。
+使用 `scripts/task-cli.py` 扫描异常任务、标记阻塞并发送告警。
 
-## 认证信息
+当前角色 Skill 包仍以 `--key <API_KEY>` 方式调用 CLI；后续 Agent 专属 Skill 包会自动注入默认身份。
 
-- API_KEY: `<注册后填入>`
-
-## 工作流程
-
-1. 获取规则 → 2. 检查积分 → 3. 扫描异常任务 → 4. 标记 blocked → 5. 发送告警 → 6. 记录日志
-
-## 可用命令
-
-> 所有命令前缀：`python task-cli.py --key <API_KEY>`
-
-### 规则
+## 快速开始
 
 ```bash
-rules                                     # 获取合并后的规则提示词（执行前必须调用）
+python scripts/task-cli.py help
+python scripts/task-cli.py --key <API_KEY> rules
+python scripts/task-cli.py --key <API_KEY> st list --status in_progress
+python scripts/task-cli.py --key <API_KEY> st block <sub_task_id>
 ```
 
-### 任务巡查
+## 工作流
 
-```bash
-task list                                 # 查看所有任务
-st list --status in_progress              # 查看执行中的子任务（检查是否超时/卡住）
-st list --status assigned                 # 查看已分配但未开始的（检查是否长期未启动）
-st list --status blocked                  # 查看已标记异常的
-st get <sub_task_id>                      # 查看子任务详情
-```
+1. 先执行 `rules` 获取当前规则。
+2. 查看积分与近期日志，确认本轮巡查重点。
+3. 扫描 `assigned`、`in_progress`、`blocked` 等状态。
+4. 对超时、卡住、会话异常的子任务做进一步检查。
+5. 必要时标记 `blocked` 并发送告警。
+6. 记录巡查日志，方便规划师后续跟进。
 
-> 📄 列表命令默认返回全部数据。如数据较多，可加 `--page N --page-size M` 分页查看。返回结果包含 `total`（总数）和 `has_more`（是否还有更多）。
+## 参考资料
 
-### 异常标记
+- 详细命令：`references/commands.md`
+- 详细工作流：`references/workflow.md`
 
-```bash
-st block <sub_task_id>                    # 标记子任务异常（in_progress/assigned/rework → blocked）
-```
+## 注意
 
-### Agent 查看
-
-```bash
-agents                                    # 查看已注册 Agent（ID、角色、状态、积分）
-agents --role executor                    # 按角色过滤
-```
-
-> 💡 巡查时可通过 `agents` 了解各 Agent 状态，便于在告警中标注相关责任人。
-
-### 积分
-
-```bash
-score me                                  # 查看自己的积分
-score logs --page 1 --page-size 10        # 查看积分明细（建议分页，避免数据过多）
-score agent-logs <agent_id> --page 1 --page-size 10  # 查看指定 Agent 的积分明细（排查连续扣分趋势）
-score leaderboard                         # 积分排行榜
-```
-
-> 📄 `score logs` 默认返回全部明细。如数据较多，可加 `--page N --page-size M` 分页查看。
-
-### 通知
-
-```bash
-notification                              # 查看通知渠道配置
-```
-
-### 日志
-
-```bash
-log create "patrol" "巡查发现xxx子任务超时，已标记blocked" --sub-task-id <id>
-log mine                                  # 回顾工作记录（默认最近7天，最多20条）
-log mine --action reflection              # 只看自省笔记
-log list --sub-task-id <id>               # 查看某子任务的所有日志
-log list --action blocked --days 3        # 扫描执行者求助日志
-log list --days 30 --limit 50             # 最近30天，最多50条
-```
-
-## 注意事项
-
-- 每次执行前先运行 `rules` 获取最新规则
-- 每次唤醒时检查 `score logs`，分析自己的表现
-- 重点巡查：超时未完成、长期未启动、会话断开的子任务
-- 标记 blocked 后需发送告警到通知渠道
-- 不要直接修改子任务的内容或状态（除 block 外），交给规划师处理
+- Patrol 负责发现问题和告警，不直接代替规划师做任务重分配。
+- 除 `block` 外，不要主动修改其他任务内容或状态。
+- 标记异常后要留下足够清楚的上下文，方便后续处理。

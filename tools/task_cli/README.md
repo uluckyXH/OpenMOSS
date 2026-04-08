@@ -1,6 +1,6 @@
 # task_cli README
 
-> 更新时间：2026-04-07
+> 更新时间：2026-04-08
 
 `tools/task_cli/` 是 OpenMOSS 后续 `task-cli.py` 的共享源码目录。
 这里主要负责两件事：
@@ -145,14 +145,16 @@ tools/
 - [x] 已为现有 4 个角色 Skill 建立 `references/`
 - [x] 已增加 `scripts/task-cli.py` 兼容占位入口
 - [x] 已改造 `skills/pack-skills.py`，打包时注入共享 `task_cli` 源码
-- [ ] `SKILL.md` 收口为更精简的 Skill 说明
-- [ ] 更细命令说明下沉到 `references/`
+- [x] `SKILL.md` 已收口为更精简的 Skill 说明
+- [x] 更细命令说明已下沉到 `references/`
 
 #### E-3. Bootstrap 对接
 
-- [ ] 增加 Agent 专属 `task-cli.py` 渲染
-- [ ] 增加 `skill-bundle` 交付
-- [ ] Shell 改为下载 Skill 包
+- [x] 已增加 Agent 专属 `task-cli.py` 入口模板
+- [x] 已增加 Agent 专属 `task-cli.py` 渲染
+- [x] 已增加 `skill-bundle` 渲染服务
+- [x] 已增加 `skill-bundle` 下载交付
+- [x] Shell 已改为下载 Skill 包
 
 ## 4. 当前状态汇总
 
@@ -162,7 +164,7 @@ tools/
 | B. 基础能力拆分 | 已完成 |
 | C. 命令域拆分 | 已完成（旧 CLI 现有命令域） |
 | D. 命令注册表与 Profile | 已完成 |
-| E. 兼容入口与交付 | 进行中（E-1 已完成，E-2 已完成目录骨架与打包器改造，E-3 未开始） |
+| E. 兼容入口与交付 | 已完成（E-1/E-2/E-3 已完成） |
 
 B 模块当前测试结果：
 
@@ -173,13 +175,11 @@ B 模块当前测试结果：
 - `tests/services/test_task_cli_commands_c3.py` → `3 passed`
 - `tests/services/test_task_cli_registry.py` → `4 passed`
 - `tests/services/test_task_cli_profiles.py` → `5 passed`
-- `tests/services/test_task_cli_app.py` → `3 passed`
+- `tests/services/test_task_cli_app.py` → `5 passed`
+- `tests/services/test_task_cli_launcher.py` → `2 passed`
+- `tests/services/test_skill_bundle_service.py` → `2 passed`
 - `tests/services/test_pack_skills.py` → `2 passed`
 
 ## 5. 下一步
 
-当前已完成 `E-1. 兼容入口`，`E-2` 已完成目录骨架与打包器改造，下一步继续完善 `E-2. Skill 包标准化`：
-
-- 先继续收口各角色 `SKILL.md`
-- 再把更细命令说明下沉到 `references/`
-- 最后再接 Bootstrap 的 `task-cli / skill-bundle` 交付
+当前已完成 `E-1. 兼容入口`、`E-2. Skill 包标准化` 和 `E-3. Bootstrap 对接`。下一步不再是继续拼接旧 `task-cli.py`，而是进入后续更细的 Skill 包交付完善和 shell 行为收口。

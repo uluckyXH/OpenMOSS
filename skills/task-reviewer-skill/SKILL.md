@@ -5,93 +5,35 @@ description: 审查者 Skill — 通过 CLI 工具审查子任务、评分、驳
 
 # Task Reviewer Skill
 
-你可以使用 `task-cli.py` 工具来审查子任务。该工具位于本 Skill 目录下。
+使用 `scripts/task-cli.py` 审查交付物、提交审查记录并给出评分。
 
-## 认证信息
+当前角色 Skill 包仍以 `--key <API_KEY>` 方式调用 CLI；后续 Agent 专属 Skill 包会自动注入默认身份。
 
-- API_KEY: `<注册后填入>`
-
-## 工作流程
-
-1. 获取规则 → 2. 检查积分 → 3. 查看待审查子任务 → 4. 逐个审查 → 5. 提交审查记录 → 6. 发送评分详情到群聊 → 7. 记录日志
-
-## 可用命令
-
-> 所有命令前缀：`python task-cli.py --key <API_KEY>`
-
-### 规则
+## 快速开始
 
 ```bash
-rules                                     # 获取合并后的规则提示词（执行前必须调用）
+python scripts/task-cli.py help
+python scripts/task-cli.py --key <API_KEY> rules
+python scripts/task-cli.py --key <API_KEY> st list --status review
+python scripts/task-cli.py --key <API_KEY> review create <sub_task_id> approved 5 --comment "通过"
 ```
 
-### 子任务查看
+## 工作流
 
-```bash
-st list --status review                   # 查看待审查的子任务
-st get <sub_task_id>                      # 查看子任务详情（交付物、验收标准）
-```
+1. 先执行 `rules` 获取当前规则。
+2. 查看待审查子任务和自己的积分记录。
+3. 读取交付物、日志、验收标准和历史审查记录。
+4. 提交通过或驳回的审查结论，并给出清晰评价。
+5. 必要时补充积分调整和通知说明。
+6. 记录审查日志，保持评分口径一致。
 
-### 审查操作
+## 参考资料
 
-```bash
-# 通过审查
-review create <sub_task_id> approved <评分1-5> --comment "评价内容"
+- 详细命令：`references/commands.md`
+- 详细工作流：`references/workflow.md`
 
-# 驳回返工
-review create <sub_task_id> rejected <评分1-5> --comment "评价" --issues "问题描述"
+## 注意
 
-# 查看审查历史
-review list --sub-task-id <id>
-review get <review_id>                    # 查看单条审查详情
-```
-
-> 📄 列表命令默认返回全部数据。如数据较多，可加 `--page N --page-size M` 分页查看。返回结果包含 `total`（总数）和 `has_more`（是否还有更多）。
-
-### Agent 查看
-
-```bash
-agents                                    # 查看已注册 Agent（ID、角色、状态、积分）
-agents --role executor                    # 按角色过滤，查看所有执行者
-```
-
-> 💡 审查时可通过 `agents` 获取 Agent ID，用于 `score adjust` 加分/扣分。
-
-### 积分
-
-```bash
-score me                                  # 查看自己的积分
-score logs --page 1 --page-size 10        # 查看积分明细（建议分页，避免数据过多）
-score agent-logs <agent_id> --page 1 --page-size 10  # 查看指定 Agent 的积分明细（审查前了解历史表现）
-score leaderboard                         # 积分排行榜
-score adjust <agent_id> <分数> "原因"      # 手动加分/扣分（正数加分，负数扣分）
-score adjust <agent_id> -5 "未按时交付" --sub-task-id <id>  # 关联子任务扣分
-```
-
-> 📄 `score logs` 默认返回全部明细。如数据较多，可加 `--page N --page-size M` 分页查看。
-
-### 通知
-
-```bash
-notification                              # 查看通知渠道配置
-```
-
-### 日志
-
-```bash
-log create "review" "审查了xxx子任务，评分4/5" --sub-task-id <id>
-log mine                                  # 回顾工作记录（默认最近7天，最多20条）
-log mine --action reflection              # 只看自省笔记
-log list --sub-task-id <id>               # 查看某子任务的所有日志
-log list --sub-task-id <id> --action delivery  # 查看执行者交付摘要
-log list --days 30 --limit 50             # 最近30天，最多50条
-```
-
-## 注意事项
-
-- 每次执行前先运行 `rules` 获取最新规则
-- 每次唤醒时检查 `score logs`，分析自己的审查表现
-- 审查时严格对照验收标准，评分客观一致
-- 驳回时 `--issues` 必填，清楚描述问题以便执行者修复
-- 每次审查后将评分详情发送到通知渠道：「审查结果：子任务名 | 执行者 | 评分 ⭐x/5 | 评价」
-- 无待审查任务时本次唤醒结束
+- Reviewer 的重点是“是否符合验收标准”，不是代替执行者补做实现。
+- 驳回返工时必须把问题写清楚，避免给执行者模糊反馈。
+- 评分标准要稳定，避免同类问题前后标准不一致。

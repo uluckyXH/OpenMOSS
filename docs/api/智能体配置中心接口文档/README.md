@@ -1,8 +1,8 @@
 # 智能体配置中心接口文档
 
-> 最后同步：2026-04-07
+> 最后同步：2026-04-08
 > 适用范围：智能体配置中心重构当前已落地后端接口
-> 当前代码状态：已实现配置态 Agent 管理主链、Agent 心跳接口、Bootstrap Token 管理、脚本预览、接入说明和 Bootstrap 注册/脚本下载闭环；`task-cli.py` 下载尚未落地
+> 当前代码状态：已实现配置态 Agent 管理主链、Agent 心跳接口、Bootstrap Token 管理、脚本预览、接入说明、Bootstrap 注册/脚本下载闭环，以及 `skill-bundle` 下载接口；`task-cli.py` 单文件下载尚未落地
 
 ## 1. 文档说明
 
@@ -66,6 +66,7 @@
 已实现接口：
 
 - `GET /api/bootstrap/agents/{managed_agent_id}/script`
+- `GET /api/bootstrap/agents/{managed_agent_id}/skill-bundle`
 - `POST /api/bootstrap/agents/{managed_agent_id}/register`
 
 ## 3. 当前未实现但设计中已预留的接口

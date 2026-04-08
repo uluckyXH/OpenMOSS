@@ -18,7 +18,7 @@ shells/
     │   └── finalize.sh.tpl                            # 执行后结果输出
     ├── openmoss/                                      # 与 OpenMOSS 服务交互的片段
     │   ├── register_runtime.sh.tpl                    # 注册运行态 Agent，获取 API_KEY
-    │   └── download_skill_bundle.sh.tpl              # 下载 task-cli.py 和 SKILL.md
+    │   └── download_skill_bundle.sh.tpl               # 下载并解压 Agent 专属 Skill Bundle
     ├── hosts/                                         # 宿主平台差异片段
     │   └── openclaw/                                  # OpenClaw 平台专用模板
     │       ├── create_sub_agent.sh.tpl                # 创建子 Agent
@@ -72,9 +72,10 @@ shells/
   - 当前是旧注册链路的抽离版本
   - 后续可以平滑替换为 bootstrap token 注册链路
 - `download_skill_bundle.sh.tpl`
-  - 从 OpenMOSS 下载 `task-cli.py` 和 `SKILL.md`
-  - 当前只负责下载
-  - 不负责凭证写入策略
+  - 从 OpenMOSS 下载当前 Agent 专属 `skill-bundle`
+  - 使用 `download_script` token 下载 zip
+  - 解压为标准 Skill 目录结构
+  - 准备好 `scripts/task-cli.py` 入口供后续宿主调用
 
 ### `templates/hosts/`
 

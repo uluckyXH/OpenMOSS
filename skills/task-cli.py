@@ -1078,6 +1078,8 @@ def main():
             base_url=BASE_URL,
             cli_version=CLI_VERSION,
             default_api_key=DEFAULT_API_KEY,
+            agent_id=AGENT_ID,
+            agent_name=AGENT_NAME,
             agent_role=AGENT_ROLE,
             cli_profile=CLI_PROFILE,
             role_choices=ROLE_CHOICES,

@@ -468,6 +468,7 @@ def get_bootstrap_script(
     include_schedule: bool = Query(True),
     include_comm_bindings: bool = Query(True),
     register_ttl_seconds: int = Query(3600, gt=0),
+    bundle_ttl_seconds: int = Query(86400, gt=0),
     db: Session = Depends(get_db),
 ):
     """生成当前配置态 Agent 的 Bootstrap 脚本预览。"""
@@ -478,10 +479,17 @@ def get_bootstrap_script(
             purpose="register_runtime",
             ttl_seconds=register_ttl_seconds,
         )
+        bundle_token = bootstrap_svc.create_bootstrap_token(
+            db,
+            managed_agent_id=agent_id,
+            purpose="download_script",
+            ttl_seconds=bundle_ttl_seconds,
+        )
         script = bootstrap_svc.render_bootstrap_script(
             db,
             managed_agent_id=agent_id,
             register_token=register_token["token"],
+            skill_bundle_token=bundle_token["token"],
             selected_artifacts=selected_artifacts,
             include_schedule=include_schedule,
             include_comm_bindings=include_comm_bindings,

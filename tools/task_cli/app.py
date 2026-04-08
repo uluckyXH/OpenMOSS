@@ -33,7 +33,7 @@ from .main import (
 )
 from .output import extract_items, print_json
 from .profiles import resolve_profile_name
-from .runtime import ROLE_CHOICES, build_runtime_config
+from .runtime import DEFAULT_CLI_VERSION, ROLE_CHOICES, build_runtime_config
 
 
 RequestFn = Callable[..., Any]
@@ -46,6 +46,8 @@ class CliAppContext:
     base_url: str
     cli_version: int
     default_api_key: str | None
+    agent_id: str | None
+    agent_name: str | None
     agent_role: str | None
     cli_profile: str | None
     role_choices: tuple[str, ...]
@@ -206,12 +208,14 @@ def run_cli(ctx: CliAppContext, *, argv: list[str] | None = None, script_path: s
 def build_default_context():
     runtime = build_runtime_config(
         default_base_url="http://192.168.31.128:6565",
-        default_cli_version=2,
+        default_cli_version=DEFAULT_CLI_VERSION,
     )
     return CliAppContext(
         base_url=runtime.base_url,
         cli_version=runtime.cli_version,
         default_api_key=runtime.default_api_key,
+        agent_id=runtime.agent_id,
+        agent_name=runtime.agent_name,
         agent_role=runtime.agent_role,
         cli_profile=runtime.cli_profile,
         role_choices=ROLE_CHOICES,
@@ -234,3 +238,75 @@ def build_default_context():
 
 def run_default_cli(*, argv: list[str] | None = None, script_path: str) -> None:
     run_cli(build_default_context(), argv=argv, script_path=script_path)
+
+
+def build_skill_context(
+    *,
+    base_url: str,
+    cli_version: int = DEFAULT_CLI_VERSION,
+    default_api_key: str | None = None,
+    agent_id: str | None = None,
+    agent_name: str | None = None,
+    agent_role: str | None = None,
+    cli_profile: str | None = None,
+) -> CliAppContext:
+    runtime = build_runtime_config(
+        default_base_url=base_url,
+        default_cli_version=cli_version,
+        default_api_key=default_api_key,
+        agent_id=agent_id,
+        agent_name=agent_name,
+        agent_role=agent_role,
+        cli_profile=cli_profile,
+    )
+    return CliAppContext(
+        base_url=runtime.base_url,
+        cli_version=runtime.cli_version,
+        default_api_key=runtime.default_api_key,
+        agent_id=runtime.agent_id,
+        agent_name=runtime.agent_name,
+        agent_role=runtime.agent_role,
+        cli_profile=runtime.cli_profile,
+        role_choices=ROLE_CHOICES,
+        request=lambda method, path, key, **kwargs: request_json(
+            method,
+            base_url=runtime.base_url,
+            path=path,
+            headers=build_agent_headers(key),
+            params=kwargs.get("params"),
+            json_body=kwargs.get("json"),
+        ),
+        request_json=request_json,
+        request_text=request_text,
+        build_agent_headers=build_agent_headers,
+        build_registration_headers=build_registration_headers,
+        print_json=print_json,
+        extract_items=extract_items,
+    )
+
+
+def run_skill_cli(
+    *,
+    script_path: str,
+    argv: list[str] | None = None,
+    base_url: str,
+    cli_version: int = DEFAULT_CLI_VERSION,
+    default_api_key: str | None = None,
+    agent_id: str | None = None,
+    agent_name: str | None = None,
+    agent_role: str | None = None,
+    cli_profile: str | None = None,
+) -> None:
+    run_cli(
+        build_skill_context(
+            base_url=base_url,
+            cli_version=cli_version,
+            default_api_key=default_api_key,
+            agent_id=agent_id,
+            agent_name=agent_name,
+            agent_role=agent_role,
+            cli_profile=cli_profile,
+        ),
+        argv=argv,
+        script_path=script_path,
+    )
