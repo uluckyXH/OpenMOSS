@@ -31,3 +31,7 @@ static/
 config.yaml
 .openmoss.pid
 .venv
+apidocs
+
+# Claude Code
+CLAUDE.md
