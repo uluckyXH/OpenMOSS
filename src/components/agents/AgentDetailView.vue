@@ -1,16 +1,18 @@
 <script setup lang="ts">
 import { onMounted, ref, watch, computed } from 'vue';
-import { managedAgentApi, type ManagedAgentListItem } from '@/api/client';
+import { toast } from 'vue-sonner';
+import { managedAgentApi, managedAgentBootstrapApi, type ManagedAgentListItem, type ManagedAgentBootstrapScriptResponse } from '@/api/client';
+import { usePlatformMeta } from '@/composables/agents/usePlatformMeta';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   ChevronLeft, Loader2, AlertCircle, Pencil, Trash2,
   Settings, FileText, Clock, MessageSquare, Rocket, Info,
-  CheckCircle2, Circle, Lock,
+  CheckCircle2, Circle, Lock, Copy, Check, X,
 } from 'lucide-vue-next';
 import {
-  formatRole, getRoleBadgeClass, getRoleBarClass,
+  formatRole, getRoleBadgeClass,
   formatStatus, getStatusBadgeClass,
 } from '@/composables/agents/useAgentFormatters';
 import { useAgentReadiness, type TabReadiness } from '@/composables/agents/useAgentReadiness';
@@ -37,9 +39,48 @@ const showDeleteDialog = ref(false);
 
 let detailRequestId = 0;
 
-// ─── 就绪检测 ───
-const { readiness, progress, loading: readinessLoading, refresh: refreshReadiness } =
-  useAgentReadiness(() => props.agentId);
+// ─── 就绪检测（从 agent.readiness 直接读取，无额外请求） ───
+const { readiness, progress, raw: rawReadiness } = useAgentReadiness(selectedAgent);
+
+// ─── 平台 Meta（用于 capabilities 过滤和传递 hostPlatform） ───
+const { platforms, loadPlatforms } = usePlatformMeta();
+const currentPlatform = computed(() => selectedAgent.value?.host_platform ?? 'openclaw');
+const currentCapabilities = computed(() =>
+  platforms.value.find(p => p.key === currentPlatform.value)?.capabilities ?? null
+);
+
+// ─── 部署脚本弹窗 ───
+const showDeployDialog = ref(false);
+const loadingScript = ref(false);
+const scriptResult = ref<ManagedAgentBootstrapScriptResponse | null>(null);
+const copiedScript = ref(false);
+
+async function handleGetScript() {
+  loadingScript.value = true;
+  try {
+    const res = await managedAgentBootstrapApi.getBootstrapScript(props.agentId);
+    scriptResult.value = res.data;
+  } catch (err: unknown) {
+    const msg = (err as { response?: { data?: { detail?: string } } })?.response?.data?.detail;
+    toast.error(msg ?? '生成脚本失败');
+  } finally {
+    loadingScript.value = false;
+  }
+}
+
+async function copyScript() {
+  if (!scriptResult.value) return;
+  await navigator.clipboard.writeText(scriptResult.value.script);
+  copiedScript.value = true;
+  setTimeout(() => { copiedScript.value = false; }, 2000);
+}
+
+function openDeployDialog() {
+  scriptResult.value = null;
+  copiedScript.value = false;
+  showDeployDialog.value = true;
+  void handleGetScript();
+}
 
 // ─── Tab 配置 ───
 interface TabMeta {
@@ -47,22 +88,63 @@ interface TabMeta {
   label: string;
   icon: typeof Info;
   readinessKey: keyof TabReadiness;
+  required: boolean;
+  /** 此 Tab 的编辑功能是否可用（前置条件是否满足） */
+  isEditable: (r: TabReadiness) => boolean;
   prerequisiteLabel?: string; // 前置条件不满足时显示的提示
 }
 
 const tabsMeta: TabMeta[] = [
-  { key: 'basic', label: '基础信息', icon: Info, readinessKey: 'basic' },
-  { key: 'host', label: '平台配置', icon: Settings, readinessKey: 'host', prerequisiteLabel: '基础信息' },
-  { key: 'prompt', label: 'Prompt', icon: FileText, readinessKey: 'prompt', prerequisiteLabel: '平台配置' },
-  { key: 'schedule', label: '定时任务', icon: Clock, readinessKey: 'schedule', prerequisiteLabel: 'Prompt' },
-  { key: 'comm', label: '通讯渠道', icon: MessageSquare, readinessKey: 'comm', prerequisiteLabel: 'Prompt' },
-  { key: 'bootstrap', label: '部署接入', icon: Rocket, readinessKey: 'bootstrap', prerequisiteLabel: '平台配置 + Prompt' },
+  { key: 'basic', label: '基础信息', icon: Info, readinessKey: 'basic', required: true,
+    isEditable: () => true },
+  { key: 'host', label: '平台配置', icon: Settings, readinessKey: 'host', required: true,
+    isEditable: () => true }, // 前置 = basic，始终满足
+  { key: 'prompt', label: 'Prompt', icon: FileText, readinessKey: 'prompt', required: true,
+    isEditable: (r) => r.host, prerequisiteLabel: '平台配置' },
+  { key: 'schedule', label: '定时任务', icon: Clock, readinessKey: 'schedule', required: false,
+    isEditable: (r) => r.prompt, prerequisiteLabel: 'Prompt' },
+  { key: 'comm', label: '通讯渠道', icon: MessageSquare, readinessKey: 'comm', required: false,
+    isEditable: (r) => r.prompt, prerequisiteLabel: 'Prompt' },
+  { key: 'bootstrap', label: '部署接入', icon: Rocket, readinessKey: 'bootstrap', required: false,
+    isEditable: (r) => r.host && r.prompt, prerequisiteLabel: '平台配置 + Prompt' },
 ];
 
-// 当前 Tab 是否就绪
-const activeTabReady = computed(() => {
+const requiredTabs = tabsMeta.filter(t => t.required);
+const optionalTabs = tabsMeta.filter(t => !t.required);
+
+// 根据 capabilities 过滤可见 Tab
+const visibleRequiredTabs = computed(() =>
+  requiredTabs.filter(t => isTabVisible(t.key))
+);
+const visibleOptionalTabs = computed(() =>
+  optionalTabs.filter(t => isTabVisible(t.key))
+);
+
+function isTabVisible(tabKey: string) {
+  const caps = currentCapabilities.value;
+  if (!caps) return true; // 无 meta 时全部显示
+  switch (tabKey) {
+    case 'schedule': return caps.schedule !== false;
+    case 'comm': return caps.comm_binding !== false;
+    case 'bootstrap': return caps.bootstrap_script !== false;
+    default: return true;
+  }
+}
+
+// 当前 Tab 是否可编辑（前置条件是否满足）
+const activeTabEditable = computed(() => {
   const meta = tabsMeta.find(t => t.key === activeTab.value);
-  return meta ? readiness.value[meta.readinessKey] : true;
+  return meta ? meta.isEditable(readiness.value) : true;
+});
+
+function isTabEditable(tabKey: string) {
+  const meta = tabsMeta.find(t => t.key === tabKey);
+  return meta ? meta.isEditable(readiness.value) : true;
+}
+
+// "下一步"提示：第一个未完成的必填项
+const nextStep = computed(() => {
+  return requiredTabs.find(t => !readiness.value[t.readinessKey]);
 });
 
 // ─── 数据加载 ───
@@ -82,21 +164,29 @@ async function loadDetail(agentId: string) {
   }
 }
 
-onMounted(() => { void loadDetail(props.agentId); });
+onMounted(() => { void loadPlatforms(); void loadDetail(props.agentId); });
 watch(() => props.agentId, (id) => { if (id) void loadDetail(id); });
 
 function handleSaved() {
   void loadDetail(props.agentId);
-  void refreshReadiness();
 }
 
 function handleDeleted() {
   emit('deleted');
 }
 
-// Tab 内容保存后刷新就绪状态
+// Tab 内容保存后刷新 agent 数据（readiness 会自动更新）
 function onTabSaved() {
-  void refreshReadiness();
+  void loadDetail(props.agentId);
+}
+
+function formatExpireDate(value: string | null) {
+  if (!value) return '—';
+  try {
+    return new Date(value).toLocaleString('zh-CN', {
+      month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit',
+    });
+  } catch { return value; }
 }
 </script>
 
@@ -147,19 +237,25 @@ function onTabSaved() {
       <!-- 详情 -->
       <template v-else-if="selectedAgent">
         <div class="max-w-5xl mx-auto px-6 py-5 animate-slide-up">
-          <!-- 简洁头卡 + 配置进度 -->
+          <!-- ═══════ 头卡 ═══════ -->
           <div class="rounded-xl border bg-card overflow-hidden mb-5">
-            <div class="h-1" :class="getRoleBarClass(selectedAgent.role)" />
             <div class="p-5">
+              <!-- 第一行：角色标识 + slug + 描述 + 版本 -->
               <div class="flex items-start justify-between gap-4">
-                <div class="min-w-0">
-                  <p class="text-xs text-muted-foreground font-mono mb-1">{{ selectedAgent.slug }}</p>
-                  <p v-if="selectedAgent.description" class="text-sm text-muted-foreground leading-relaxed max-w-lg">
-                    {{ selectedAgent.description }}
-                  </p>
-                  <p v-else class="text-sm text-muted-foreground/40 italic">暂无描述</p>
+                <div class="flex items-start gap-3 min-w-0">
+                  <!-- 角色图标 -->
+                  <div class="shrink-0 h-9 w-9 rounded-lg flex items-center justify-center text-xs font-bold"
+                    :class="getRoleBadgeClass(selectedAgent.role)">
+                    {{ formatRole(selectedAgent.role).charAt(0) }}
+                  </div>
+                  <div class="min-w-0">
+                    <p class="text-xs text-muted-foreground font-mono mb-1">{{ selectedAgent.slug }}</p>
+                    <p v-if="selectedAgent.description" class="text-sm text-muted-foreground leading-relaxed max-w-lg">
+                      {{ selectedAgent.description }}
+                    </p>
+                    <p v-else class="text-sm text-muted-foreground/40 italic">暂无描述</p>
+                  </div>
                 </div>
-                <!-- 版本 + 进度 -->
                 <div class="shrink-0 text-right space-y-2">
                   <div>
                     <div class="text-[11px] text-muted-foreground/50">配置版本</div>
@@ -180,46 +276,88 @@ function onTabSaved() {
                 </div>
               </div>
 
-              <!-- 配置进度条 -->
-              <div v-if="!readinessLoading" class="mt-4 pt-4 border-t border-border/30">
+              <!-- ─── 配置清单 ─── -->
+              <div class="mt-4 pt-4 border-t border-border/30">
+                <!-- 必填项 -->
                 <div class="flex items-center gap-3 mb-2">
-                  <span class="text-[11px] text-muted-foreground/50 font-medium">配置进度</span>
+                  <span class="text-[11px] text-muted-foreground/50 font-medium">必填配置</span>
                   <span class="text-[11px] tabular-nums"
                     :class="progress.done === progress.total ? 'text-emerald-400' : 'text-muted-foreground/50'">
                     {{ progress.done }} / {{ progress.total }}
                   </span>
                 </div>
-                <div class="flex gap-2">
-                  <button v-for="tab in tabsMeta.slice(0, 3)" :key="tab.key"
-                    class="flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-md transition-colors" :class="readiness[tab.readinessKey]
-                      ? 'text-emerald-400 bg-emerald-500/5 hover:bg-emerald-500/10'
-                      : 'text-muted-foreground/40 bg-muted/20 hover:bg-muted/30'" @click="activeTab = tab.key">
+                <div class="flex gap-2 mb-3">
+                  <button v-for="tab in visibleRequiredTabs" :key="tab.key"
+                    class="flex items-center gap-1 text-[11px] px-2.5 py-1 rounded-md transition-colors"
+                    :class="[
+                      readiness[tab.readinessKey]
+                        ? 'text-emerald-400 bg-emerald-500/5 hover:bg-emerald-500/10'
+                        : nextStep?.key === tab.key
+                          ? 'text-primary bg-primary/5 ring-1 ring-primary/20 hover:bg-primary/10'
+                          : 'text-muted-foreground/40 bg-muted/20 hover:bg-muted/30',
+                    ]" @click="activeTab = tab.key">
                     <CheckCircle2 v-if="readiness[tab.readinessKey]" class="h-3 w-3" />
                     <Circle v-else class="h-3 w-3" />
                     {{ tab.label }}
+                    <span v-if="nextStep?.key === tab.key"
+                      class="text-[9px] ml-0.5 text-primary/70">← 下一步</span>
                   </button>
+                </div>
+
+                <!-- 可选项 -->
+                <div class="flex items-center gap-2">
+                  <span class="text-[11px] text-muted-foreground/30 font-medium">可选</span>
+                  <button v-for="tab in visibleOptionalTabs" :key="tab.key"
+                    class="flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-md text-muted-foreground/30 hover:text-muted-foreground/50 hover:bg-muted/20 transition-colors"
+                    @click="activeTab = tab.key">
+                    {{ tab.label }}
+                    <template v-if="tab.key === 'schedule' && rawReadiness">
+                      <Badge v-if="rawReadiness.schedules_count > 0" variant="outline" class="text-[9px] px-1 py-0 h-3.5 text-muted-foreground/40">
+                        {{ rawReadiness.schedules_count }}
+                      </Badge>
+                    </template>
+                    <template v-if="tab.key === 'comm' && rawReadiness">
+                      <Badge v-if="rawReadiness.comm_bindings_count > 0" variant="outline" class="text-[9px] px-1 py-0 h-3.5 text-muted-foreground/40">
+                        {{ rawReadiness.comm_bindings_count }}
+                      </Badge>
+                    </template>
+                  </button>
+                </div>
+
+                <!-- 🚀 部署按钮 -->
+                <div class="mt-4">
+                  <Button v-if="readiness.bootstrap" size="sm"
+                    class="gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm shadow-emerald-500/20"
+                    @click="openDeployDialog">
+                    <Rocket class="h-3.5 w-3.5" />
+                    生成部署脚本
+                  </Button>
+                  <div v-else-if="nextStep" class="flex items-center gap-1.5 text-[11px] text-muted-foreground/40">
+                    <Lock class="h-3 w-3" />
+                    完成所有必填配置后可生成部署脚本
+                  </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- Tab 面板 -->
+          <!-- ═══════ Tab 面板 ═══════ -->
           <Tabs v-model="activeTab" class="w-full">
             <TabsList class="bg-transparent border-b rounded-none w-full justify-start h-auto p-0 gap-0">
-              <TabsTrigger v-for="tab in tabsMeta" :key="tab.key" :value="tab.key"
+              <TabsTrigger v-for="tab in tabsMeta.filter(t => isTabVisible(t.key))" :key="tab.key" :value="tab.key"
                 class="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:shadow-none gap-1.5 text-xs px-4 py-2.5 relative">
                 <component :is="tab.icon" class="h-3.5 w-3.5" />
                 {{ tab.label }}
-                <!-- Tab 就绪指示 -->
-                <span v-if="readiness[tab.readinessKey]"
+                <!-- Tab 就绪指示：已完成 = 绿点，前置未满足 = Lock -->
+                <span v-if="tab.required && readiness[tab.readinessKey]"
                   class="absolute top-1.5 right-1.5 h-1.5 w-1.5 rounded-full bg-emerald-400" />
-                <Lock v-else-if="tab.key !== 'basic' && !readiness[tab.readinessKey]"
+                <Lock v-else-if="!tab.isEditable(readiness)"
                   class="h-2.5 w-2.5 text-muted-foreground/30 ml-0.5" />
               </TabsTrigger>
             </TabsList>
 
-            <!-- 未就绪 Tab 的提示横幅 -->
-            <div v-if="!activeTabReady && activeTab !== 'basic'"
+            <!-- 前置条件未满足时的提示横幅 -->
+            <div v-if="!activeTabEditable"
               class="mt-4 rounded-lg border border-amber-500/20 bg-amber-500/5 px-4 py-3 flex items-center gap-2">
               <Lock class="h-4 w-4 text-amber-400 shrink-0" />
               <p class="text-xs text-amber-300/80">
@@ -232,22 +370,22 @@ function onTabSaved() {
             </div>
 
             <TabsContent value="basic" class="mt-5">
-              <BasicInfoTab :agent="selectedAgent" />
+              <BasicInfoTab :agent="selectedAgent" @saved="onTabSaved" />
             </TabsContent>
             <TabsContent value="host" class="mt-5">
-              <PlatformConfigTab :agent-id="agentId" @saved="onTabSaved" />
+              <PlatformConfigTab :agent-id="agentId" :host-platform="currentPlatform" @saved="onTabSaved" />
             </TabsContent>
             <TabsContent value="prompt" class="mt-5">
-              <PromptTab :agent-id="agentId" :disabled="!readiness.host" @saved="onTabSaved" />
+              <PromptTab :agent-id="agentId" :host-platform="currentPlatform" :disabled="!isTabEditable('prompt')" @saved="onTabSaved" />
             </TabsContent>
             <TabsContent value="schedule" class="mt-5">
-              <ScheduleTab :agent-id="agentId" :disabled="!readiness.prompt" />
+              <ScheduleTab :agent-id="agentId" :disabled="!isTabEditable('schedule')" />
             </TabsContent>
             <TabsContent value="comm" class="mt-5">
-              <CommBindingTab :agent-id="agentId" :disabled="!readiness.prompt" />
+              <CommBindingTab :agent-id="agentId" :disabled="!isTabEditable('comm')" />
             </TabsContent>
             <TabsContent value="bootstrap" class="mt-5">
-              <BootstrapTab :agent-id="agentId" :disabled="!readiness.bootstrap" />
+              <BootstrapTab :agent-id="agentId" :disabled="!isTabEditable('bootstrap')" />
             </TabsContent>
           </Tabs>
         </div>
@@ -257,5 +395,54 @@ function onTabSaved() {
     <!-- 弹窗 -->
     <AgentEditDialog v-model:open="showEditDialog" :agent="selectedAgent" @saved="handleSaved" />
     <AgentDeleteDialog v-model:open="showDeleteDialog" :agent="selectedAgent" @deleted="handleDeleted" />
+
+    <!-- ─── 部署脚本弹窗 ─── -->
+    <Teleport to="body">
+      <div v-if="showDeployDialog"
+        class="fixed inset-0 z-50 flex items-center justify-center p-4 animate-in fade-in duration-150">
+        <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" @click="showDeployDialog = false" />
+        <div
+          class="relative z-10 w-full max-w-2xl max-h-[80vh] overflow-y-auto rounded-xl border bg-background p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-2">
+              <Rocket class="h-5 w-5 text-emerald-400" />
+              <h3 class="text-base font-semibold">部署脚本</h3>
+            </div>
+            <Button variant="ghost" size="icon" class="h-7 w-7" @click="showDeployDialog = false">
+              <X class="h-4 w-4" />
+            </Button>
+          </div>
+          <p class="text-xs text-muted-foreground/60 mb-4">
+            在目标机器上执行此脚本，Agent 将自动下载配置并注册运行态。
+          </p>
+
+          <!-- 加载中 -->
+          <div v-if="loadingScript" class="flex items-center justify-center py-12">
+            <Loader2 class="h-6 w-6 animate-spin text-muted-foreground" />
+          </div>
+
+          <!-- 脚本内容 -->
+          <template v-else-if="scriptResult">
+            <div class="relative">
+              <pre
+                class="rounded-lg bg-muted/30 border p-4 text-xs font-mono whitespace-pre-wrap break-all max-h-72 overflow-y-auto leading-relaxed select-all">{{ scriptResult.script }}</pre>
+              <Button variant="ghost" size="sm"
+                class="absolute top-2 right-2 h-7 gap-1 text-xs bg-background/80 backdrop-blur-sm"
+                @click="copyScript">
+                <Check v-if="copiedScript" class="h-3 w-3 text-emerald-400" />
+                <Copy v-else class="h-3 w-3" />
+                {{ copiedScript ? '已复制' : '复制' }}
+              </Button>
+            </div>
+            <p class="text-[11px] text-muted-foreground/40 mt-3">
+              注册 Token 过期：{{ formatExpireDate(scriptResult.register_token_expires_at) }}
+            </p>
+            <p class="text-[11px] text-muted-foreground/30 mt-1">
+              更多选项（自定义参数、Onboarding 消息等）请前往「部署接入」Tab。
+            </p>
+          </template>
+        </div>
+      </div>
+    </Teleport>
   </div>
 </template>

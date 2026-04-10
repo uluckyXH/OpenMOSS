@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { toast } from 'vue-sonner';
 import {
   managedAgentPromptAssetApi,
@@ -8,6 +8,7 @@ import {
   type ManagedAgentPromptRenderPreview,
   type ManagedAgentHostRenderStrategy,
 } from '@/api/client';
+import { usePlatformMeta } from '@/composables/agents/usePlatformMeta';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 
@@ -16,10 +17,10 @@ import {
   DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import {
-  Loader2, AlertCircle, Pencil, X, Save, FileText, RotateCcw, Eye, Copy, ChevronDown, Check,
+  Loader2, AlertCircle, Pencil, X, Save, FileText, RotateCcw, Eye, Copy, ChevronDown, Check, Info,
 } from 'lucide-vue-next';
 
-const props = defineProps<{ agentId: string; disabled?: boolean }>();
+const props = defineProps<{ agentId: string; hostPlatform?: string; disabled?: boolean }>();
 const emit = defineEmits<{ saved: [] }>();
 
 // ─── 数据状态 ───
@@ -53,13 +54,30 @@ const previewing = ref(false);
 const preview = ref<ManagedAgentPromptRenderPreview | null>(null);
 const showPreview = ref(false);
 
-// ─── 渲染策略选项 ───
+// ─── 平台 Meta 驱动 ───
 
-const strategyOptions: { value: ManagedAgentHostRenderStrategy; label: string; desc: string }[] = [
-  { value: 'host_default', label: '平台默认', desc: '由平台自行决定渲染方式' },
-  { value: 'openclaw_workspace_files', label: 'Workspace 文件', desc: '渲染为 OpenClaw 工作目录文件' },
-  { value: 'openclaw_inline_schedule', label: '内联 Schedule', desc: '内联到定时任务的唤醒消息中' },
-];
+const { platforms, loadPlatforms } = usePlatformMeta();
+
+const promptUIHints = computed(() => {
+  const key = props.hostPlatform ?? 'openclaw';
+  return platforms.value.find(p => p.key === key)?.ui_hints?.prompt ?? null;
+});
+
+// 渲染策略（meta 驱动，fallback 硬编码）
+const strategyOptions = computed(() => {
+  if (promptUIHints.value?.render_strategies?.length) {
+    return promptUIHints.value.render_strategies.map(s => ({
+      value: s.value as ManagedAgentHostRenderStrategy,
+      label: s.label,
+      desc: s.description,
+    }));
+  }
+  return [
+    { value: 'host_default' as ManagedAgentHostRenderStrategy, label: '平台默认', desc: '由平台自行决定渲染方式' },
+    { value: 'openclaw_workspace_files' as ManagedAgentHostRenderStrategy, label: 'Workspace 文件', desc: '渲染为 OpenClaw 工作目录文件' },
+    { value: 'openclaw_inline_schedule' as ManagedAgentHostRenderStrategy, label: '内联 Schedule', desc: '内联到定时任务的唤醒消息中' },
+  ];
+});
 
 // ─── 加载 ───
 
@@ -83,7 +101,7 @@ async function loadAsset() {
   }
 }
 
-onMounted(() => { void loadAsset(); });
+onMounted(() => { void loadPlatforms(); void loadAsset(); });
 watch(() => props.agentId, () => { editing.value = false; showPreview.value = false; void loadAsset(); });
 
 // ─── 编辑 ───
@@ -179,11 +197,22 @@ function formatDate(value: string | null) {
   } catch { return value; }
 }
 
-const promptSections = [
-  { key: 'system_prompt_content', label: '系统提示词', placeholder: '定义 Agent 的行为规则和约束…' },
-  { key: 'persona_prompt_content', label: '人格提示词', placeholder: '定义 Agent 的性格和沟通风格…' },
-  { key: 'identity_content', label: '身份内容', placeholder: '定义 Agent 的身份信息和背景…' },
-] as const;
+// Prompt 段落（meta 驱动，fallback 硬编码）
+const promptSections = computed(() => {
+  if (promptUIHints.value?.sections?.length) {
+    return promptUIHints.value.sections.map(s => ({
+      key: s.key,
+      label: s.label,
+      placeholder: s.placeholder ?? '',
+      required: s.required,
+    }));
+  }
+  return [
+    { key: 'system_prompt_content', label: '系统提示词', placeholder: '定义 Agent 的行为规则和约束…', required: true },
+    { key: 'persona_prompt_content', label: '人格提示词', placeholder: '定义 Agent 的性格和沟通风格…', required: false },
+    { key: 'identity_content', label: '身份内容', placeholder: '定义 Agent 的身份信息和背景…', required: false },
+  ];
+});
 </script>
 
 <template>
@@ -215,13 +244,20 @@ const promptSections = [
 
   <!-- 正常展示 / 编辑 -->
   <div v-else class="space-y-5 animate-slide-up">
+    <!-- 平台说明 -->
+    <div v-if="promptUIHints?.description"
+      class="rounded-lg border border-border/30 bg-muted/5 px-4 py-3 flex items-start gap-2">
+      <Info class="h-4 w-4 text-primary/60 shrink-0 mt-0.5" />
+      <p class="text-xs text-muted-foreground leading-relaxed">{{ promptUIHints.description }}</p>
+    </div>
+
     <!-- 顶部操作栏 -->
     <div class="flex items-center justify-between flex-wrap gap-2">
       <div class="flex items-center gap-3">
         <div class="text-xs font-medium text-muted-foreground/60 uppercase tracking-wider">Prompt 管理</div>
         <template v-if="asset">
           <Badge variant="outline" class="text-[10px]">
-            {{strategyOptions.find(s => s.value === asset!.host_render_strategy)?.label ?? asset!.host_render_strategy
+            {{strategyOptions.find((s: { value: string }) => s.value === asset!.host_render_strategy)?.label ?? asset!.host_render_strategy
             }}
           </Badge>
           <span class="text-[11px] text-muted-foreground/40">{{ formatDate(asset.updated_at) }}</span>
@@ -295,7 +331,7 @@ const promptSections = [
         <DropdownMenu>
           <DropdownMenuTrigger as-child>
             <Button variant="outline" size="sm" class="h-8 w-full max-w-xs justify-between text-xs font-normal">
-              {{strategyOptions.find(s => s.value === editForm.host_render_strategy)?.label ??
+              {{strategyOptions.find((s: { value: string }) => s.value === editForm.host_render_strategy)?.label ??
                 editForm.host_render_strategy}}
               <ChevronDown class="h-3 w-3 opacity-50" />
             </Button>
@@ -303,7 +339,7 @@ const promptSections = [
           <DropdownMenuContent align="start" class="min-w-[240px]">
             <DropdownMenuRadioGroup :model-value="editForm.host_render_strategy"
               @update:model-value="(v) => editForm.host_render_strategy = String(v) as ManagedAgentHostRenderStrategy">
-              <DropdownMenuRadioItem v-for="opt in strategyOptions" :key="opt.value" :value="opt.value">
+              <DropdownMenuRadioItem v-for="opt in strategyOptions" :key="opt.value" :value="opt.value as string">
                 <div>
                   <div class="text-sm">{{ opt.label }}</div>
                   <div class="text-[11px] text-muted-foreground">{{ opt.desc }}</div>
@@ -372,7 +408,7 @@ const promptSections = [
         <div class="flex items-center gap-3 mb-4 text-xs text-muted-foreground">
           <Badge variant="outline">{{ preview.host_platform }}</Badge>
           <Badge variant="outline">{{
-            strategyOptions.find(s => s.value === preview!.host_render_strategy)?.label ??
+            strategyOptions.find((s: { value: string }) => s.value === preview!.host_render_strategy)?.label ??
             preview.host_render_strategy}}</Badge>
         </div>
         <div class="space-y-4">

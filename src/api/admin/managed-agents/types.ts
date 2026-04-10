@@ -19,17 +19,106 @@ export interface HostPlatformCapabilities {
   comm_binding: boolean
 }
 
+export type HostConfigFieldType = 'text' | 'textarea' | 'password' | 'json' | 'select'
+
+export interface HostConfigFieldMeta {
+  key: string
+  label: string
+  type: HostConfigFieldType
+  placeholder?: string
+  description?: string
+  required?: boolean
+  options?: Array<{ value: string; label: string }>
+  sensitive?: boolean
+  group?: string
+}
+
+export interface HostConfigUIHints {
+  description: string
+  fields: HostConfigFieldMeta[]
+}
+
+export interface PromptRenderStrategyMeta {
+  value: ManagedAgentHostRenderStrategy | string
+  label: string
+  description: string
+}
+
+export interface PromptSectionMeta {
+  key: 'system_prompt_content' | 'persona_prompt_content' | 'identity_content' | string
+  label: string
+  placeholder?: string
+  required: boolean
+}
+
+export interface PromptUIHints {
+  description: string
+  render_strategies: PromptRenderStrategyMeta[]
+  sections: PromptSectionMeta[]
+}
+
+export interface ScheduleUIHints {
+  description?: string
+  supported_types?: ManagedAgentScheduleType[]
+  default_expr?: string
+  default_timeout?: number
+}
+
+export interface CommUIHints {
+  description?: string
+}
+
+export interface BootstrapUIHints {
+  description?: string
+  deploy_guide?: string
+  onboarding_guide?: string
+}
+
+export interface PlatformUIHints {
+  host_config: HostConfigUIHints
+  prompt: PromptUIHints
+  schedule?: ScheduleUIHints
+  comm?: CommUIHints
+  bootstrap?: BootstrapUIHints
+}
+
 export interface HostPlatformMeta {
   key: string
   label: string
+  description: string
   access_modes: string[]
   deployment_modes: string[]
   capabilities: HostPlatformCapabilities
   supported_comm_providers: string[]
+  ui_hints: PlatformUIHints
 }
 
 export interface HostPlatformMetaResponse {
   items: HostPlatformMeta[]
+}
+
+/** Agent 配置就绪度（由后端计算，嵌入在列表/详情返回值中） */
+export interface ManagedAgentReadiness {
+  /** 平台配置是否就绪 */
+  host_config: boolean
+  /** Prompt 资产是否就绪 */
+  prompt_asset: boolean
+  /** 定时任务数量 */
+  schedules_count: number
+  /** 通讯渠道数量 */
+  comm_bindings_count: number
+  /** 是否满足部署条件（host_config + prompt_asset 都 ready） */
+  deploy_ready: boolean
+}
+
+/** 运行态身份摘要（完整 API Key 不会在详情接口回显） */
+export interface ManagedAgentRuntimeIdentity {
+  /** 是否已完成运行态注册 */
+  registered: boolean
+  /** 关联的运行态 Agent ID */
+  runtime_agent_id: string | null
+  /** 脱敏后的运行态 API Key */
+  api_key_masked: string | null
 }
 
 export interface ManagedAgentListItem {
@@ -50,6 +139,8 @@ export interface ManagedAgentListItem {
   data_source: string
   created_at: string
   updated_at: string
+  readiness: ManagedAgentReadiness
+  runtime_identity: ManagedAgentRuntimeIdentity
 }
 
 export type ManagedAgentDetail = ManagedAgentListItem
@@ -81,6 +172,13 @@ export interface ManagedAgentUpdateInput {
   deployment_mode?: ManagedAgentDeploymentMode
   host_access_mode?: ManagedAgentHostAccessMode
   status?: ManagedAgentStatus
+}
+
+export interface ManagedAgentRuntimeApiKeyResetResponse {
+  runtime_agent_id: string
+  api_key: string
+  api_key_masked: string
+  message: string
 }
 
 export interface ManagedAgentHostConfig {

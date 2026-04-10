@@ -4,6 +4,7 @@ import type {
   ManagedAgentDetail,
   ManagedAgentListParams,
   ManagedAgentPageResponse,
+  ManagedAgentRuntimeApiKeyResetResponse,
   ManagedAgentUpdateInput,
 } from './types';
 
@@ -14,5 +15,7 @@ export const managedAgentApi = {
   get: (agentId: string) => api.get<ManagedAgentDetail>(`/admin/managed-agents/${agentId}`),
   update: (agentId: string, data: ManagedAgentUpdateInput) =>
     api.put<ManagedAgentDetail>(`/admin/managed-agents/${agentId}`, data),
+  resetRuntimeApiKey: (agentId: string) =>
+    api.post<ManagedAgentRuntimeApiKeyResetResponse>(`/admin/managed-agents/${agentId}/runtime-api-key/reset`),
   remove: (agentId: string) => api.delete(`/admin/managed-agents/${agentId}`),
 };

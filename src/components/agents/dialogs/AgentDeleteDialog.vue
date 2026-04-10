@@ -30,7 +30,7 @@ async function handleDelete() {
   deletingAgent.value = true;
   deleteError.value = '';
   try {
-    await managedAgentApi.delete(props.agent.id);
+    await managedAgentApi.remove(props.agent.id);
     toast.success('已删除');
     open.value = false;
     emit('deleted');

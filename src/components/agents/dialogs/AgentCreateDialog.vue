@@ -15,7 +15,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { ChevronDown, Loader2 } from 'lucide-vue-next';
 import { usePlatformMeta } from '@/composables/agents/usePlatformMeta';
-import { accessModeLabels } from '@/composables/agents/useAgentFormatters';
+
 
 const open = defineModel<boolean>('open', { default: false });
 const emit = defineEmits<{ created: [] }>();
@@ -82,8 +82,7 @@ function close() {
 
 <template>
   <Teleport to="body">
-    <div v-if="open"
-      class="fixed inset-0 z-50 flex items-center justify-center p-4 animate-in fade-in duration-150">
+    <div v-if="open" class="fixed inset-0 z-50 flex items-center justify-center p-4 animate-in fade-in duration-150">
       <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" @click="close" />
       <div
         class="relative z-10 w-full max-w-lg max-h-[85vh] overflow-y-auto rounded-xl border bg-background p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
@@ -127,7 +126,8 @@ function close() {
             <DropdownMenu v-if="platformOptions.length > 0">
               <DropdownMenuTrigger as-child>
                 <Button variant="outline" size="sm" class="h-9 w-full justify-between text-sm font-normal">
-                  {{ platformOptions.find(o => o.value === createForm.host_platform)?.label ?? createForm.host_platform }}
+                  {{platformOptions.find(o => o.value === createForm.host_platform)?.label ?? createForm.host_platform
+                  }}
                   <ChevronDown class="h-3.5 w-3.5 opacity-50" />
                 </Button>
               </DropdownMenuTrigger>
@@ -143,14 +143,12 @@ function close() {
             <Input v-else v-model="createForm.host_platform" placeholder="openclaw" />
           </div>
           <div>
-            <label class="text-xs text-muted-foreground mb-1.5 block">部署模式 <span
-                class="text-rose-500">*</span></label>
+            <label class="text-xs text-muted-foreground mb-1.5 block">部署模式 <span class="text-rose-500">*</span></label>
             <div class="space-y-1.5">
-              <label v-for="option in deployModeOptionsFor(createForm.host_platform)" :key="option.value"
+              <label v-for="option in deployModeOptionsFor(createForm.host_platform ?? 'openclaw')" :key="option.value"
                 class="flex items-center gap-2 cursor-pointer rounded-lg border px-3 py-2 transition-colors"
                 :class="createForm.deployment_mode === option.value ? 'border-primary bg-primary/5' : 'border-border hover:bg-muted/30'">
-                <input type="radio" :value="option.value" v-model="createForm.deployment_mode"
-                  class="accent-primary" />
+                <input type="radio" :value="option.value" v-model="createForm.deployment_mode" class="accent-primary" />
                 <span class="text-sm">{{ option.label }}</span>
               </label>
             </div>
@@ -158,7 +156,7 @@ function close() {
           <div>
             <label class="text-xs text-muted-foreground mb-1.5 block">平台归属</label>
             <div class="space-y-1.5">
-              <label v-for="option in accessModeOptionsFor(createForm.host_platform)" :key="option.value"
+              <label v-for="option in accessModeOptionsFor(createForm.host_platform ?? 'openclaw')" :key="option.value"
                 class="flex items-start gap-2.5 cursor-pointer rounded-lg border px-3 py-2.5 transition-colors"
                 :class="createForm.host_access_mode === option.value ? 'border-primary bg-primary/5' : 'border-border hover:bg-muted/30'">
                 <input type="radio" :value="option.value" v-model="createForm.host_access_mode"
