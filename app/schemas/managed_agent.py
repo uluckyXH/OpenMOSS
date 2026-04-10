@@ -2,7 +2,7 @@
 配置态 Agent 请求/响应 Schema
 """
 from datetime import datetime
-from typing import List, Literal, Optional
+from typing import Any, Dict, List, Literal, Optional
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
@@ -69,6 +69,22 @@ class ManagedAgentUpdateRequest(BaseModel):
         return self
 
 
+class ManagedAgentReadiness(BaseModel):
+    """配置就绪度。"""
+    host_config: bool = False
+    prompt_asset: bool = False
+    schedules_count: int = 0
+    comm_bindings_count: int = 0
+    deploy_ready: bool = False
+
+
+class ManagedAgentRuntimeIdentity(BaseModel):
+    """运行态身份摘要。"""
+    registered: bool = False
+    runtime_agent_id: Optional[str] = None
+    api_key_masked: Optional[str] = None
+
+
 class ManagedAgentListItem(BaseModel):
     """列表项"""
     model_config = ConfigDict(from_attributes=True)
@@ -88,6 +104,8 @@ class ManagedAgentListItem(BaseModel):
     needs_redeploy: bool = False
     online_status: Optional[str] = None
     data_source: str = "managed"
+    readiness: ManagedAgentReadiness = Field(default_factory=ManagedAgentReadiness)
+    runtime_identity: ManagedAgentRuntimeIdentity = Field(default_factory=ManagedAgentRuntimeIdentity)
     created_at: datetime
     updated_at: datetime
 
@@ -102,6 +120,41 @@ class ManagedAgentPageResponse(BaseModel):
     total: int
     page: int
     page_size: int
+
+
+class ManagedAgentHostPlatformCapabilities(BaseModel):
+    """宿主平台能力。"""
+    renderer: bool
+    bootstrap_script: bool
+    skill_bundle: bool
+    prompt_preview: bool
+    schedule: bool
+    comm_binding: bool
+
+
+class ManagedAgentHostPlatformMetaItem(BaseModel):
+    """宿主平台元数据项。"""
+    key: ManagedAgentHostPlatform
+    label: str
+    description: str = ""
+    access_modes: List[ManagedAgentHostAccessMode]
+    deployment_modes: List[ManagedAgentDeploymentMode]
+    capabilities: ManagedAgentHostPlatformCapabilities
+    supported_comm_providers: List[ManagedAgentCommProvider]
+    ui_hints: Dict[str, Any] = Field(default_factory=dict)
+
+
+class ManagedAgentHostPlatformMetaResponse(BaseModel):
+    """宿主平台元数据响应。"""
+    items: List[ManagedAgentHostPlatformMetaItem]
+
+
+class ManagedAgentRuntimeApiKeyResetResponse(BaseModel):
+    """重置运行态 API Key 响应，仅本次返回明文。"""
+    runtime_agent_id: str
+    api_key: str
+    api_key_masked: str
+    message: str
 
 
 # ============================================================

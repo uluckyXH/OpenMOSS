@@ -1,6 +1,6 @@
 # Agent 侧运行态接口
 
-> 最后同步：2026-04-08
+> 最后同步：2026-04-09
 > 接口前缀：`/api/agents`
 > 对应代码：`app/routers/agents.py`
 
@@ -315,34 +315,4 @@ X-Admin-Token: <admin_token>
 
 #### 响应示例
 
-```json
-{
-  "agent_id": "a6f6f4fd-203d-4b66-a8fe-c9d3d3ee8f1d",
-  "heartbeat_at": "2026-04-03T20:00:00.123456",
-  "heartbeat_ip": "203.0.113.10",
-  "message": "心跳已记录"
-}
-```
-
-### 5.6 获取当前 Agent 的 SKILL.md
-
-#### `GET /api/agents/me/skill`
-
-作用：获取当前 Agent 角色对应的 `SKILL.md`，并把 `<注册后填入>` 占位符替换成真实 API Key。
-
-#### 鉴权
-
-- `Authorization: Bearer <api_key>`
-
-#### 成功返回
-
-- 状态码：`200`
-- 返回体：纯文本 `text/plain`
-
-#### 错误码
-
-| 状态码 | 说明 |
-|---|---|
-| `401` | API Key 无效或格式错误 |
-| `403` | Agent 已禁用 |
-| `404` | 当前角色对应的 `SKILL.md` 不存在 |
+当前接口返回 zip 二进制流，不提供 JSON 示例。

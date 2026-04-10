@@ -22,8 +22,21 @@ def _generate_slug(name: str) -> str:
 
 
 def _bump_config_version(db: Session, managed_agent: ManagedAgent) -> None:
-    """递增配置版本。"""
-    managed_agent.config_version = (managed_agent.config_version or 0) + 1
+    """推进配置版本。
+
+    规则：
+    - 首次部署前，配置版本固定保持当前值，不因多次编辑持续递增
+    - 已部署且当前配置与已部署版本一致时，首次编辑才推进到下一个待部署版本
+    - 已经存在待部署版本时，继续编辑不再重复递增
+    """
+    current_version = managed_agent.config_version or 1
+    deployed_version = managed_agent.deployed_config_version
+
+    if deployed_version is not None and current_version == deployed_version:
+        managed_agent.config_version = current_version + 1
+    elif managed_agent.config_version is None:
+        managed_agent.config_version = 1
+
     managed_agent.updated_at = datetime.now()
     db.flush()
 

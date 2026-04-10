@@ -26,11 +26,18 @@ from .core import (
 )
 from .host_config import get_host_config, serialize_host_config, update_host_config
 from .migration import auto_backfill_from_runtime, build_migration_report
+from .platform_meta import list_supported_host_platforms
 from .prompt_asset import (
     get_prompt_asset,
     render_prompt_preview,
     reset_prompt_from_template,
     update_prompt_asset,
+)
+from .readiness import compute_readiness_for_agent, compute_readiness_for_agents
+from .runtime_identity import (
+    compute_runtime_identity_for_agent,
+    compute_runtime_identity_for_agents,
+    reset_runtime_api_key_for_managed_agent,
 )
 from .schedule import (
     create_schedule,
@@ -49,6 +56,10 @@ __all__ = [
     "create_comm_binding",
     "create_managed_agent",
     "create_schedule",
+    "compute_readiness_for_agent",
+    "compute_readiness_for_agents",
+    "compute_runtime_identity_for_agent",
+    "compute_runtime_identity_for_agents",
     "delete_comm_binding",
     "delete_comm_binding_for_agent",
     "delete_managed_agent",
@@ -64,9 +75,11 @@ __all__ = [
     "get_schedule_for_agent_or_404",
     "list_comm_bindings",
     "list_managed_agents",
+    "list_supported_host_platforms",
     "list_schedules",
     "render_prompt_preview",
     "reset_prompt_from_template",
+    "reset_runtime_api_key_for_managed_agent",
     "serialize_comm_binding",
     "serialize_host_config",
     "update_comm_binding",

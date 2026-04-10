@@ -1,8 +1,8 @@
 # 智能体配置中心接口文档
 
-> 最后同步：2026-04-08
+> 最后同步：2026-04-10
 > 适用范围：智能体配置中心重构当前已落地后端接口
-> 当前代码状态：已实现配置态 Agent 管理主链、Agent 心跳接口、Bootstrap Token 管理、脚本预览、接入说明、Bootstrap 注册/脚本下载闭环，以及 `skill-bundle` 下载接口；运行态 Agent 也已支持下载自己的 `skill-bundle`；`task-cli.py` 单文件下载尚未落地
+> 当前代码状态：已实现配置态 Agent 管理主链、宿主平台 Meta 与 OpenClaw `ui_hints`、列表/详情 readiness 内嵌、Agent 心跳接口、Bootstrap Token 管理、脚本预览、接入说明、Bootstrap 注册/脚本下载闭环，以及 `skill-bundle` 下载接口；运行态 Agent 也已支持下载自己的 `skill-bundle`；`task-cli.py` 单文件下载尚未落地
 
 ## 1. 文档说明
 
@@ -22,9 +22,11 @@
 已实现接口：
 
 - `GET /api/admin/managed-agents`
+- `GET /api/admin/managed-agents/meta/host-platforms`
 - `POST /api/admin/managed-agents`
 - `GET /api/admin/managed-agents/{agent_id}`
 - `PUT /api/admin/managed-agents/{agent_id}`
+- `POST /api/admin/managed-agents/{agent_id}/runtime-api-key/reset`
 - `DELETE /api/admin/managed-agents/{agent_id}`
 - `GET /api/admin/managed-agents/{agent_id}/host-config`
 - `PUT /api/admin/managed-agents/{agent_id}/host-config`

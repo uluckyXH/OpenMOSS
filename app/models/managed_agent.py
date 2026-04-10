@@ -44,8 +44,8 @@ class ManagedAgent(Base):
         comment="draft / configured / deployed / disabled / archived"
     )
     runtime_agent_id = Column(String(36), nullable=True, index=True, comment="关联运行态 agent.id")
-    config_version = Column(Integer, default=1, comment="配置版本号")
-    deployed_config_version = Column(Integer, nullable=True, comment="已部署到运行态的配置版本号")
+    config_version = Column(Integer, default=1, comment="当前目标部署版本号")
+    deployed_config_version = Column(Integer, nullable=True, comment="当前已部署到运行态的版本号")
 
     created_at = Column(DateTime, default=datetime.now, comment="创建时间")
     updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now, comment="更新时间")

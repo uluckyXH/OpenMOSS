@@ -21,11 +21,15 @@ from app.schemas.managed_agent import (
     ManagedAgentDetail,
     ManagedAgentHostConfigRequest,
     ManagedAgentHostConfigResponse,
+    ManagedAgentHostPlatformMetaResponse,
     ManagedAgentListItem,
     ManagedAgentPageResponse,
     ManagedAgentPromptAssetRequest,
     ManagedAgentPromptAssetResponse,
     ManagedAgentPromptRenderPreviewResponse,
+    ManagedAgentReadiness,
+    ManagedAgentRuntimeApiKeyResetResponse,
+    ManagedAgentRuntimeIdentity,
     ManagedAgentOnboardingMessageResponse,
     ManagedAgentScheduleCreateRequest,
     ManagedAgentScheduleResponse,
@@ -70,6 +74,37 @@ router = APIRouter(
 )
 
 
+def _needs_redeploy(agent) -> bool:
+    """判断配置版本是否落后于已部署版本。"""
+    return (
+        agent.deployed_config_version is not None
+        and agent.config_version != agent.deployed_config_version
+    )
+
+
+def _apply_agent_projection(
+    response,
+    agent,
+    readiness: dict[str, object],
+    runtime_identity: dict[str, object],
+):
+    """补齐非模型直出字段。"""
+    response.needs_redeploy = _needs_redeploy(agent)
+    response.readiness = ManagedAgentReadiness.model_validate(readiness)
+    response.runtime_identity = ManagedAgentRuntimeIdentity.model_validate(runtime_identity)
+    return response
+
+
+def _agent_detail_response(db: Session, agent) -> ManagedAgentDetail:
+    """生成带派生字段的详情响应。"""
+    return _apply_agent_projection(
+        ManagedAgentDetail.model_validate(agent),
+        agent,
+        svc.compute_readiness_for_agent(db, agent),
+        svc.compute_runtime_identity_for_agent(db, agent),
+    )
+
+
 @router.get("", response_model=ManagedAgentPageResponse)
 def list_agents(
     _: bool = Depends(verify_admin),
@@ -81,13 +116,19 @@ def list_agents(
 ):
     """分页查询配置态 Agent。"""
     items, total = svc.list_managed_agents(db, page, page_size, role, status)
+    readiness_map = svc.compute_readiness_for_agents(db, items)
+    runtime_identity_map = svc.compute_runtime_identity_for_agents(db, items)
 
     result_items = []
     for item in items:
-        list_item = ManagedAgentListItem.model_validate(item)
-        if item.config_version and item.deployed_config_version:
-            list_item.needs_redeploy = item.config_version != item.deployed_config_version
-        result_items.append(list_item)
+        result_items.append(
+            _apply_agent_projection(
+                ManagedAgentListItem.model_validate(item),
+                item,
+                readiness_map.get(item.id, {}),
+                runtime_identity_map.get(item.id, {}),
+            )
+        )
 
     return ManagedAgentPageResponse(
         items=result_items,
@@ -95,6 +136,14 @@ def list_agents(
         page=page,
         page_size=page_size,
     )
+
+
+@router.get("/meta/host-platforms", response_model=ManagedAgentHostPlatformMetaResponse)
+def list_host_platforms(
+    _: bool = Depends(verify_admin),
+):
+    """返回当前后端真实支持的宿主平台能力。"""
+    return ManagedAgentHostPlatformMetaResponse(items=svc.list_supported_host_platforms())
 
 
 @router.post("", response_model=ManagedAgentDetail, status_code=201)
@@ -117,7 +166,7 @@ def create_agent(
             host_agent_identifier=req.host_agent_identifier,
             workdir_path=req.workdir_path,
         )
-        return ManagedAgentDetail.model_validate(agent)
+        return _agent_detail_response(db, agent)
     except BusinessError as exc:
         raise HTTPException(status_code=exc.status_code, detail=str(exc))
 
@@ -132,10 +181,7 @@ def get_agent(
     agent = svc.get_managed_agent(db, agent_id)
     if not agent:
         raise HTTPException(status_code=404, detail="Agent 不存在")
-    detail = ManagedAgentDetail.model_validate(agent)
-    if agent.config_version and agent.deployed_config_version:
-        detail.needs_redeploy = agent.config_version != agent.deployed_config_version
-    return detail
+    return _agent_detail_response(db, agent)
 
 
 @router.put("/{agent_id}", response_model=ManagedAgentDetail)
@@ -152,7 +198,22 @@ def update_agent(
             agent_id,
             **req.model_dump(include=req.model_fields_set),
         )
-        return ManagedAgentDetail.model_validate(agent)
+        return _agent_detail_response(db, agent)
+    except BusinessError as exc:
+        raise HTTPException(status_code=exc.status_code, detail=str(exc))
+
+
+@router.post("/{agent_id}/runtime-api-key/reset", response_model=ManagedAgentRuntimeApiKeyResetResponse)
+def reset_runtime_api_key(
+    agent_id: str,
+    _: bool = Depends(verify_admin),
+    db: Session = Depends(get_db),
+):
+    """重置配置态 Agent 关联运行态 Agent 的 API Key。"""
+    try:
+        return ManagedAgentRuntimeApiKeyResetResponse.model_validate(
+            svc.reset_runtime_api_key_for_managed_agent(db, agent_id)
+        )
     except BusinessError as exc:
         raise HTTPException(status_code=exc.status_code, detail=str(exc))
 
