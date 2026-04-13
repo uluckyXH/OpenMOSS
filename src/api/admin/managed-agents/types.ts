@@ -42,6 +42,8 @@ export interface PromptRenderStrategyMeta {
   value: ManagedAgentHostRenderStrategy | string
   label: string
   description: string
+  /** 是否为该平台的默认策略 */
+  is_default?: boolean
 }
 
 export interface PromptSectionMeta {
@@ -49,6 +51,10 @@ export interface PromptSectionMeta {
   label: string
   placeholder?: string
   required: boolean
+  /** 简短一句话描述（始终可见） */
+  description?: string
+  /** 完整详细说明（点击 ? 展开） */
+  detail?: string
 }
 
 export interface PromptUIHints {
@@ -250,12 +256,13 @@ export interface ManagedAgentSchedule {
 export interface ManagedAgentScheduleCreateInput {
   name: string
   enabled?: boolean
-  schedule_type?: ManagedAgentScheduleType
-  schedule_expr?: string
-  timeout_seconds?: number
+  schedule_type: ManagedAgentScheduleType
+  schedule_expr: string
+  timeout_seconds: number
   model_override?: string
   execution_options_json?: string
-  schedule_message_content?: string
+  /** 定时唤醒提示词，必填且不能为空白 */
+  schedule_message_content: string
 }
 
 export interface ManagedAgentScheduleUpdateInput {
@@ -266,6 +273,7 @@ export interface ManagedAgentScheduleUpdateInput {
   timeout_seconds?: number
   model_override?: string
   execution_options_json?: string
+  /** 更新后不能为空白 */
   schedule_message_content?: string
 }
 
@@ -358,4 +366,16 @@ export interface ManagedAgentOnboardingMessageResponse {
   curl_command: string
   download_token_id: string
   download_token_expires_at: string
+}
+
+/** 角色 Prompt 模板示例 */
+export interface PromptTemplateItem {
+  role: string
+  label: string
+  filename: string
+  content: string
+}
+
+export interface PromptTemplateResponse {
+  items: PromptTemplateItem[]
 }

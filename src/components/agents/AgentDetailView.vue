@@ -9,7 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   ChevronLeft, Loader2, AlertCircle, Pencil, Trash2,
   Settings, FileText, Clock, MessageSquare, Rocket, Info,
-  CheckCircle2, Circle, Lock, Copy, Check, X,
+  CheckCircle2, Circle, Lock, Copy, Check, X, AlertTriangle,
 } from 'lucide-vue-next';
 import {
   formatRole, getRoleBadgeClass,
@@ -36,6 +36,45 @@ const activeTab = ref('basic');
 
 const showEditDialog = ref(false);
 const showDeleteDialog = ref(false);
+
+// ─── Tab 子组件 ref（用于未保存提醒） ───
+const platformConfigTabRef = ref<InstanceType<typeof PlatformConfigTab> | null>(null);
+const promptTabRef = ref<InstanceType<typeof PromptTab> | null>(null);
+
+// ─── 未保存切换确认 ───
+const pendingTab = ref<string | null>(null);
+const showUnsavedDialog = ref(false);
+
+function isCurrentTabEditing(): boolean {
+  if (activeTab.value === 'host') return platformConfigTabRef.value?.editing ?? false;
+  if (activeTab.value === 'prompt') return promptTabRef.value?.editing ?? false;
+  return false;
+}
+
+function tryChangeTab(tabKey: string) {
+  if (tabKey === activeTab.value) return;
+  if (isCurrentTabEditing()) {
+    pendingTab.value = tabKey;
+    showUnsavedDialog.value = true;
+    return;
+  }
+  activeTab.value = tabKey;
+}
+
+function confirmDiscard() {
+  // 让子组件取消编辑态
+  if (activeTab.value === 'host') platformConfigTabRef.value?.cancelEdit();
+  if (activeTab.value === 'prompt') promptTabRef.value?.cancelEdit();
+  // 切到目标 Tab
+  if (pendingTab.value) activeTab.value = pendingTab.value;
+  pendingTab.value = null;
+  showUnsavedDialog.value = false;
+}
+
+function cancelDiscard() {
+  pendingTab.value = null;
+  showUnsavedDialog.value = false;
+}
 
 let detailRequestId = 0;
 
@@ -295,7 +334,7 @@ function formatExpireDate(value: string | null) {
                         : nextStep?.key === tab.key
                           ? 'text-primary bg-primary/5 ring-1 ring-primary/20 hover:bg-primary/10'
                           : 'text-muted-foreground/40 bg-muted/20 hover:bg-muted/30',
-                    ]" @click="activeTab = tab.key">
+                    ]" @click="tryChangeTab(tab.key)">
                     <CheckCircle2 v-if="readiness[tab.readinessKey]" class="h-3 w-3" />
                     <Circle v-else class="h-3 w-3" />
                     {{ tab.label }}
@@ -309,7 +348,7 @@ function formatExpireDate(value: string | null) {
                   <span class="text-[11px] text-muted-foreground/30 font-medium">可选</span>
                   <button v-for="tab in visibleOptionalTabs" :key="tab.key"
                     class="flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-md text-muted-foreground/30 hover:text-muted-foreground/50 hover:bg-muted/20 transition-colors"
-                    @click="activeTab = tab.key">
+                    @click="tryChangeTab(tab.key)">
                     {{ tab.label }}
                     <template v-if="tab.key === 'schedule' && rawReadiness">
                       <Badge v-if="rawReadiness.schedules_count > 0" variant="outline" class="text-[9px] px-1 py-0 h-3.5 text-muted-foreground/40">
@@ -342,7 +381,7 @@ function formatExpireDate(value: string | null) {
           </div>
 
           <!-- ═══════ Tab 面板 ═══════ -->
-          <Tabs v-model="activeTab" class="w-full">
+          <Tabs :model-value="activeTab" @update:model-value="(v) => tryChangeTab(String(v))" class="w-full">
             <TabsList class="bg-transparent border-b rounded-none w-full justify-start h-auto p-0 gap-0">
               <TabsTrigger v-for="tab in tabsMeta.filter(t => isTabVisible(t.key))" :key="tab.key" :value="tab.key"
                 class="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:shadow-none gap-1.5 text-xs px-4 py-2.5 relative">
@@ -373,13 +412,13 @@ function formatExpireDate(value: string | null) {
               <BasicInfoTab :agent="selectedAgent" @saved="onTabSaved" />
             </TabsContent>
             <TabsContent value="host" class="mt-5">
-              <PlatformConfigTab :agent-id="agentId" :host-platform="currentPlatform" @saved="onTabSaved" />
+              <PlatformConfigTab ref="platformConfigTabRef" :agent-id="agentId" :host-platform="currentPlatform" @saved="onTabSaved" />
             </TabsContent>
             <TabsContent value="prompt" class="mt-5">
-              <PromptTab :agent-id="agentId" :host-platform="currentPlatform" :disabled="!isTabEditable('prompt')" @saved="onTabSaved" />
+              <PromptTab ref="promptTabRef" :agent-id="agentId" :host-platform="currentPlatform" :disabled="!isTabEditable('prompt')" @saved="onTabSaved" />
             </TabsContent>
             <TabsContent value="schedule" class="mt-5">
-              <ScheduleTab :agent-id="agentId" :disabled="!isTabEditable('schedule')" />
+              <ScheduleTab :agent-id="agentId" :agent-role="selectedAgent?.role" :disabled="!isTabEditable('schedule')" />
             </TabsContent>
             <TabsContent value="comm" class="mt-5">
               <CommBindingTab :agent-id="agentId" :disabled="!isTabEditable('comm')" />
@@ -395,6 +434,26 @@ function formatExpireDate(value: string | null) {
     <!-- 弹窗 -->
     <AgentEditDialog v-model:open="showEditDialog" :agent="selectedAgent" @saved="handleSaved" />
     <AgentDeleteDialog v-model:open="showDeleteDialog" :agent="selectedAgent" @deleted="handleDeleted" />
+
+    <!-- ─── 未保存切换确认弹窗 ─── -->
+    <Teleport to="body">
+      <div v-if="showUnsavedDialog"
+        class="fixed inset-0 z-50 flex items-center justify-center p-4 animate-in fade-in duration-150">
+        <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" @click="cancelDiscard" />
+        <div
+          class="relative z-10 w-full max-w-sm rounded-xl border bg-background p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-200 text-center space-y-3">
+          <AlertTriangle class="h-8 w-8 mx-auto text-amber-500" />
+          <h3 class="text-base font-semibold">未保存的修改</h3>
+          <p class="text-sm text-muted-foreground">
+            当前有未保存的修改，切换后将丢失。
+          </p>
+          <div class="flex gap-3 pt-2">
+            <Button variant="outline" class="flex-1" @click="cancelDiscard">继续编辑</Button>
+            <Button variant="destructive" class="flex-1" @click="confirmDiscard">放弃修改</Button>
+          </div>
+        </div>
+      </div>
+    </Teleport>
 
     <!-- ─── 部署脚本弹窗 ─── -->
     <Teleport to="body">

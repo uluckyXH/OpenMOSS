@@ -122,6 +122,25 @@ function startEdit() {
 function cancelEdit() {
   editing.value = false;
   saveError.value = '';
+  workdirAutoFilled.value = false;
+}
+
+// ─── Agent ID → 工作空间自动填充 ───
+const workdirAutoFilled = ref(false);
+function onFieldUpdate(key: string, value: string) {
+  editForm.value[key] = value;
+  // 当 Agent ID 变化且 workdir 未被手动修改时，自动拼接
+  if (key === 'host_agent_identifier') {
+    const currentWorkdir = editForm.value['workdir_path'] ?? '';
+    if (!currentWorkdir || workdirAutoFilled.value) {
+      editForm.value['workdir_path'] = value ? `~/.openclaw/workspace-${value}` : '';
+      workdirAutoFilled.value = true;
+    }
+  }
+  // 用户手动编辑 workdir 时，取消自动填充
+  if (key === 'workdir_path') {
+    workdirAutoFilled.value = false;
+  }
 }
 
 // ─── 从 config 中读取只读值 ───
@@ -165,6 +184,8 @@ async function handleSave() {
 }
 
 // ─── 辅助 ───
+defineExpose({ editing, cancelEdit });
+
 function formatDate(value: string | null) {
   if (!value) return '—';
   try {
@@ -244,7 +265,7 @@ function formatDate(value: string | null) {
           <template v-if="isGroupExpanded(group)">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4">
               <div v-for="field in gFields" :key="field.key">
-                <div class="text-[11px] text-muted-foreground/60 mb-0.5">{{ field.label }}</div>
+                <div class="text-xs text-muted-foreground font-medium mb-0.5">{{ field.label }}</div>
                 <div v-if="field.sensitive && getReadonlyValue(field.key)"
                   class="rounded-lg bg-muted/30 border border-border/40 p-2 font-mono text-xs text-muted-foreground leading-relaxed whitespace-pre-wrap break-all">
                   {{ getReadonlyValue(field.key) }}
@@ -260,7 +281,7 @@ function formatDate(value: string | null) {
 
         <!-- 更新时间 -->
         <div>
-          <div class="text-[11px] text-muted-foreground/60 mb-0.5">最后更新</div>
+          <div class="text-xs text-muted-foreground font-medium mb-0.5">最后更新</div>
           <div class="text-sm">{{ formatDate(config.updated_at) }}</div>
         </div>
       </div>
@@ -281,7 +302,7 @@ function formatDate(value: string | null) {
               <DynamicField v-for="field in gFields" :key="field.key"
                 :field="field"
                 :model-value="editForm[field.key] ?? ''"
-                @update:model-value="(v: string) => editForm[field.key] = v"
+                @update:model-value="(v: string) => onFieldUpdate(field.key, v)"
                 :disabled="disabled" />
             </div>
           </template>

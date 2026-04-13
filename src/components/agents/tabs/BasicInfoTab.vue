@@ -58,25 +58,25 @@ async function copyApiKey(text: string) {
 </script>
 
 <template>
-  <div class="space-y-4">
+  <div class="space-y-4 animate-slide-up">
     <div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
       <div class="rounded-xl border bg-card/50 p-4">
-        <div class="text-[11px] text-muted-foreground/60 mb-1">Slug</div>
+        <div class="text-xs text-muted-foreground font-medium mb-1">Slug</div>
         <div class="text-sm font-mono break-all">{{ agent.slug }}</div>
       </div>
 
       <div class="rounded-xl border bg-card/50 p-4">
-        <div class="text-[11px] text-muted-foreground/60 mb-1">Agent 平台</div>
+        <div class="text-xs text-muted-foreground font-medium mb-1">Agent 平台</div>
         <div class="text-sm">{{ agent.host_platform }}</div>
       </div>
 
       <div class="rounded-xl border bg-card/50 p-4">
-        <div class="text-[11px] text-muted-foreground/60 mb-1">部署模式</div>
+        <div class="text-xs text-muted-foreground font-medium mb-1">部署模式</div>
         <div class="text-sm">{{ formatDeployMode(agent.deployment_mode) }}</div>
       </div>
 
       <div class="rounded-xl border bg-card/50 p-4">
-        <div class="text-[11px] text-muted-foreground/60 mb-1">平台归属</div>
+        <div class="text-xs text-muted-foreground font-medium mb-1">平台归属</div>
         <div class="text-sm">{{ accessModeLabels[agent.host_access_mode] || agent.host_access_mode }}</div>
         <p class="mt-1 text-xs text-muted-foreground/60">
           {{ accessModeDescriptions[agent.host_access_mode] || '—' }}
@@ -84,17 +84,17 @@ async function copyApiKey(text: string) {
       </div>
 
       <div class="rounded-xl border bg-card/50 p-4">
-        <div class="text-[11px] text-muted-foreground/60 mb-1">关联运行态 Agent</div>
+        <div class="text-xs text-muted-foreground font-medium mb-1">关联运行态 Agent</div>
         <div class="text-sm font-mono break-all">{{ agent.runtime_agent_id ?? '未关联' }}</div>
       </div>
 
       <div class="rounded-xl border bg-card/50 p-4">
-        <div class="text-[11px] text-muted-foreground/60 mb-1">创建时间</div>
+        <div class="text-xs text-muted-foreground font-medium mb-1">创建时间</div>
         <div class="text-sm">{{ formatDate(agent.created_at) }}</div>
       </div>
 
       <div class="rounded-xl border bg-card/50 p-4">
-        <div class="text-[11px] text-muted-foreground/60 mb-1">更新时间</div>
+        <div class="text-xs text-muted-foreground font-medium mb-1">更新时间</div>
         <div class="text-sm">{{ formatDate(agent.updated_at) }}</div>
       </div>
     </div>
@@ -103,7 +103,7 @@ async function copyApiKey(text: string) {
     <div class="rounded-xl border bg-card/50 p-4">
       <div class="flex items-center gap-2 mb-3">
         <Key class="h-3.5 w-3.5 text-muted-foreground/50" />
-        <span class="text-[11px] text-muted-foreground/60 font-medium uppercase tracking-wider">运行态身份</span>
+        <span class="text-xs text-muted-foreground font-medium uppercase tracking-wider">运行态身份</span>
         <Badge v-if="agent.runtime_identity?.registered" variant="outline"
           class="text-[9px] border-emerald-500/20 bg-emerald-500/10 text-emerald-400">
           已注册
@@ -117,7 +117,7 @@ async function copyApiKey(text: string) {
       <!-- API Key 脱敏值 -->
       <div class="flex items-center justify-between gap-3">
         <div class="min-w-0">
-          <div class="text-[11px] text-muted-foreground/60 mb-0.5">API Key</div>
+          <div class="text-xs text-muted-foreground font-medium mb-0.5">API Key</div>
           <div v-if="agent.runtime_identity?.api_key_masked"
             class="text-sm font-mono text-muted-foreground break-all">
             {{ agent.runtime_identity.api_key_masked }}
@@ -138,7 +138,7 @@ async function copyApiKey(text: string) {
     <div class="rounded-xl border bg-card/50 p-4">
       <div class="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
         <div>
-          <div class="text-[11px] text-muted-foreground/60 mb-1">配置版本</div>
+          <div class="text-xs text-muted-foreground font-medium mb-1">配置版本</div>
           <div class="text-sm font-medium tabular-nums">
             配置 v{{ agent.config_version }}
             <template v-if="agent.deployed_config_version !== null">
