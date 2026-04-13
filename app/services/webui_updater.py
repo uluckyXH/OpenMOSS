@@ -6,6 +6,7 @@ WebUI 前端自动更新服务
 """
 import asyncio
 import json
+import logging
 import os
 import shutil
 import tarfile
@@ -17,6 +18,9 @@ from pathlib import Path
 from typing import Optional
 
 import httpx
+
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -108,11 +112,11 @@ class WebUIUpdater:
                 if tag.startswith("webui-v") and not release.get("draft") and not release.get("prerelease"):
                     return f"https://github.com/{repo}/releases/download/{tag}"
 
-            print("[WebUI Updater] 未找到 webui-v* Release，回退到 latest")
+            logger.warning("未找到 webui-v* Release，回退到 latest")
             return fallback
 
         except Exception as e:
-            print(f"[WebUI Updater] GitHub API 查询失败: {e}，回退到 latest")
+            logger.warning("GitHub API 查询失败: %s，回退到 latest", e)
             return fallback
 
     def get_current_version(self) -> Optional[str]:
@@ -245,7 +249,7 @@ class WebUIUpdater:
             base_url = await self._get_webui_release_base_url()
             tar_url = f"{base_url}/webui-dist.tar.gz"
 
-            print(f"[WebUI Updater] 开始下载: {tar_url}")
+            logger.info("开始下载: %s", tar_url)
 
             # 1. 下载 tar.gz 到临时文件
             temp_dir = await asyncio.to_thread(tempfile.mkdtemp)
@@ -263,7 +267,7 @@ class WebUIUpdater:
                         _write_bytes, tar_path, resp.content
                     )
 
-                print(f"[WebUI Updater] 下载完成: {len(resp.content)} bytes")
+                logger.info("下载完成: %s bytes", len(resp.content))
 
                 # 2. 备份当前 static/ 目录
                 await asyncio.to_thread(
@@ -280,7 +284,7 @@ class WebUIUpdater:
                     raise RuntimeError("解压后未找到 index.html")
 
                 new_version = self.get_current_version()
-                print(f"[WebUI Updater] ✅ 更新完成: {new_version}")
+                logger.info("更新完成: %s", new_version)
 
                 # 5. 清理备份
                 await asyncio.to_thread(_remove_dir, backup_dir)
@@ -300,11 +304,11 @@ class WebUIUpdater:
                 await asyncio.to_thread(_remove_dir, temp_dir)
 
         except Exception as e:
-            print(f"[WebUI Updater] ❌ 更新失败: {e}")
+            logger.exception("更新失败: %s", e)
 
             # 恢复备份
             if backup_dir.is_dir():
-                print("[WebUI Updater] 正在从备份恢复...")
+                logger.info("正在从备份恢复...")
                 await asyncio.to_thread(_restore_backup, static_dir, backup_dir)
 
             return {
@@ -321,23 +325,23 @@ class WebUIUpdater:
         if self.is_webui_available():
             version = self.get_current_version()
             if version:
-                print(f"[WebUI] 前端版本: {version}")
+                logger.info("前端版本: %s", version)
             return
 
         if not self._is_auto_update_enabled():
-            print("[WebUI] ⚠️  未找到前端文件且自动更新已关闭")
-            print("[WebUI]    API 正常运行，但 WebUI 不可用")
+            logger.warning("未找到前端文件且自动更新已关闭")
+            logger.warning("API 正常运行，但 WebUI 不可用")
             return
 
-        print("[WebUI] 未找到前端文件，正在从 GitHub Release 下载...")
+        logger.info("未找到前端文件，正在从 GitHub Release 下载...")
 
         result = await self.download_and_apply()
         if result["success"]:
-            print(f"[WebUI] ✅ 前端已自动部署: v{result['version']}")
+            logger.info("前端已自动部署: v%s", result["version"])
         else:
-            print(f"[WebUI] ⚠️  自动部署失败: {result['message']}")
-            print("[WebUI]    API 正常运行，但 WebUI 不可用")
-            print("[WebUI]    可稍后通过管理端手动触发更新")
+            logger.warning("自动部署失败: %s", result["message"])
+            logger.warning("API 正常运行，但 WebUI 不可用")
+            logger.warning("可稍后通过管理端手动触发更新")
 
     @property
     def is_updating(self) -> bool:
@@ -363,7 +367,7 @@ def _backup_static(static_dir: Path, backup_dir: Path) -> None:
         shutil.rmtree(backup_dir)
     if static_dir.is_dir():
         shutil.copytree(static_dir, backup_dir)
-        print(f"[WebUI Updater] 已备份当前版本到 {backup_dir}")
+        logger.info("已备份当前版本到 %s", backup_dir)
 
 
 def _clear_dir_contents(target_dir: Path) -> None:
@@ -395,7 +399,7 @@ def _extract_tar(tar_path: str, target_dir: Path) -> None:
                 raise RuntimeError(f"危险路径: {member.name}")
         tar.extractall(path=str(target_dir))
 
-    print(f"[WebUI Updater] 已解压到 {target_dir}")
+    logger.info("已解压到 %s", target_dir)
 
 
 def _restore_backup(static_dir: Path, backup_dir: Path) -> None:
@@ -413,7 +417,7 @@ def _restore_backup(static_dir: Path, backup_dir: Path) -> None:
             else:
                 shutil.copy2(child, dest)
         shutil.rmtree(backup_dir)
-        print("[WebUI Updater] 已从备份恢复")
+        logger.info("已从备份恢复")
 
 
 def _remove_dir(path) -> None:

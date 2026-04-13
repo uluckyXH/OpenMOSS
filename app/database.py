@@ -1,6 +1,7 @@
 """
 OpenMOSS 任务调度中间件 — 数据库初始化
 """
+import logging
 import os
 from pathlib import Path
 
@@ -11,6 +12,7 @@ from sqlalchemy.orm import sessionmaker, declarative_base
 from app.config import config
 
 Base = declarative_base()
+logger = logging.getLogger(__name__)
 
 
 def build_database_url() -> str:
@@ -75,7 +77,7 @@ def init_db():
     )
 
     Base.metadata.create_all(bind=engine)
-    print(f"[Database] 数据库初始化完成，共 {len(Base.metadata.tables)} 张表")
+    logger.info("数据库初始化完成，共 %s 张表", len(Base.metadata.tables))
 
     # 静默迁移旧状态值（available/busy → active，offline → disabled）
     _migrate_agent_statuses()
@@ -99,7 +101,7 @@ def _migrate_agent_statuses():
         total = r1.rowcount + r2.rowcount
         if total:
             db.commit()
-            print(f"[Database] 已静默迁移 {total} 个 Agent 状态（旧值 → active/disabled）")
+            logger.info("已静默迁移 %s 个 Agent 状态（旧值 → active/disabled）", total)
         else:
             db.rollback()
     except Exception:
@@ -134,6 +136,6 @@ def _load_default_rules():
         )
         db.add(rule)
         db.commit()
-        print(f"[Database] 已导入全局规则模板 → rules/global-rule-example.md")
+        logger.info("已导入全局规则模板 → rules/global-rule-example.md")
     finally:
         db.close()

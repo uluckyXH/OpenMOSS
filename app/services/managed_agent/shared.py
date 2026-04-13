@@ -53,8 +53,6 @@ def _mask(value: Optional[str]) -> Optional[str]:
 def _default_render_strategy(host_platform: str, deployment_mode: str) -> str:
     """根据宿主平台和部署模式给出默认渲染策略。"""
     if host_platform == "openclaw":
-        if deployment_mode == "bind_main_agent":
-            return "openclaw_inline_schedule"
         return "openclaw_workspace_files"
     return "host_default"
 
@@ -140,8 +138,10 @@ def _normalize_schedule_kwargs(
 ) -> Dict[str, object]:
     """标准化定时任务字段。"""
     data = dict(kwargs)
-    if "schedule_message_content" in data and data["schedule_message_content"] is None:
-        data["schedule_message_content"] = ""
+    if isinstance(data.get("schedule_type"), str):
+        data["schedule_type"] = data["schedule_type"].strip().lower()
+    if isinstance(data.get("schedule_expr"), str):
+        data["schedule_expr"] = data["schedule_expr"].strip()
 
     return {
         key: value

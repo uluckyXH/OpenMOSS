@@ -3,7 +3,7 @@
 """
 from typing import Optional
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 
 from app.auth.dependencies import verify_admin
@@ -30,25 +30,6 @@ from app.services import admin_agent_query_service, agent_service
 router = APIRouter(prefix="/admin", tags=["Admin Agent"])
 
 
-def _raise_admin_agent_query_error(exc: Exception) -> None:
-    """统一处理管理端 Agent 查询异常"""
-    if isinstance(exc, admin_agent_query_service.ResourceNotFoundError):
-        raise HTTPException(status_code=404, detail=str(exc))
-    if isinstance(exc, admin_agent_query_service.InvalidQueryError):
-        raise HTTPException(status_code=400, detail=str(exc))
-    raise exc
-
-
-def _raise_admin_agent_write_error(exc: Exception) -> None:
-    """统一处理管理端 Agent 写操作异常"""
-    if isinstance(exc, ValueError):
-        detail = str(exc)
-        if "不存在" in detail:
-            raise HTTPException(status_code=404, detail=detail)
-        raise HTTPException(status_code=400, detail=detail)
-    raise exc
-
-
 @router.get("/agents", response_model=AdminAgentPageResponse, summary="管理端查看 Agent 列表")
 async def list_admin_agents(
     page: int = Query(1, ge=1, description="页码"),
@@ -64,21 +45,18 @@ async def list_admin_agents(
     db: Session = Depends(get_db),
 ):
     """分页查询管理端 Agent 列表"""
-    try:
-        return admin_agent_query_service.list_agents(
-            db,
-            page=page,
-            page_size=page_size,
-            role=role,
-            status=status,
-            keyword=keyword,
-            last_request_within_days=last_request_within_days,
-            last_activity_within_days=last_activity_within_days,
-            sort_by=sort_by,
-            sort_order=sort_order,
-        )
-    except Exception as exc:
-        _raise_admin_agent_query_error(exc)
+    return admin_agent_query_service.list_agents(
+        db,
+        page=page,
+        page_size=page_size,
+        role=role,
+        status=status,
+        keyword=keyword,
+        last_request_within_days=last_request_within_days,
+        last_activity_within_days=last_activity_within_days,
+        sort_by=sort_by,
+        sort_order=sort_order,
+    )
 
 
 @router.post("/agents", response_model=AdminAgentCreateResponse, summary="管理端创建 Agent")
@@ -88,17 +66,13 @@ async def create_admin_agent(
     db: Session = Depends(get_db),
 ):
     """管理员通过管理端命名空间创建 Agent"""
-    try:
-        agent = agent_service.register_agent(db, req.name, req.role, req.description)
-    except Exception as exc:
-        _raise_admin_agent_write_error(exc)
-    else:
-        return AdminAgentCreateResponse(
-            id=agent.id,
-            name=agent.name,
-            role=agent.role,
-            api_key=agent.api_key,
-        )
+    agent = agent_service.register_agent(db, req.name, req.role, req.description)
+    return AdminAgentCreateResponse(
+        id=agent.id,
+        name=agent.name,
+        role=agent.role,
+        api_key=agent.api_key,
+    )
 
 
 @router.get(
@@ -116,17 +90,14 @@ async def list_admin_agent_score_logs(
     db: Session = Depends(get_db),
 ):
     """分页查看指定 Agent 的积分明细"""
-    try:
-        return admin_agent_query_service.list_agent_score_logs(
-            db,
-            agent_id=agent_id,
-            page=page,
-            page_size=page_size,
-            sub_task_id=sub_task_id,
-            sort_order=sort_order,
-        )
-    except Exception as exc:
-        _raise_admin_agent_query_error(exc)
+    return admin_agent_query_service.list_agent_score_logs(
+        db,
+        agent_id=agent_id,
+        page=page,
+        page_size=page_size,
+        sub_task_id=sub_task_id,
+        sort_order=sort_order,
+    )
 
 
 @router.get(
@@ -145,18 +116,15 @@ async def list_admin_agent_activity_logs(
     db: Session = Depends(get_db),
 ):
     """分页查看指定 Agent 的活动日志"""
-    try:
-        return admin_agent_query_service.list_agent_activity_logs(
-            db,
-            agent_id=agent_id,
-            page=page,
-            page_size=page_size,
-            action=action,
-            days=days,
-            sub_task_id=sub_task_id,
-        )
-    except Exception as exc:
-        _raise_admin_agent_query_error(exc)
+    return admin_agent_query_service.list_agent_activity_logs(
+        db,
+        agent_id=agent_id,
+        page=page,
+        page_size=page_size,
+        action=action,
+        days=days,
+        sub_task_id=sub_task_id,
+    )
 
 
 @router.get(
@@ -175,18 +143,17 @@ async def list_admin_agent_request_logs(
     db: Session = Depends(get_db),
 ):
     """分页查看指定 Agent 的请求日志"""
-    try:
-        return admin_agent_query_service.list_agent_request_logs(
-            db,
-            agent_id=agent_id,
-            page=page,
-            page_size=page_size,
-            days=days,
-            method=method,
-            path_keyword=path_keyword,
-        )
-    except Exception as exc:
-        _raise_admin_agent_query_error(exc)
+    return admin_agent_query_service.list_agent_request_logs(
+        db,
+        agent_id=agent_id,
+        page=page,
+        page_size=page_size,
+        days=days,
+        method=method,
+        path_keyword=path_keyword,
+    )
+
+
 @router.put(
     "/agents/{agent_id}",
     response_model=AdminAgentWriteResponse,
@@ -199,25 +166,21 @@ async def update_admin_agent_profile(
     db: Session = Depends(get_db),
 ):
     """管理员更新 Agent 的名称、角色或描述"""
-    try:
-        agent = agent_service.update_agent_profile(
-            db,
-            agent_id,
-            name=req.name,
-            role=req.role,
-            description=req.description,
-        )
-    except Exception as exc:
-        _raise_admin_agent_write_error(exc)
-    else:
-        return AdminAgentWriteResponse(
-            id=agent.id,
-            name=agent.name,
-            role=agent.role,
-            description=agent.description,
-            status=agent.status,
-            total_score=agent.total_score,
-        )
+    agent = agent_service.update_agent_profile(
+        db,
+        agent_id,
+        name=req.name,
+        role=req.role,
+        description=req.description,
+    )
+    return AdminAgentWriteResponse(
+        id=agent.id,
+        name=agent.name,
+        role=agent.role,
+        description=agent.description,
+        status=agent.status,
+        total_score=agent.total_score,
+    )
 
 
 @router.put(
@@ -232,19 +195,15 @@ async def update_admin_agent_status(
     db: Session = Depends(get_db),
 ):
     """管理员通过管理端命名空间更新 Agent 状态"""
-    try:
-        agent = agent_service.update_agent_status(db, agent_id, req.status)
-    except Exception as exc:
-        _raise_admin_agent_write_error(exc)
-    else:
-        return AdminAgentWriteResponse(
-            id=agent.id,
-            name=agent.name,
-            role=agent.role,
-            description=agent.description,
-            status=agent.status,
-            total_score=agent.total_score,
-        )
+    agent = agent_service.update_agent_status(db, agent_id, req.status)
+    return AdminAgentWriteResponse(
+        id=agent.id,
+        name=agent.name,
+        role=agent.role,
+        description=agent.description,
+        status=agent.status,
+        total_score=agent.total_score,
+    )
 
 
 @router.post(
@@ -258,15 +217,11 @@ async def reset_admin_agent_key(
     db: Session = Depends(get_db),
 ):
     """管理员通过管理端命名空间重置 Agent API Key"""
-    try:
-        agent = agent_service.reset_agent_api_key(db, agent_id)
-    except Exception as exc:
-        _raise_admin_agent_write_error(exc)
-    else:
-        return AdminAgentResetKeyResponse(
-            agent_id=agent.id,
-            new_api_key=agent.api_key,
-        )
+    agent = agent_service.reset_agent_api_key(db, agent_id)
+    return AdminAgentResetKeyResponse(
+        agent_id=agent.id,
+        new_api_key=agent.api_key,
+    )
 
 
 @router.get("/agents/{agent_id}", response_model=AdminAgentDetail, summary="管理端查看 Agent 详情")
@@ -276,10 +231,7 @@ async def get_admin_agent_detail(
     db: Session = Depends(get_db),
 ):
     """查看管理端单个 Agent 详情"""
-    try:
-        return admin_agent_query_service.get_agent_detail(db, agent_id)
-    except Exception as exc:
-        _raise_admin_agent_query_error(exc)
+    return admin_agent_query_service.get_agent_detail(db, agent_id)
 
 
 @router.get(
@@ -293,10 +245,7 @@ async def get_admin_agent_related_counts(
     db: Session = Depends(get_db),
 ):
     """删除前查询关联数据数量，用于风险提示"""
-    try:
-        return agent_service.get_agent_related_counts(db, agent_id)
-    except Exception as exc:
-        _raise_admin_agent_write_error(exc)
+    return agent_service.get_agent_related_counts(db, agent_id)
 
 
 @router.delete(
@@ -311,17 +260,13 @@ async def delete_admin_agent(
     db: Session = Depends(get_db),
 ):
     """删除 Agent 并级联清理所有关联数据，需输入 Agent 名称确认"""
-    try:
-        counts = agent_service.delete_agent(db, agent_id, req.confirm_name)
-    except Exception as exc:
-        _raise_admin_agent_write_error(exc)
-    else:
-        return AdminAgentDeleteResponse(
-            agent_name=counts["agent_name"],
-            sub_task_count=counts["sub_task_count"],
-            review_count=counts["review_count"],
-            reward_count=counts["reward_count"],
-            activity_count=counts["activity_count"],
-            patrol_count=counts["patrol_count"],
-            request_count=counts["request_count"],
-        )
+    counts = agent_service.delete_agent(db, agent_id, req.confirm_name)
+    return AdminAgentDeleteResponse(
+        agent_name=counts["agent_name"],
+        sub_task_count=counts["sub_task_count"],
+        review_count=counts["review_count"],
+        reward_count=counts["reward_count"],
+        activity_count=counts["activity_count"],
+        patrol_count=counts["patrol_count"],
+        request_count=counts["request_count"],
+    )

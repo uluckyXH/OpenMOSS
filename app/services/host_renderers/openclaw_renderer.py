@@ -8,6 +8,8 @@ import json
 import shlex
 from typing import Any
 
+from app.exceptions import ValidationError
+
 from .base import BaseHostRenderer
 
 
@@ -63,9 +65,9 @@ class OpenClawRenderer(BaseHostRenderer):
         thinking_mode = execution_options.get("thinking_mode")
         announce = execution_options.get("announce", True)
         schedule_flag = "--every" if schedule.schedule_type != "cron" else "--cron"
-        schedule_message = (
-            schedule.schedule_message_content or self._default_schedule_message(host_config.workdir_path)
-        )
+        schedule_message = str(schedule.schedule_message_content or "").strip()
+        if not schedule_message:
+            raise ValidationError("定时任务缺少定时唤醒提示词，无法生成 OpenClaw 脚本")
 
         command_args = [
             "openclaw",
@@ -158,17 +160,3 @@ class OpenClawRenderer(BaseHostRenderer):
             return {}
 
         return data if isinstance(data, dict) else {}
-
-    @staticmethod
-    def _default_schedule_message(workdir_path: str) -> str:
-        agents_file = f"{workdir_path}/AGENTS.md"
-        skill_file = f"{workdir_path}/task-executor-skill/SKILL.md"
-        return (
-            "# OpenClaw 定时任务\n"
-            "执行前：\n"
-            f"1) 读取并严格遵守：{agents_file}\n"
-            f"2) API Key 在同目录 SKILL.md 的 API_KEY 字段（文件：{skill_file}）\n"
-            "要求：\n"
-            "- 本 cron 以 AGENTS.md 为唯一准绳\n"
-            "- 严格按 AGENTS.md 中“每次唤醒时的检查流程”完整执行"
-        )

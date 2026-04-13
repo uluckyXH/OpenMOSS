@@ -3,7 +3,7 @@
 """
 from typing import Optional
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 
 from app.auth.dependencies import verify_admin
@@ -13,15 +13,6 @@ from app.services import admin_review_query_service
 
 
 router = APIRouter(prefix="/admin", tags=["Admin Review"])
-
-
-def _raise_admin_review_query_error(exc: Exception) -> None:
-    """统一处理管理端审查记录查询异常"""
-    if isinstance(exc, admin_review_query_service.ResourceNotFoundError):
-        raise HTTPException(status_code=404, detail=str(exc))
-    if isinstance(exc, admin_review_query_service.InvalidQueryError):
-        raise HTTPException(status_code=400, detail=str(exc))
-    raise exc
 
 
 @router.get(
@@ -43,21 +34,18 @@ async def list_admin_review_records(
     db: Session = Depends(get_db),
 ):
     """分页查看管理端审查记录列表"""
-    try:
-        return admin_review_query_service.list_review_records(
-            db,
-            page=page,
-            page_size=page_size,
-            task_id=task_id,
-            sub_task_id=sub_task_id,
-            reviewer_agent=reviewer_agent,
-            result=result,
-            keyword=keyword,
-            days=days,
-            sort_order=sort_order,
-        )
-    except Exception as exc:
-        _raise_admin_review_query_error(exc)
+    return admin_review_query_service.list_review_records(
+        db,
+        page=page,
+        page_size=page_size,
+        task_id=task_id,
+        sub_task_id=sub_task_id,
+        reviewer_agent=reviewer_agent,
+        result=result,
+        keyword=keyword,
+        days=days,
+        sort_order=sort_order,
+    )
 
 
 @router.get(
@@ -71,7 +59,4 @@ async def get_admin_review_detail(
     db: Session = Depends(get_db),
 ):
     """查看单条管理端审查记录详情"""
-    try:
-        return admin_review_query_service.get_review_detail(db, review_id)
-    except Exception as exc:
-        _raise_admin_review_query_error(exc)
+    return admin_review_query_service.get_review_detail(db, review_id)

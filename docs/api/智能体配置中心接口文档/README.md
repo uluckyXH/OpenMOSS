@@ -23,6 +23,7 @@
 
 - `GET /api/admin/managed-agents`
 - `GET /api/admin/managed-agents/meta/host-platforms`
+- `GET /api/admin/managed-agents/meta/prompt-templates`
 - `POST /api/admin/managed-agents`
 - `GET /api/admin/managed-agents/{agent_id}`
 - `PUT /api/admin/managed-agents/{agent_id}`

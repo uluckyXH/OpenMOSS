@@ -6,6 +6,11 @@ from typing import Optional
 from sqlalchemy import asc, case, desc, func, or_
 from sqlalchemy.orm import Query, Session
 
+from app.exceptions import (
+    AdminInvalidQueryError as InvalidQueryError,
+    AdminQueryError as AdminTaskQueryError,
+    AdminResourceNotFoundError as ResourceNotFoundError,
+)
 from app.models.agent import Agent
 from app.models.module import Module
 from app.models.sub_task import SubTask
@@ -27,18 +32,6 @@ SUB_TASK_STATUSES = {
     "cancelled",
 }
 SUB_TASK_PRIORITIES = {"high", "medium", "low"}
-
-
-class AdminTaskQueryError(ValueError):
-    """管理端查询通用错误"""
-
-
-class InvalidQueryError(AdminTaskQueryError):
-    """非法查询参数"""
-
-
-class ResourceNotFoundError(AdminTaskQueryError):
-    """资源不存在"""
 
 
 def list_tasks(

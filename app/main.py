@@ -1,12 +1,17 @@
 """
 OpenMOSS 任务调度中间件 — 主入口
 """
+import logging
 import os
-import traceback
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, Depends, Request
 from fastapi.responses import JSONResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
+
+from app.logging_config import configure_logging
+
+configure_logging()
+logger = logging.getLogger(__name__)
 
 from app.database import init_db
 from app.config import config
@@ -55,9 +60,9 @@ def _cleanup_old_request_logs():
         deleted = db.query(RequestLog).filter(RequestLog.timestamp < cutoff).delete()
         db.commit()
         if deleted > 0:
-            print(f"[RequestLog] 已清理 {deleted} 条超过 {days} 天的请求日志")
-    except Exception as e:
-        print(f"[RequestLog] 清理失败: {e}")
+            logger.info("已清理 %s 条超过 %s 天的请求日志", deleted, days)
+    except Exception:
+        logger.exception("请求日志清理失败")
     finally:
         db.close()
 
@@ -83,12 +88,12 @@ async def lifespan(app: FastAPI):
     from app.services.webui_updater import webui_updater
     await webui_updater.ensure_webui_exists()
 
-    print(f"[{config.project_name}] 服务启动 → http://{config.server_host}:{config.server_port}")
-    print(f"[{config.project_name}] 数据库: {config.database_path}")
-    print(f"[{config.project_name}] 宿主公共工作目录: {config.workspace_root}")
-    print(f"[{config.project_name}] 注册令牌: {config.registration_token}")
+    logger.info("%s 服务启动 → http://%s:%s", config.project_name, config.server_host, config.server_port)
+    logger.info("%s 数据库: %s", config.project_name, config.database_path)
+    logger.info("%s 宿主公共工作目录: %s", config.project_name, config.workspace_root)
+    logger.info("%s 注册令牌: %s", config.project_name, config.registration_token)
     yield
-    print(f"[{config.project_name}] 服务关闭")
+    logger.info("%s 服务关闭", config.project_name)
 
 
 app = FastAPI(
@@ -125,14 +130,14 @@ async def business_error_handler(request: Request, exc: BusinessError):
 @app.exception_handler(ValueError)
 async def value_error_handler(request: Request, exc: ValueError):
     """未显式收口的 ValueError → 安全兜底，不暴露内部细节。"""
-    traceback.print_exc()
+    logger.error("未显式收口的 ValueError", exc_info=(type(exc), exc, exc.__traceback__))
     return JSONResponse(status_code=400, content={"detail": "请求参数或业务状态非法"})
 
 
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
     """未处理异常 → 500，日志记录堆栈，客户端只看到通用提示"""
-    traceback.print_exc()
+    logger.error("未处理异常", exc_info=(type(exc), exc, exc.__traceback__))
     return JSONResponse(
         status_code=500,
         content={"detail": "服务内部错误，请联系管理员"},
@@ -216,4 +221,4 @@ async def serve_spa(full_path: str):
         return FileResponse(index)
     return JSONResponse(status_code=404, content={"detail": "WebUI not found"})
 
-print(f"[WebUI] 已挂载前端: {os.path.abspath(_webui_dist)}")
+logger.info("已挂载前端: %s", os.path.abspath(_webui_dist))

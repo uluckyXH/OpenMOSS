@@ -10,29 +10,30 @@ from typing import Any
 
 OPENCLAW_UI_HINTS: dict[str, Any] = {
     "host_config": {
-        "description": (
-            "配置此 Agent 在 OpenClaw 平台上的运行参数。公共工作目录指 OpenClaw "
-            "部署机器可访问的目录，不要求 OpenMOSS 服务本机可直接访问。"
-        ),
+        "description": "配置此 Agent 在 OpenClaw 平台上的运行参数。",
         "fields": [
             {
                 "key": "host_agent_identifier",
-                "label": "Agent 标识",
+                "label": "Agent ID",
                 "type": "text",
-                "placeholder": "例如 ai-xiaohui",
-                "description": "OpenClaw 中真实的 Agent ID，用于绑定运行态 Agent。",
+                "placeholder": "content-executor-01",
+                "description": (
+                    "OpenClaw 中的系统唯一标识。仅限英文小写字母、数字、下划线和连字符"
+                    "（a-z 0-9 _ -），首字符为字母或数字，最长 64 位。合法示例："
+                    "content-executor-01、review-agent-01。"
+                ),
                 "required": True,
                 "group": "基本",
             },
             {
                 "key": "workdir_path",
-                "label": "工作目录",
+                "label": "工作空间（Workspace）",
                 "type": "text",
-                "placeholder": "~/.openclaw/workspace-ai-xiaohui",
+                "placeholder": "~/.openclaw/workspace-{Agent ID}",
                 "description": (
-                    "Agent 在 OpenClaw 部署机器上的工作目录路径。主力 OpenClaw "
-                    "环境可使用公共工作目录；外部远程 OpenClaw 的目录不应假设 "
-                    "OpenMOSS 本机可访问。"
+                    "Agent 的专属文件空间，也是默认的文件操作目录，用于存放提示词"
+                    "（AGENTS.md/SOUL.md）、记忆、技能和任务产出。通常为 "
+                    "~/.openclaw/workspace-{Agent ID}，留空时将根据 Agent ID 自动生成。"
                 ),
                 "required": False,
                 "group": "基本",
@@ -41,7 +42,6 @@ OPENCLAW_UI_HINTS: dict[str, Any] = {
                 "key": "host_config_payload",
                 "label": "平台配置数据",
                 "type": "textarea",
-                "placeholder": '{"openclaw_config_path":"~/.openclaw/openclaw.json"}',
                 "description": (
                     "除标准字段外的宿主平台扩展配置。留空表示不修改现有值；输入新内容会替换旧值，"
                     "保存后仅返回脱敏结果。"
@@ -54,8 +54,8 @@ OPENCLAW_UI_HINTS: dict[str, Any] = {
                 "key": "host_metadata_json",
                 "label": "扩展元数据",
                 "type": "json",
-                "placeholder": '{"workspace_source":"managed"}',
-                "description": "非敏感扩展信息，JSON 格式，用于前端展示或 renderer 辅助判断。",
+                "placeholder": "{}",
+                "description": "平台侧的额外元数据，JSON 格式。",
                 "required": False,
                 "group": "高级",
             },
@@ -63,52 +63,70 @@ OPENCLAW_UI_HINTS: dict[str, Any] = {
     },
     "prompt": {
         "description": (
-            "定义 Agent 的系统规则、人格和身份信息。OpenClaw 渲染器会将三段内容分别映射为 "
-            "AGENTS.md、SOUL.md、IDENTITY.md。"
+            "定义 Agent 在 OpenClaw Workspace 中的工作规则、人格设定和身份信息。"
+            "这些内容都是可选配置，保存后会渲染为 AGENTS.md、SOUL.md、IDENTITY.md。"
         ),
         "render_strategies": [
             {
-                "value": "host_default",
-                "label": "平台默认",
-                "description": "由 OpenClaw 或后端 renderer 决定最终渲染方式。",
-            },
-            {
                 "value": "openclaw_workspace_files",
                 "label": "Workspace 文件",
-                "description": "渲染为 OpenClaw 工作目录文件：AGENTS.md、SOUL.md、IDENTITY.md。",
-            },
-            {
-                "value": "openclaw_inline_schedule",
-                "label": "内联 Schedule",
-                "description": "将 Prompt 内容内联到定时任务唤醒消息中。",
+                "description": "渲染为 OpenClaw Workspace 文件：AGENTS.md、SOUL.md、IDENTITY.md。",
+                "is_default": True,
             },
         ],
         "sections": [
             {
                 "key": "system_prompt_content",
-                "label": "系统提示词",
-                "placeholder": "定义 Agent 的行为规则、边界和工作约束。",
-                "required": True,
+                "label": "工作规则（AGENTS.md）",
+                "placeholder": "填写 Agent 的工作流程、工具使用规则和协作约束。",
+                "required": False,
+                "description": "定义 Agent 的工作规则和执行流程。",
+                "detail": (
+                    "对应 OpenClaw Workspace 中的 AGENTS.md。用于描述 Agent 的操作手册，"
+                    "包括工作流程、安全边界、工具使用规则、记忆策略和协作约束。"
+                    "这是最核心的行为规则文件，可根据实际情况决定是否添加或修改。"
+                ),
             },
             {
                 "key": "persona_prompt_content",
-                "label": "人格提示词",
-                "placeholder": "定义 Agent 的沟通风格、性格和协作方式。",
+                "label": "人格设定（SOUL.md）",
+                "placeholder": "填写 Agent 的性格、语气和沟通风格。",
                 "required": False,
+                "description": "定义 Agent 的性格和说话风格。",
+                "detail": (
+                    "对应 OpenClaw Workspace 中的 SOUL.md。用于描述 Agent 的语气、态度、"
+                    "个性和与用户的关系边界，决定 Agent 是偏工具化还是更有独立个性。"
+                ),
             },
             {
                 "key": "identity_content",
-                "label": "身份内容",
-                "placeholder": "定义 Agent 的身份信息、职责边界和背景。",
+                "label": "身份信息（IDENTITY.md）",
+                "placeholder": "填写 Agent 的名称、外显身份和展示信息。",
                 "required": False,
+                "description": "定义 Agent 的名称和外显身份。",
+                "detail": (
+                    "对应 OpenClaw Workspace 中的 IDENTITY.md。用于描述 Agent 的名字、emoji、"
+                    "头像等对外展示信息，比人格设定更轻量，主要用于标识而非行为规则。"
+                ),
             },
         ],
     },
     "schedule": {
-        "description": "配置 OpenClaw Agent 的定时唤醒任务。定时任务不是部署必填项。",
+        "description": "配置 OpenClaw Agent 的定时唤醒任务。定时任务不是部署必填项，但一旦创建就应一次性提交完整配置。",
         "supported_types": ["interval", "cron"],
         "default_expr": "15m",
         "default_timeout": 1800,
+        "required_fields": [
+            "schedule_type",
+            "schedule_expr",
+            "timeout_seconds",
+            "schedule_message_content",
+        ],
+        "expr_help": {
+            "interval": "间隔格式：数字 + 单位，单位支持 s/m/h/d，例如 15m、1h、2d。",
+            "cron": "cron 格式：标准 5 段表达式，例如 0 9 * * *。",
+        },
+        "message_label": "定时唤醒提示词",
     },
     "comm": {
         "description": "配置宿主平台侧通讯渠道。当前后端只落地 Feishu，其他 provider 仍是预留枚举。",

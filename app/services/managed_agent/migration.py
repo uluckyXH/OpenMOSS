@@ -3,6 +3,7 @@ managed_agent 迁移与回填服务。
 """
 
 import uuid
+import logging
 from typing import Dict
 
 from sqlalchemy.orm import Session
@@ -12,6 +13,9 @@ from app.models.managed_agent import ManagedAgent, ManagedAgentHostConfig, Manag
 from app.services.schema_compat_service import detect_legacy_tables, get_schema_capabilities
 
 from .shared import _default_render_strategy, _generate_slug
+
+
+logger = logging.getLogger(__name__)
 
 
 def build_migration_report(db: Session) -> Dict[str, object]:
@@ -120,12 +124,18 @@ def auto_backfill_from_runtime(db: Session) -> Dict[str, object]:
         except Exception as exc:
             db.rollback()
             summary["failed"] += 1
-            print(f"[ManagedAgent] 回填失败 (跳过): agent={runtime_agent.name}, error={exc}")
+            logger.warning(
+                "回填失败 (跳过): agent=%s, error=%s",
+                runtime_agent.name,
+                exc,
+            )
 
     if summary["created"] or summary["failed"]:
-        print(
-            "[ManagedAgent] 回填完成: "
-            f"成功={summary['created']}, 跳过={summary['skipped']}, 失败={summary['failed']}"
+        logger.info(
+            "回填完成: 成功=%s, 跳过=%s, 失败=%s",
+            summary["created"],
+            summary["skipped"],
+            summary["failed"],
         )
 
     return summary

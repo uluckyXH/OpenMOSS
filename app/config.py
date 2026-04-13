@@ -1,12 +1,19 @@
 """
 OpenMOSS 任务调度中间件 — 配置加载模块
 """
+import logging
 import os
 import bcrypt
 import yaml
 import threading
 from pathlib import Path
 from typing import Optional
+
+from app.logging_config import configure_logging
+
+
+configure_logging()
+logger = logging.getLogger(__name__)
 
 
 class AppConfig:
@@ -28,7 +35,7 @@ class AppConfig:
                 import shutil
                 self.config_path.parent.mkdir(parents=True, exist_ok=True)
                 shutil.copy(example_path, self.config_path)
-                print(f"[Config] 已从 {example_path} 创建配置文件 {self.config_path}")
+                logger.info("已从 %s 创建配置文件 %s", example_path, self.config_path)
             else:
                 raise FileNotFoundError(
                     f"配置文件 {self.config_path} 不存在，请从 config.example.yaml 复制"
@@ -55,8 +62,8 @@ class AppConfig:
         if password.startswith("md5:"):
             # 旧的 MD5 格式，无法反向解密，需要用户重新设置密码
             # 使用默认密码 admin123 重新加密
-            print(f"[Config] ⚠️ 检测到旧的 MD5 密码格式，自动升级为 bcrypt（使用默认密码 admin123）")
-            print(f"[Config] ⚠️ 请登录后立即修改管理员密码！")
+            logger.warning("检测到旧的 MD5 密码格式，自动升级为 bcrypt（使用默认密码 admin123）")
+            logger.warning("请登录后立即修改管理员密码！")
             raw_password = "admin123"
         else:
             # 明文密码
@@ -71,7 +78,7 @@ class AppConfig:
         with open(self.config_path, "w", encoding="utf-8") as f:
             yaml.dump(self._data, f, allow_unicode=True, default_flow_style=False)
 
-        print(f"[Config] 管理员密码已加密为 bcrypt")
+        logger.info("管理员密码已加密为 bcrypt")
 
     def _save(self):
         """将当前配置数据回写到 YAML 文件"""

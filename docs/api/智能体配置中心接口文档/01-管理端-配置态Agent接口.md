@@ -1,6 +1,6 @@
 # 管理端配置态 Agent 接口
 
-> 最后同步：2026-04-10
+> 最后同步：2026-04-13
 > 接口前缀：`/api/admin/managed-agents`
 > 鉴权方式：`X-Admin-Token`
 > 对应代码：`app/routers/admin/managed_agents.py`
@@ -10,6 +10,7 @@
 本模块用于管理端维护配置态 Agent，当前已覆盖：
 
 - 宿主平台能力查询
+- Prompt 模板示例查询
 - 配置态 Agent 基础 CRUD
 - 列表/详情内嵌配置就绪度 `readiness`
 - 宿主平台配置管理
@@ -96,6 +97,26 @@ Content-Type: application/json
 | `sensitive` | bool/null | 是否敏感字段；敏感字段保存后只回显脱敏结果 |
 | `group` | string/null | 前端分组名 |
 
+`prompt.render_strategies[]` 字段说明：
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `value` | string | 渲染策略值；OpenClaw 当前只向前端暴露 `openclaw_workspace_files` |
+| `label` | string | 展示标签 |
+| `description` | string | 策略说明 |
+| `is_default` | bool/null | 是否为默认策略；只有一个策略时前端可自动选中并隐藏选择器 |
+
+`prompt.sections[]` 字段说明：
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `key` | string | 对应 Prompt 资产 API 入参；标准字段包括 `system_prompt_content / persona_prompt_content / identity_content` |
+| `label` | string | 展示标签；OpenClaw 使用文件语义，如 `工作规则（AGENTS.md）` |
+| `placeholder` | string/null | 占位提示 |
+| `required` | bool | 是否必填；OpenClaw 当前三段都是可选 |
+| `description` | string/null | 一句话简介，适合常显在标题下方 |
+| `detail` | string/null | 完整说明，适合放在帮助展开内容里 |
+
 说明：
 
 - `ui_hints` 来自后端代码注册表，不来自数据库，也不是用户配置。
@@ -140,10 +161,10 @@ Content-Type: application/json
 | 字段 | 类型 | 说明 |
 |---|---|---|
 | `host_config` | bool | 宿主平台配置是否已有实质内容；当前规则为 `host_agent_identifier` 或 `workdir_path` 至少一个非空 |
-| `prompt_asset` | bool | Prompt 资产是否已有实质内容；当前规则为 `system_prompt_content` 非空 |
+| `prompt_asset` | bool | Prompt 资产是否已有实质内容；当前规则为 `system_prompt_content / persona_prompt_content / identity_content` 任意一个非空 |
 | `schedules_count` | int | 定时任务数量，`0` 表示未配置；定时任务不是部署必填项 |
 | `comm_bindings_count` | int | 宿主通讯渠道数量，`0` 表示未配置；通讯渠道不是部署必填项 |
-| `deploy_ready` | bool | 是否满足部署前置条件；当前规则为 `host_config && prompt_asset` |
+| `deploy_ready` | bool | 是否满足部署前置条件；当前规则为 `host_config`。OpenClaw Prompt 文件都是可选配置，不再阻塞部署 |
 
 说明：
 
@@ -185,9 +206,9 @@ Content-Type: application/json
 | `id` | string | Prompt 资产 ID |
 | `managed_agent_id` | string | 所属配置态 Agent ID |
 | `template_role` | string/null | 初始化时使用的角色模板 |
-| `system_prompt_content` | string | 系统提示词 |
-| `persona_prompt_content` | string | 人格提示词 |
-| `identity_content` | string | 身份内容 |
+| `system_prompt_content` | string | 工作规则内容，对应 OpenClaw `AGENTS.md` |
+| `persona_prompt_content` | string | 人格设定内容，对应 OpenClaw `SOUL.md` |
+| `identity_content` | string | 身份信息内容，对应 OpenClaw `IDENTITY.md` |
 | `host_render_strategy` | string | 渲染策略 |
 | `authority_source` | string | 当前固定为 `database` |
 | `notes` | string/null | 备注 |
@@ -217,11 +238,11 @@ Content-Type: application/json
 | `name` | string | 定时任务名称 |
 | `enabled` | bool | 是否启用 |
 | `schedule_type` | string | `interval / cron` |
-| `schedule_expr` | string | 间隔值或 cron 表达式 |
+| `schedule_expr` | string | 间隔值或 5 段 cron 表达式 |
 | `timeout_seconds` | int | 超时秒数 |
 | `model_override` | string/null | 模型覆盖，当前仍保留字段但不建议作为主配置使用 |
 | `execution_options_json` | string/null | 宿主侧执行选项 JSON |
-| `schedule_message_content` | string | 唤醒消息内容 |
+| `schedule_message_content` | string | 定时唤醒提示词 |
 | `created_at` | datetime | 创建时间 |
 | `updated_at` | datetime | 更新时间 |
 
@@ -317,23 +338,23 @@ Content-Type: application/json
       "supported_comm_providers": ["feishu"],
       "ui_hints": {
         "host_config": {
-          "description": "配置此 Agent 在 OpenClaw 平台上的运行参数。公共工作目录指 OpenClaw 部署机器可访问的目录，不要求 OpenMOSS 服务本机可直接访问。",
+          "description": "配置此 Agent 在 OpenClaw 平台上的运行参数。",
           "fields": [
             {
               "key": "host_agent_identifier",
-              "label": "Agent 标识",
+              "label": "Agent ID",
               "type": "text",
-              "placeholder": "例如 ai-xiaohui",
-              "description": "OpenClaw 中真实的 Agent ID，用于绑定运行态 Agent。",
+              "placeholder": "content-executor-01",
+              "description": "OpenClaw 中的系统唯一标识。仅限英文小写字母、数字、下划线和连字符（a-z 0-9 _ -），首字符为字母或数字，最长 64 位。合法示例：content-executor-01、review-agent-01。",
               "required": true,
               "group": "基本"
             },
             {
               "key": "workdir_path",
-              "label": "工作目录",
+              "label": "工作空间（Workspace）",
               "type": "text",
-              "placeholder": "~/.openclaw/workspace-ai-xiaohui",
-              "description": "Agent 在 OpenClaw 部署机器上的工作目录路径。",
+              "placeholder": "~/.openclaw/workspace-{Agent ID}",
+              "description": "Agent 的专属文件空间，也是默认的文件操作目录，用于存放提示词（AGENTS.md/SOUL.md）、记忆、技能和任务产出。通常为 ~/.openclaw/workspace-{Agent ID}，留空时将根据 Agent ID 自动生成。",
               "required": false,
               "group": "基本"
             },
@@ -341,7 +362,6 @@ Content-Type: application/json
               "key": "host_config_payload",
               "label": "平台配置数据",
               "type": "textarea",
-              "placeholder": "{\"openclaw_config_path\":\"~/.openclaw/openclaw.json\"}",
               "description": "除标准字段外的宿主平台扩展配置。留空表示不修改现有值；输入新内容会替换旧值，保存后仅返回脱敏结果。",
               "required": false,
               "sensitive": true,
@@ -351,58 +371,66 @@ Content-Type: application/json
               "key": "host_metadata_json",
               "label": "扩展元数据",
               "type": "json",
-              "placeholder": "{\"workspace_source\":\"managed\"}",
-              "description": "非敏感扩展信息，JSON 格式，用于前端展示或 renderer 辅助判断。",
+              "placeholder": "{}",
+              "description": "平台侧的额外元数据，JSON 格式。",
               "required": false,
               "group": "高级"
             }
           ]
         },
         "prompt": {
-          "description": "定义 Agent 的系统规则、人格和身份信息。OpenClaw 渲染器会将三段内容分别映射为 AGENTS.md、SOUL.md、IDENTITY.md。",
+          "description": "定义 Agent 在 OpenClaw Workspace 中的工作规则、人格设定和身份信息。这些内容都是可选配置，保存后会渲染为 AGENTS.md、SOUL.md、IDENTITY.md。",
           "render_strategies": [
-            {
-              "value": "host_default",
-              "label": "平台默认",
-              "description": "由 OpenClaw 或后端 renderer 决定最终渲染方式。"
-            },
             {
               "value": "openclaw_workspace_files",
               "label": "Workspace 文件",
-              "description": "渲染为 OpenClaw 工作目录文件：AGENTS.md、SOUL.md、IDENTITY.md。"
-            },
-            {
-              "value": "openclaw_inline_schedule",
-              "label": "内联 Schedule",
-              "description": "将 Prompt 内容内联到定时任务唤醒消息中。"
+              "description": "渲染为 OpenClaw Workspace 文件：AGENTS.md、SOUL.md、IDENTITY.md。",
+              "is_default": true
             }
           ],
           "sections": [
             {
               "key": "system_prompt_content",
-              "label": "系统提示词",
-              "placeholder": "定义 Agent 的行为规则、边界和工作约束。",
-              "required": true
+              "label": "工作规则（AGENTS.md）",
+              "placeholder": "填写 Agent 的工作流程、工具使用规则和协作约束。",
+              "required": false,
+              "description": "定义 Agent 的工作规则和执行流程。",
+              "detail": "对应 OpenClaw Workspace 中的 AGENTS.md。用于描述 Agent 的操作手册，包括工作流程、安全边界、工具使用规则、记忆策略和协作约束。这是最核心的行为规则文件，可根据实际情况决定是否添加或修改。"
             },
             {
               "key": "persona_prompt_content",
-              "label": "人格提示词",
-              "placeholder": "定义 Agent 的沟通风格、性格和协作方式。",
-              "required": false
+              "label": "人格设定（SOUL.md）",
+              "placeholder": "填写 Agent 的性格、语气和沟通风格。",
+              "required": false,
+              "description": "定义 Agent 的性格和说话风格。",
+              "detail": "对应 OpenClaw Workspace 中的 SOUL.md。用于描述 Agent 的语气、态度、个性和与用户的关系边界，决定 Agent 是偏工具化还是更有独立个性。"
             },
             {
               "key": "identity_content",
-              "label": "身份内容",
-              "placeholder": "定义 Agent 的身份信息、职责边界和背景。",
-              "required": false
+              "label": "身份信息（IDENTITY.md）",
+              "placeholder": "填写 Agent 的名称、外显身份和展示信息。",
+              "required": false,
+              "description": "定义 Agent 的名称和外显身份。",
+              "detail": "对应 OpenClaw Workspace 中的 IDENTITY.md。用于描述 Agent 的名字、emoji、头像等对外展示信息，比人格设定更轻量，主要用于标识而非行为规则。"
             }
           ]
         },
         "schedule": {
-          "description": "配置 OpenClaw Agent 的定时唤醒任务。定时任务不是部署必填项。",
+          "description": "配置 OpenClaw Agent 的定时唤醒任务。定时任务不是部署必填项，但一旦创建就应一次性提交完整配置。",
           "supported_types": ["interval", "cron"],
           "default_expr": "15m",
-          "default_timeout": 1800
+          "default_timeout": 1800,
+          "required_fields": [
+            "schedule_type",
+            "schedule_expr",
+            "timeout_seconds",
+            "schedule_message_content"
+          ],
+          "expr_help": {
+            "interval": "间隔格式：数字 + 单位，单位支持 s/m/h/d，例如 15m、1h、2d。",
+            "cron": "cron 格式：标准 5 段表达式，例如 0 9 * * *。"
+          },
+          "message_label": "定时唤醒提示词"
         },
         "comm": {
           "description": "配置宿主平台侧通讯渠道。当前后端只落地 Feishu，其他 provider 仍是预留枚举。"
@@ -417,6 +445,64 @@ Content-Type: application/json
   ]
 }
 ```
+
+### 5.1.1 获取 Prompt 模板示例
+
+#### `GET /api/admin/managed-agents/meta/prompt-templates`
+
+作用：返回 Agent 管理域当前可用的角色 Prompt 模板示例，供前端做“一键填充示例”或“按角色载入默认内容”。该接口只是读取当前仓库中的模板文件，不代表重新启用旧 Prompt 管理作为 Agent Prompt 主入口。
+
+#### Query 参数
+
+| 参数 | 类型 | 必填 | 默认值 | 说明 |
+|---|---|---|---|---|
+| `role` | string | 否 | - | 按角色过滤，支持 `planner / executor / reviewer / patrol` |
+
+#### 成功返回
+
+- 状态码：`200`
+- 返回体：对象，字段如下
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `items` | array | 模板示例列表 |
+
+`items[]` 字段说明：
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `role` | string | 模板角色 |
+| `label` | string | 角色展示名 |
+| `filename` | string | 当前命中的模板文件名，兼容 `{role}.md` / `task-{role}.md` |
+| `content` | string | 模板原文内容 |
+
+#### 错误码
+
+| 状态码 | 说明 |
+|---|---|
+| `403` | 管理员鉴权失败 |
+| `422` | `role` 不在允许枚举中 |
+
+#### 响应示例
+
+```json
+{
+  "items": [
+    {
+      "role": "executor",
+      "label": "任务执行者",
+      "filename": "executor.md",
+      "content": "# 角色：任务执行者（Task Executor）\n\n## 身份\n\n你是一个任务执行者..."
+    }
+  ]
+}
+```
+
+补充说明：
+
+- 不传 `role` 时返回当前仓库中所有可用的角色模板示例。
+- 该接口适合给前端填充 `AGENTS.md` 示例内容，也可以作为定时唤醒提示词的参考模版来源。
+- 模板文件继续保留在 `prompts/templates/*`，当前没有删除。
 
 ### 5.2 分页获取配置态 Agent 列表
 
@@ -452,8 +538,8 @@ Content-Type: application/json
   "items": [
     {
       "id": "6df7f65f-7d43-4f0e-bdf0-38c7f37fe84e",
-      "name": "AI小灰",
-      "slug": "ai-xiaohui",
+      "name": "内容执行 Agent",
+      "slug": "content-executor-01",
       "role": "executor",
       "description": "内容执行 Agent",
       "host_platform": "openclaw",
@@ -524,7 +610,7 @@ Content-Type: application/json
 
 | 状态码 | 说明 |
 |---|---|
-| `400` | 例如 slug 冲突，错误信息示例：`slug 'ai-xiaohui' 已被使用` |
+| `400` | 例如 slug 冲突，错误信息示例：`slug 'content-executor-01' 已被使用` |
 | `403` | 管理员鉴权失败 |
 | `422` | 请求体字段缺失或格式不合法 |
 
@@ -532,15 +618,15 @@ Content-Type: application/json
 
 ```json
 {
-  "name": "AI小灰",
-  "slug": "ai-xiaohui",
+  "name": "内容执行 Agent",
+  "slug": "content-executor-01",
   "role": "executor",
   "description": "内容执行 Agent",
   "host_platform": "openclaw",
   "deployment_mode": "create_sub_agent",
   "host_access_mode": "local",
-  "host_agent_identifier": "ai-xiaohui",
-  "workdir_path": "~/.openclaw/workspace-ai-xiaohui"
+  "host_agent_identifier": "content-executor-01",
+  "workdir_path": "~/.openclaw/workspace-content-executor-01"
 }
 ```
 
@@ -734,16 +820,16 @@ Content-Type: application/json
 
 #### `PUT /api/admin/managed-agents/{agent_id}/prompt-asset`
 
-作用：更新 `system / persona / identity` 三段 Prompt。
+作用：更新 OpenClaw 工作规则、人格设定、身份信息三段可选 Prompt 文件内容。
 
 #### 请求体
 
 | 字段 | 类型 | 必填 | 说明 |
 |---|---|---|---|
-| `system_prompt_content` | string/null | 否 | 系统提示词 |
-| `persona_prompt_content` | string/null | 否 | 人格提示词 |
-| `identity_content` | string/null | 否 | 身份内容 |
-| `host_render_strategy` | string/null | 否 | 渲染策略：`host_default / openclaw_workspace_files / openclaw_inline_schedule` |
+| `system_prompt_content` | string/null | 否 | 工作规则内容，对应 OpenClaw `AGENTS.md` |
+| `persona_prompt_content` | string/null | 否 | 人格设定内容，对应 OpenClaw `SOUL.md` |
+| `identity_content` | string/null | 否 | 身份信息内容，对应 OpenClaw `IDENTITY.md` |
+| `host_render_strategy` | string/null | 否 | 渲染策略。OpenClaw 前端当前只暴露 `openclaw_workspace_files`；`host_default / openclaw_inline_schedule` 仅作为后端兼容枚举保留 |
 | `notes` | string/null | 否 | 内部备注 |
 
 #### 成功返回
@@ -789,15 +875,15 @@ Content-Type: application/json
   "artifacts": [
     {
       "name": "AGENTS.md",
-      "content": "你是系统提示词"
+      "content": "这里是工作规则内容"
     },
     {
       "name": "SOUL.md",
-      "content": "你是人格提示词"
+      "content": "这里是人格设定内容"
     },
     {
       "name": "IDENTITY.md",
-      "content": "你是身份内容"
+      "content": "这里是身份信息内容"
     }
   ]
 }
@@ -833,12 +919,17 @@ Content-Type: application/json
 |---|---|---|---|
 | `name` | string | 是 | 定时任务名称 |
 | `enabled` | bool | 否 | 是否启用，默认 `true` |
-| `schedule_type` | string | 否 | `interval / cron`，默认 `interval` |
-| `schedule_expr` | string | 否 | 间隔值或 cron 表达式，默认 `15m` |
-| `timeout_seconds` | int | 否 | 超时秒数，默认 `1800`，最小 `60` |
+| `schedule_type` | string | 是 | `interval / cron` |
+| `schedule_expr` | string | 是 | 间隔值或 5 段 cron 表达式。`interval` 支持 `15m`、`1h`、`2d`；`cron` 支持 `0 9 * * *` 这类标准 5 段 cron |
+| `timeout_seconds` | int | 是 | 超时秒数，最小 `60` |
 | `model_override` | string/null | 否 | 模型覆盖 |
 | `execution_options_json` | string/null | 否 | 宿主执行选项 JSON |
-| `schedule_message_content` | string | 否 | 唤醒消息内容 |
+| `schedule_message_content` | string | 是 | 定时唤醒提示词，支持多行文本 |
+
+说明：
+
+- 前端可以分步填写，但提交创建接口时应一次性提交完整 schedule。
+- `schedule_message_content` 不能为空白字符串。
 
 #### 成功返回
 
@@ -860,7 +951,14 @@ Content-Type: application/json
 
 #### 请求体
 
-与“创建定时任务”相同。
+支持部分更新，但更新后的整条 schedule 仍必须保持完整可用。
+
+例如：
+
+- 可以只改 `name`
+- 可以只改 `model_override`
+- 不允许把 `schedule_message_content` 清空
+- 如果只改 `schedule_type`，则必须保证与当前或本次提交的 `schedule_expr` 仍然匹配
 
 #### 成功返回
 
@@ -871,9 +969,10 @@ Content-Type: application/json
 
 | 状态码 | 说明 |
 |---|---|
-| `400` | 当前实现中，某些业务错误会返回 `400` |
+| `400` | `schedule_expr` 与 `schedule_type` 不匹配、`schedule_message_content` 为空白，或其他业务错误 |
 | `403` | 管理员鉴权失败 |
 | `404` | 定时任务不属于该 Agent |
+| `422` | 创建时缺少必填字段，或更新时显式传 `null` 给必填字段 |
 
 ### 5.17 删除定时任务
 

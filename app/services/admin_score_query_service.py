@@ -6,6 +6,10 @@ from typing import Optional
 from sqlalchemy import asc, case, desc, func, or_
 from sqlalchemy.orm import Query, Session
 
+from app.exceptions import (
+    AdminInvalidQueryError as InvalidQueryError,
+    AdminQueryError as AdminScoreQueryError,
+)
 from app.models.agent import Agent
 from app.models.reward_log import RewardLog
 
@@ -15,14 +19,6 @@ MAX_PAGE_SIZE = 100
 AGENT_ROLES = {"planner", "executor", "reviewer", "patrol"}
 AGENT_STATUSES = {"active", "disabled"}
 SCORE_SIGNS = {"positive", "negative"}
-
-
-class AdminScoreQueryError(ValueError):
-    """管理端积分查询通用错误"""
-
-
-class InvalidQueryError(AdminScoreQueryError):
-    """非法查询参数"""
 
 
 def get_score_summary(db: Session) -> dict:

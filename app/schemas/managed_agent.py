@@ -149,6 +149,19 @@ class ManagedAgentHostPlatformMetaResponse(BaseModel):
     items: List[ManagedAgentHostPlatformMetaItem]
 
 
+class ManagedAgentPromptTemplateItem(BaseModel):
+    """角色 Prompt 模板示例。"""
+    role: ManagedAgentRole
+    label: str
+    filename: str
+    content: str
+
+
+class ManagedAgentPromptTemplateListResponse(BaseModel):
+    """角色 Prompt 模板示例列表响应。"""
+    items: List[ManagedAgentPromptTemplateItem]
+
+
 class ManagedAgentRuntimeApiKeyResetResponse(BaseModel):
     """重置运行态 API Key 响应，仅本次返回明文。"""
     runtime_agent_id: str
@@ -246,12 +259,12 @@ class ManagedAgentScheduleCreateRequest(BaseModel):
     """创建定时任务"""
     name: str = Field(..., min_length=1, max_length=200)
     enabled: bool = True
-    schedule_type: ManagedAgentScheduleType = Field(default="interval", description="interval/cron")
-    schedule_expr: str = Field(default="15m", description="间隔或 cron 表达式")
-    timeout_seconds: int = Field(default=1800, ge=60)
+    schedule_type: ManagedAgentScheduleType = Field(..., description="interval/cron")
+    schedule_expr: str = Field(..., min_length=1, description="间隔值或 5 段 cron 表达式")
+    timeout_seconds: int = Field(..., ge=60)
     model_override: Optional[str] = None
     execution_options_json: Optional[str] = None
-    schedule_message_content: str = Field(default="", description="唤醒提示词")
+    schedule_message_content: str = Field(..., min_length=1, description="定时唤醒提示词")
 
 
 class ManagedAgentScheduleUpdateRequest(BaseModel):
@@ -259,11 +272,11 @@ class ManagedAgentScheduleUpdateRequest(BaseModel):
     name: Optional[str] = Field(default=None, min_length=1, max_length=200)
     enabled: Optional[bool] = None
     schedule_type: Optional[ManagedAgentScheduleType] = Field(default=None, description="interval/cron")
-    schedule_expr: Optional[str] = Field(default=None, description="间隔或 cron 表达式")
+    schedule_expr: Optional[str] = Field(default=None, min_length=1, description="间隔值或 5 段 cron 表达式")
     timeout_seconds: Optional[int] = Field(default=None, ge=60)
     model_override: Optional[str] = None
     execution_options_json: Optional[str] = None
-    schedule_message_content: Optional[str] = Field(default=None, description="唤醒提示词")
+    schedule_message_content: Optional[str] = Field(default=None, min_length=1, description="定时唤醒提示词")
 
     @model_validator(mode="after")
     def validate_nullable_fields(self):
@@ -273,6 +286,7 @@ class ManagedAgentScheduleUpdateRequest(BaseModel):
             "schedule_type",
             "schedule_expr",
             "timeout_seconds",
+            "schedule_message_content",
         }
         for field_name in non_nullable_fields:
             if field_name in self.model_fields_set and getattr(self, field_name) is None:

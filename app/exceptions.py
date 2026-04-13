@@ -38,3 +38,24 @@ class ForbiddenError(BusinessError):
 
     def __init__(self, detail: str):
         super().__init__(detail, status_code=403)
+
+
+class AdminQueryError(BusinessError):
+    """管理端查询业务异常。"""
+
+    def __init__(self, detail: str, status_code: int = 400):
+        super().__init__(detail, status_code=status_code)
+
+
+class AdminInvalidQueryError(AdminQueryError):
+    """管理端查询参数非法。"""
+
+    def __init__(self, detail: str):
+        super().__init__(detail, status_code=400)
+
+
+class AdminResourceNotFoundError(AdminQueryError):
+    """管理端查询资源不存在。"""
+
+    def __init__(self, detail: str):
+        super().__init__(detail, status_code=404)

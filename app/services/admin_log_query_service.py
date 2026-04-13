@@ -7,6 +7,10 @@ from typing import Optional
 from sqlalchemy import asc, desc, func
 from sqlalchemy.orm import Query, Session
 
+from app.exceptions import (
+    AdminInvalidQueryError as InvalidQueryError,
+    AdminQueryError as AdminLogQueryError,
+)
 from app.models.activity_log import ActivityLog
 from app.models.agent import Agent
 
@@ -19,14 +23,6 @@ VALID_ACTIONS = {
     "coding", "delivery", "blocked", "reflection",
     "plan", "review", "patrol",
 }
-
-
-class AdminLogQueryError(Exception):
-    """管理端活动日志查询通用错误"""
-
-
-class InvalidQueryError(AdminLogQueryError):
-    """非法查询参数"""
 
 
 def list_activity_logs(

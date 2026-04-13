@@ -29,6 +29,7 @@ from .migration import auto_backfill_from_runtime, build_migration_report
 from .platform_meta import list_supported_host_platforms
 from .prompt_asset import (
     get_prompt_asset,
+    list_prompt_templates,
     render_prompt_preview,
     reset_prompt_from_template,
     update_prompt_asset,
@@ -75,6 +76,7 @@ __all__ = [
     "get_schedule_for_agent_or_404",
     "list_comm_bindings",
     "list_managed_agents",
+    "list_prompt_templates",
     "list_supported_host_platforms",
     "list_schedules",
     "render_prompt_preview",

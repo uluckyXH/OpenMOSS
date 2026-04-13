@@ -1,8 +1,9 @@
 """
 请求日志中间件 — 拦截 Agent API 请求并写入 request_log 表
 """
-import uuid
 import json
+import logging
+import uuid
 from datetime import datetime
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
@@ -11,6 +12,9 @@ from starlette.responses import Response
 from app.database import SessionLocal
 from app.models.agent import Agent
 from app.models.request_log import RequestLog
+
+
+logger = logging.getLogger(__name__)
 
 
 class RequestLoggerMiddleware(BaseHTTPMiddleware):
@@ -80,8 +84,8 @@ class RequestLoggerMiddleware(BaseHTTPMiddleware):
                     db.commit()
             finally:
                 db.close()
-        except Exception as e:
+        except Exception:
             # 日志记录失败不应影响正常请求
-            print(f"[RequestLogger] 写入失败: {e}")
+            logger.exception("请求日志写入失败")
 
         return response

@@ -115,7 +115,7 @@ X-Admin-Token: <admin_token>
 
 ```json
 {
-  "name": "ai-xiaohui",
+  "name": "content-executor-01",
   "role": "executor",
   "description": "测试执行 Agent"
 }
@@ -126,7 +126,7 @@ X-Admin-Token: <admin_token>
 ```json
 {
   "id": "a6f6f4fd-203d-4b66-a8fe-c9d3d3ee8f1d",
-  "name": "ai-xiaohui",
+  "name": "content-executor-01",
   "role": "executor",
   "api_key": "ak_1234567890abcdef1234567890abcdef",
   "message": "注册成功，请保存 API Key"

@@ -98,7 +98,7 @@ class ManagedAgentSchedule(Base):
     timeout_seconds = Column(Integer, default=1800, comment="单次执行超时（秒）")
     model_override = Column(String(100), nullable=True, comment="模型覆盖")
     execution_options_json = Column(Text, nullable=True, comment="宿主平台执行选项 JSON")
-    schedule_message_content = Column(Text, default="", comment="schedule 唤醒提示词")
+    schedule_message_content = Column(Text, default="", comment="定时唤醒提示词")
     created_at = Column(DateTime, default=datetime.now, comment="创建时间")
     updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now, comment="更新时间")
 

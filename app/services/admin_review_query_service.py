@@ -7,6 +7,11 @@ from typing import Optional
 from sqlalchemy import asc, desc, or_
 from sqlalchemy.orm import Query, Session, aliased
 
+from app.exceptions import (
+    AdminInvalidQueryError as InvalidQueryError,
+    AdminQueryError as AdminReviewQueryError,
+    AdminResourceNotFoundError as ResourceNotFoundError,
+)
 from app.models.agent import Agent
 from app.models.module import Module
 from app.models.review_record import ReviewRecord
@@ -17,18 +22,6 @@ from app.models.task import Task
 DEFAULT_PAGE_SIZE = 20
 MAX_PAGE_SIZE = 100
 REVIEW_RESULTS = {"approved", "rejected"}
-
-
-class AdminReviewQueryError(ValueError):
-    """管理端审查记录查询通用错误"""
-
-
-class InvalidQueryError(AdminReviewQueryError):
-    """非法查询参数"""
-
-
-class ResourceNotFoundError(AdminReviewQueryError):
-    """资源不存在"""
 
 
 def list_review_records(

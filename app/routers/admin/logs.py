@@ -3,7 +3,7 @@
 """
 from typing import Optional
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 
 from app.auth.dependencies import verify_admin
@@ -13,13 +13,6 @@ from app.services import admin_log_query_service
 
 
 router = APIRouter(prefix="/admin", tags=["Admin Log"])
-
-
-def _raise_query_error(exc: Exception) -> None:
-    """统一处理管理端活动日志查询异常"""
-    if isinstance(exc, admin_log_query_service.InvalidQueryError):
-        raise HTTPException(status_code=400, detail=str(exc))
-    raise exc
 
 
 @router.get(
@@ -40,17 +33,14 @@ async def list_admin_activity_logs(
     db: Session = Depends(get_db),
 ):
     """分页查看管理端全局活动日志"""
-    try:
-        return admin_log_query_service.list_activity_logs(
-            db,
-            page=page,
-            page_size=page_size,
-            agent_id=agent_id,
-            action=action,
-            sub_task_id=sub_task_id,
-            keyword=keyword,
-            days=days,
-            sort_order=sort_order,
-        )
-    except Exception as exc:
-        _raise_query_error(exc)
+    return admin_log_query_service.list_activity_logs(
+        db,
+        page=page,
+        page_size=page_size,
+        agent_id=agent_id,
+        action=action,
+        sub_task_id=sub_task_id,
+        keyword=keyword,
+        days=days,
+        sort_order=sort_order,
+    )

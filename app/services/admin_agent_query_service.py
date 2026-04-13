@@ -7,6 +7,11 @@ from typing import Optional
 from sqlalchemy import asc, case, desc, func, or_
 from sqlalchemy.orm import Query, Session
 
+from app.exceptions import (
+    AdminInvalidQueryError as InvalidQueryError,
+    AdminQueryError as AdminAgentQueryError,
+    AdminResourceNotFoundError as ResourceNotFoundError,
+)
 from app.models.activity_log import ActivityLog
 from app.models.agent import Agent
 from app.models.request_log import RequestLog
@@ -19,18 +24,6 @@ MAX_PAGE_SIZE = 100
 AGENT_ROLES = {"planner", "executor", "reviewer", "patrol"}
 AGENT_STATUSES = {"active", "disabled"}
 REQUEST_METHODS = {"GET", "POST", "PUT", "PATCH", "DELETE"}
-
-
-class AdminAgentQueryError(ValueError):
-    """管理端 Agent 查询通用错误"""
-
-
-class InvalidQueryError(AdminAgentQueryError):
-    """非法查询参数"""
-
-
-class ResourceNotFoundError(AdminAgentQueryError):
-    """资源不存在"""
 
 
 def list_agents(

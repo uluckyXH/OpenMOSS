@@ -75,7 +75,12 @@ def compute_readiness_for_agents(
             )
         )
         prompt_ready = bool(
-            prompt_asset and (prompt_asset.system_prompt_content or "").strip()
+            prompt_asset
+            and (
+                (prompt_asset.system_prompt_content or "").strip()
+                or (prompt_asset.persona_prompt_content or "").strip()
+                or (prompt_asset.identity_content or "").strip()
+            )
         )
 
         readiness_map[agent_id] = {
@@ -83,7 +88,7 @@ def compute_readiness_for_agents(
             "prompt_asset": prompt_ready,
             "schedules_count": int(schedule_counts.get(agent_id, 0)),
             "comm_bindings_count": int(comm_binding_counts.get(agent_id, 0)),
-            "deploy_ready": host_ready and prompt_ready,
+            "deploy_ready": host_ready,
         }
 
     return readiness_map
