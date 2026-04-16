@@ -3,7 +3,7 @@
 """
 import json
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Body, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
 from app.auth.dependencies import verify_admin
@@ -40,6 +40,7 @@ from app.schemas.managed_agent import (
 )
 from app.services import bootstrap_service as bootstrap_svc
 from app.services import managed_agent as svc
+from app.services.managed_agent.platforms.registry import get_comm_provider_adapter
 
 
 def _parse_scope_json(scope_json: str | None) -> dict | None:
@@ -610,5 +611,139 @@ def get_onboarding_message(
             download_token_id=download_token["id"],
             download_token_expires_at=download_token["expires_at"],
         )
+    except BusinessError as exc:
+        raise HTTPException(status_code=exc.status_code, detail=str(exc))
+
+
+# ============================================================
+# 结构化通讯绑定（通用路由，按注册表分发到平台适配器）
+# ============================================================
+
+
+@router.get(
+    "/meta/host-platforms/{platform}/comm-providers/{provider}/schema",
+)
+def get_comm_provider_schema(
+    platform: str,
+    provider: str,
+    _: bool = Depends(verify_admin),
+):
+    """返回指定平台 + 通讯渠道的字段 schema（能力发现）。"""
+    try:
+        adapter = get_comm_provider_adapter(platform, provider)
+        return adapter.get_binding_schema()
+    except BusinessError as exc:
+        raise HTTPException(status_code=exc.status_code, detail=str(exc))
+
+
+@router.post(
+    "/meta/host-platforms/{platform}/comm-providers/{provider}/validate",
+)
+def validate_comm_binding_structured(
+    platform: str,
+    provider: str,
+    body: dict = Body(...),
+    _: bool = Depends(verify_admin),
+):
+    """预校验指定平台 + 通讯渠道的绑定数据。"""
+    try:
+        adapter = get_comm_provider_adapter(platform, provider)
+        return adapter.validate_binding(body)
+    except BusinessError as exc:
+        raise HTTPException(status_code=exc.status_code, detail=str(exc))
+
+
+@router.get(
+    "/{agent_id}/comm-bindings-structured/{provider}",
+)
+def list_comm_bindings_structured(
+    agent_id: str,
+    provider: str,
+    _: bool = Depends(verify_admin),
+    db: Session = Depends(get_db),
+):
+    """列出该 Agent 下指定通讯渠道的绑定。"""
+    try:
+        agent = svc.get_managed_agent_or_404(db, agent_id)
+        adapter = get_comm_provider_adapter(agent.host_platform, provider)
+        return adapter.list_bindings(db, agent_id)
+    except BusinessError as exc:
+        raise HTTPException(status_code=exc.status_code, detail=str(exc))
+
+
+@router.get(
+    "/{agent_id}/comm-bindings-structured/{provider}/suggest",
+)
+def suggest_comm_binding_defaults(
+    agent_id: str,
+    provider: str,
+    _: bool = Depends(verify_admin),
+    db: Session = Depends(get_db),
+):
+    """返回创建通讯绑定时的建议默认值（如自动生成的 account_id）。"""
+    try:
+        agent = svc.get_managed_agent_or_404(db, agent_id)
+        adapter = get_comm_provider_adapter(agent.host_platform, provider)
+        return adapter.suggest_binding_defaults(db, agent_id)
+    except BusinessError as exc:
+        raise HTTPException(status_code=exc.status_code, detail=str(exc))
+
+
+@router.post(
+    "/{agent_id}/comm-bindings-structured/{provider}",
+    status_code=201,
+)
+def create_comm_binding_structured(
+    agent_id: str,
+    provider: str,
+    body: dict = Body(...),
+    _: bool = Depends(verify_admin),
+    db: Session = Depends(get_db),
+):
+    """创建指定通讯渠道的绑定。"""
+    try:
+        agent = svc.get_managed_agent_or_404(db, agent_id)
+        adapter = get_comm_provider_adapter(agent.host_platform, provider)
+        return adapter.create_binding(db, agent_id, body)
+    except BusinessError as exc:
+        raise HTTPException(status_code=exc.status_code, detail=str(exc))
+
+
+@router.put(
+    "/{agent_id}/comm-bindings-structured/{provider}/{binding_id}",
+)
+def update_comm_binding_structured(
+    agent_id: str,
+    provider: str,
+    binding_id: str,
+    body: dict = Body(...),
+    _: bool = Depends(verify_admin),
+    db: Session = Depends(get_db),
+):
+    """更新指定通讯渠道的绑定。"""
+    try:
+        agent = svc.get_managed_agent_or_404(db, agent_id)
+        adapter = get_comm_provider_adapter(agent.host_platform, provider)
+        return adapter.update_binding(db, agent_id, binding_id, body)
+    except BusinessError as exc:
+        raise HTTPException(status_code=exc.status_code, detail=str(exc))
+
+
+@router.delete(
+    "/{agent_id}/comm-bindings-structured/{provider}/{binding_id}",
+    status_code=204,
+)
+def delete_comm_binding_structured(
+    agent_id: str,
+    provider: str,
+    binding_id: str,
+    _: bool = Depends(verify_admin),
+    db: Session = Depends(get_db),
+):
+    """删除指定通讯渠道的绑定。"""
+    try:
+        agent = svc.get_managed_agent_or_404(db, agent_id)
+        adapter = get_comm_provider_adapter(agent.host_platform, provider)
+        adapter.delete_binding(db, agent_id, binding_id)
     except BusinessError as exc:
         raise HTTPException(status_code=exc.status_code, detail=str(exc))

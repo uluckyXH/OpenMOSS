@@ -368,6 +368,92 @@ class ManagedAgentCommBindingResponse(BaseModel):
 
 
 # ============================================================
+# Feishu Structured Comm Binding
+# ============================================================
+
+
+class FeishuCommBindingCreateRequest(BaseModel):
+    """创建 Feishu 结构化通讯绑定"""
+    account_id: Optional[str] = Field(default=None, description="OpenClaw 内部账号标识，留空时自动生成")
+    app_id: str = Field(..., min_length=1, description="飞书 App ID")
+    app_secret: str = Field(..., min_length=1, description="飞书 App Secret")
+    account_name: Optional[str] = Field(default=None, description="账号备注名")
+    enabled: bool = Field(default=True, description="是否启用")
+
+
+class FeishuCommBindingUpdateRequest(BaseModel):
+    """更新 Feishu 结构化通讯绑定（部分更新）"""
+    account_id: Optional[str] = Field(default=None, min_length=1, description="OpenClaw 内部账号标识（高级）")
+    app_id: Optional[str] = Field(default=None, min_length=1)
+    app_secret: Optional[str] = Field(default=None, min_length=1)
+    account_name: Optional[str] = None
+    enabled: Optional[bool] = None
+
+    @model_validator(mode="after")
+    def validate_nullable_fields(self):
+        if "enabled" in self.model_fields_set and self.enabled is None:
+            raise ValueError("enabled 不能为 null")
+        return self
+
+
+class FeishuCommBindingResponse(BaseModel):
+    """Feishu 结构化通讯绑定响应"""
+    id: str
+    provider: str = "feishu"
+    account_id: str
+    account_name: Optional[str] = None
+    enabled: bool
+    app_id_masked: str
+    app_secret_masked: str
+    created_at: datetime
+    updated_at: datetime
+
+
+class FeishuCommSchemaField(BaseModel):
+    """飞书表单字段定义"""
+    key: str
+    label: str
+    type: str
+    required: bool
+    placeholder: Optional[str] = None
+    description: Optional[str] = None
+    sensitive: Optional[bool] = None
+    default: Optional[Any] = None
+    advanced: Optional[bool] = None
+
+
+class FeishuCommSchemaResponse(BaseModel):
+    """Feishu 通讯绑定 schema 发现响应"""
+    provider: str
+    label: str
+    description: str
+    supports_multiple_bindings: bool
+    fields: List[FeishuCommSchemaField]
+
+
+class FeishuCommValidateRequest(BaseModel):
+    """Feishu 通讯绑定预校验请求"""
+    account_id: Optional[str] = None
+    app_id: Optional[str] = None
+    app_secret: Optional[str] = None
+    account_name: Optional[str] = None
+    enabled: Optional[bool] = None
+
+
+class FeishuCommValidateResponse(BaseModel):
+    """飞书通讯绑定预校验响应"""
+    valid: bool
+    errors: List[str] = Field(default_factory=list)
+
+
+class FeishuCommSuggestResponse(BaseModel):
+    """飞书通讯绑定建议默认值响应"""
+    account_id: Optional[str] = None
+    host_agent_identifier: Optional[str] = None
+    message: Optional[str] = None
+
+
+# ============================================================
 # Bootstrap Token
 # ============================================================
 

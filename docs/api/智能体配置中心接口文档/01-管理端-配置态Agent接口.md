@@ -17,7 +17,8 @@
 - Prompt 资产管理
 - Prompt 渲染预览
 - 定时任务管理
-- 宿主通讯渠道配置管理
+- 宿主通讯渠道配置管理（通用）
+- **Feishu 结构化通讯绑定**（schema 发现 / 预校验 / 结构化 CRUD）
 - Bootstrap Token 管理
 
 ## 2. 请求头
@@ -68,7 +69,7 @@ Content-Type: application/json
 | `capabilities.prompt_preview` | bool | 是否支持 prompt 渲染预览 |
 | `capabilities.schedule` | bool | 是否支持 schedule |
 | `capabilities.comm_binding` | bool | 是否支持宿主通讯渠道配置 |
-| `supported_comm_providers` | array | 当前已支持的通讯渠道 provider 列表 |
+| `supported_comm_providers` | array | 当前已支持的通讯渠道 provider 列表；按当前真实实现，OpenClaw 仅返回 `feishu` |
 | `ui_hints` | object | 前端动态渲染提示；只描述展示和表单，不代表新平台能力已经实现 |
 
 `ui_hints` 结构说明：
@@ -252,7 +253,7 @@ Content-Type: application/json
 |---|---|---|
 | `id` | string | 绑定 ID |
 | `managed_agent_id` | string | 所属配置态 Agent ID |
-| `provider` | string | 渠道类型：`feishu / slack / telegram / wechat / email / webhook` |
+| `provider` | string | 渠道类型。枚举预留为 `feishu / slack / telegram / wechat / email / webhook`，但当前真实落地仅支持 `openclaw + feishu` |
 | `binding_key` | string | 平台账号或连接标识 |
 | `display_name` | string/null | 展示名 |
 | `enabled` | bool | 是否启用 |
@@ -290,6 +291,25 @@ Content-Type: application/json
 | `revoked_at` | datetime/null | 撤销时间 |
 | `created_at` | datetime | 创建时间 |
 | `is_valid` | bool | 当前是否仍有效 |
+
+### 4.10 Feishu 结构化通讯绑定响应 `FeishuCommBindingResponse`
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `id` | string | 绑定 ID |
+| `provider` | string | 固定为 `feishu` |
+| `account_id` | string | OpenClaw 内部账号标识（映射自通用表 `binding_key`） |
+| `account_name` | string/null | 展示名（映射自通用表 `display_name`） |
+| `enabled` | bool | 是否启用 |
+| `app_id_masked` | string | 飞书 App ID（原值返回，不脱敏） |
+| `app_secret_masked` | string | 飞书 App Secret（固定返回 `***`） |
+| `created_at` | datetime | 创建时间 |
+| `updated_at` | datetime | 更新时间 |
+
+说明：
+
+- 该响应体仅用于 Feishu 结构化接口（`comm-bindings-structured/feishu`），不影响通用 `comm-bindings` 接口的返回格式。
+- `app_secret_masked` 始终为 `***`，不回显任何部分明文；`app_id_masked` 当前阶段返回原值。
 
 ---
 
@@ -500,7 +520,8 @@ Content-Type: application/json
 
 补充说明：
 
-- 不传 `role` 时返回当前仓库中所有可用的角色模板示例。
+- 前端默认应始终传 `role`，正常填充示例场景下只需要当前 Agent 角色对应的那一条模板。
+- 不传 `role` 时会返回当前仓库中所有可用的角色模板示例，这个行为更适合内部调试或模板管理场景，不建议前端默认使用。
 - 该接口适合给前端填充 `AGENTS.md` 示例内容，也可以作为定时唤醒提示词的参考模版来源。
 - 模板文件继续保留在 `prompts/templates/*`，当前没有删除。
 
@@ -1006,7 +1027,7 @@ Content-Type: application/json
 
 | 字段 | 类型 | 必填 | 说明 |
 |---|---|---|---|
-| `provider` | string | 是 | 渠道类型：`feishu / slack / telegram / wechat / email / webhook` |
+| `provider` | string | 是 | 渠道类型。枚举预留为 `feishu / slack / telegram / wechat / email / webhook`，但当前真实落地仅支持 `openclaw + feishu` |
 | `binding_key` | string | 是 | 平台账号或连接标识 |
 | `display_name` | string/null | 否 | 展示名 |
 | `enabled` | bool | 否 | 是否启用，默认 `true` |
@@ -1023,7 +1044,7 @@ Content-Type: application/json
 
 | 状态码 | 说明 |
 |---|---|
-| `400` | `provider` 或 `binding_key` 为空等业务错误 |
+| `400` | `provider` 或 `binding_key` 为空等业务错误；当前脚本生成真实支持的 provider 仅为 `feishu` |
 | `403` | 管理员鉴权失败 |
 
 ### 5.20 更新宿主通讯渠道配置
@@ -1257,3 +1278,307 @@ Content-Type: application/json
 | `403` | 管理员鉴权失败 |
 | `404` | 配置态 Agent 不存在 |
 | `422` | Query 参数格式错误 |
+
+### 5.27 获取 Feishu 通讯绑定 Schema
+
+#### `GET /api/admin/managed-agents/meta/host-platforms/openclaw/comm-providers/feishu/schema`
+
+作用：返回 Feishu 通讯绑定的字段定义（能力发现），供前端动态渲染表单。
+
+#### 成功返回
+
+- 状态码：`200`
+- 返回体：
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `provider` | string | `feishu` |
+| `label` | string | 展示名 |
+| `description` | string | 功能说明 |
+| `supports_multiple_bindings` | bool | 是否支持同一 Agent 绑定多个账号 |
+| `fields` | array | 字段定义列表 |
+
+`fields[]` 字段说明：
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `key` | string | 字段标识 |
+| `label` | string | 展示标签 |
+| `type` | string | 控件类型：`text / password / switch` |
+| `required` | bool | 是否必填 |
+| `placeholder` | string/null | 占位提示 |
+| `description` | string/null | 帮助说明 |
+| `sensitive` | bool/null | 是否敏感字段 |
+| `default` | any/null | 默认值 |
+| `advanced` | bool/null | 是否建议放入高级区域 |
+
+#### 响应示例
+
+```json
+{
+  "provider": "feishu",
+  "label": "飞书（Feishu）",
+  "description": "为 Agent 配置飞书通讯渠道。绑定后即可在飞书中与该 Agent 对话，Agent 通过飞书机器人自动收发消息。支持绑定多个飞书账号，对应不同的飞书应用。",
+  "supports_multiple_bindings": true,
+  "fields": [
+    {
+      "key": "account_id",
+      "label": "OpenClaw 内部账号标识",
+      "type": "text",
+      "required": false,
+      "advanced": true,
+      "placeholder": "留空自动生成（推荐）",
+      "description": "OpenClaw 中用于标识这条飞书机器人账号配置的内部 key。对应的账号配置会在 OpenClaw 中保存该机器人的 app_id、app_secret 等信息。它不是飞书官方账号 ID，也不是在飞书侧看到的名称，而是 OpenClaw 内部用来区分、存储和引用这条飞书机器人配置的键。留空时系统会根据当前 Agent 的 OpenClaw Agent ID 自动生成。"
+    },
+    {
+      "key": "app_id",
+      "label": "飞书 App ID",
+      "type": "text",
+      "required": true,
+      "placeholder": "cli_xxxxxxxxxxxx",
+      "description": "飞书开放平台的应用凭证，可在「凭证与基础信息」页面获取。"
+    },
+    {
+      "key": "app_secret",
+      "label": "飞书 App Secret",
+      "type": "password",
+      "required": true,
+      "sensitive": true,
+      "placeholder": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+      "description": "飞书应用密钥，与 App ID 配对使用，可在「凭证与基础信息」页面获取。提交后加密存储。"
+    },
+    {
+      "key": "account_name",
+      "label": "账号备注名",
+      "type": "text",
+      "required": false,
+      "placeholder": "我的飞书助手",
+      "description": "给 OpenClaw 配置中这条飞书账号写的备注名。主要用于自己识别和管理，不是功能性参数；可能会在部分界面展示，但不保证处处显示，不填也不影响飞书绑定本身。"
+    },
+    {"key": "enabled", "label": "是否启用", "type": "switch", "required": false, "default": true}
+  ]
+}
+```
+
+### 5.28 预校验 Feishu 通讯绑定
+
+#### `POST /api/admin/managed-agents/meta/host-platforms/openclaw/comm-providers/feishu/validate`
+
+作用：在正式提交创建之前，预校验 Feishu 绑定参数。
+
+#### 请求体
+
+| 字段 | 类型 | 必填 | 说明 |
+|---|---|---|---|
+| `account_id` | string | 否 | OpenClaw 内部账号标识；可不传，留空时后端会按 `{host_agent_identifier}-feishu` 自动生成建议值并用于创建 |
+| `app_id` | string | 否 | 飞书 App ID |
+| `app_secret` | string | 否 | 飞书 App Secret |
+| `account_name` | string/null | 否 | 账号备注名 |
+| `enabled` | bool | 否 | 是否启用 |
+
+#### 成功返回
+
+- 状态码：`200`
+- 返回体：
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `valid` | bool | 是否通过校验 |
+| `errors` | string[] | 不通过时的错误列表 |
+
+#### 响应示例
+
+```json
+{"valid": false, "errors": ["app_id 不能为空", "app_secret 不能为空"]}
+```
+
+### 5.29 获取 Feishu 通讯绑定建议默认值
+
+#### `GET /api/admin/managed-agents/{agent_id}/comm-bindings-structured/feishu/suggest`
+
+作用：为“新建 Feishu 绑定”表单返回建议默认值，主要用于自动填充 `account_id`。该接口不会保留或锁定该值，正式创建时后端仍会再次做唯一性校验。
+
+#### Path 参数
+
+| 参数 | 类型 | 必填 | 说明 |
+|---|---|---|---|
+| `agent_id` | string | 是 | 配置态 Agent ID |
+
+#### 成功返回
+
+- 状态码：`200`
+- 返回体：`FeishuCommSuggestResponse`
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `account_id` | string/null | 建议的 OpenClaw 内部账号标识；如果当前无法生成则为 `null` |
+| `host_agent_identifier` | string/null | 当前 Agent 的 OpenClaw Agent ID |
+| `message` | string/null | 无法生成时的提示信息 |
+
+#### 响应示例
+
+已配置 `host_agent_identifier`：
+
+```json
+{
+  "account_id": "xiaohui-feishu",
+  "host_agent_identifier": "xiaohui",
+  "message": null
+}
+```
+
+未配置 `host_agent_identifier`：
+
+```json
+{
+  "account_id": null,
+  "host_agent_identifier": null,
+  "message": "当前 Agent 尚未配置 OpenClaw Agent ID，无法自动生成飞书账号标识。请先完成平台配置。"
+}
+```
+
+#### 错误码
+
+| 状态码 | 说明 |
+|---|---|
+| `403` | 管理员鉴权失败 |
+| `404` | Agent 不存在 |
+
+### 5.30 列出 Feishu 结构化通讯绑定
+
+#### `GET /api/admin/managed-agents/{agent_id}/comm-bindings-structured/feishu`
+
+作用：列出该 Agent 下的 Feishu 通讯绑定，返回结构化 DTO 而非通用表字段。
+
+#### Path 参数
+
+| 参数 | 类型 | 必填 | 说明 |
+|---|---|---|---|
+| `agent_id` | string | 是 | 配置态 Agent ID |
+
+#### 成功返回
+
+- 状态码：`200`
+- 返回体：`FeishuCommBindingResponse[]`
+
+#### 错误码
+
+| 状态码 | 说明 |
+|---|---|
+| `403` | 管理员鉴权失败 |
+| `404` | Agent 不存在 |
+
+### 5.31 创建 Feishu 结构化通讯绑定
+
+#### `POST /api/admin/managed-agents/{agent_id}/comm-bindings-structured/feishu`
+
+作用：为 Agent 创建一条 Feishu 通讯绑定。前端只需提交 Feishu 语义字段，`provider` 由路由隐含，`binding_key` 由后端从 `account_id` 映射；如果未传 `account_id`，后端会基于当前 Agent 的 `host_agent_identifier` 自动生成。
+
+#### 请求体
+
+| 字段 | 类型 | 必填 | 说明 |
+|---|---|---|---|
+| `account_id` | string/null | 否 | OpenClaw 内部账号标识，映射到通用表 `binding_key`；留空时后端自动生成 |
+| `app_id` | string | 是 | 飞书 App ID |
+| `app_secret` | string | 是 | 飞书 App Secret（敏感） |
+| `account_name` | string/null | 否 | 账号备注名，映射到通用表 `display_name` |
+| `enabled` | bool | 否 | 默认 `true` |
+
+#### 成功返回
+
+- 状态码：`201`
+- 返回体：`FeishuCommBindingResponse`
+
+#### 错误码
+
+| 状态码 | 说明 |
+|---|---|
+| `400` | `app_id` / `app_secret` 为空等校验错误；或未传 `account_id` 且当前 Agent 未配置 `host_agent_identifier` |
+| `403` | 管理员鉴权失败 |
+| `404` | Agent 不存在 |
+| `409` | 同 Agent 下已存在相同 `account_id` 的 Feishu 绑定 |
+
+#### 请求示例
+
+```json
+{
+  "app_id": "cli_a9348a45ebb8dbef",
+  "app_secret": "<secret>",
+  "account_name": "内容助手飞书",
+  "enabled": true
+}
+```
+
+补充说明：
+
+- `account_id` 建议作为高级字段展示，普通用户通常不需要手填。
+- 如果前端想提前展示默认值，建议先调用 `GET .../comm-bindings-structured/feishu/suggest` 获取建议值。
+- 正式创建时后端仍会再次校验唯一性。
+
+### 5.32 更新 Feishu 结构化通讯绑定
+
+#### `PUT /api/admin/managed-agents/{agent_id}/comm-bindings-structured/feishu/{binding_id}`
+
+作用：部分更新 Feishu 通讯绑定。只传需要修改的字段；未传的字段保持原值。
+
+#### Path 参数
+
+| 参数 | 类型 | 必填 | 说明 |
+|---|---|---|---|
+| `agent_id` | string | 是 | 配置态 Agent ID |
+| `binding_id` | string | 是 | 绑定 ID |
+
+#### 请求体
+
+| 字段 | 类型 | 必填 | 说明 |
+|---|---|---|---|
+| `account_id` | string | 否 | 更新 OpenClaw 内部账号标识（高级字段） |
+| `app_id` | string | 否 | 更新飞书 App ID |
+| `app_secret` | string | 否 | 更新飞书 App Secret |
+| `account_name` | string/null | 否 | 更新账号备注名 |
+| `enabled` | bool | 否 | 更新启用状态 |
+
+说明：
+
+- `account_id` 支持通过此接口修改，但属于高级字段；如果修改，需要重新部署脚本才能在 OpenClaw 侧生效。
+- 只更新 `app_secret` 时，后端会自动保留原有 `app_id`，反之亦然。
+
+#### 成功返回
+
+- 状态码：`200`
+- 返回体：`FeishuCommBindingResponse`
+
+#### 错误码
+
+| 状态码 | 说明 |
+|---|---|
+| `400` | 校验错误（如字段为空白字符串），或该绑定不是 Feishu 类型 |
+| `403` | 管理员鉴权失败 |
+| `404` | 绑定不存在或不属于该 Agent |
+| `409` | 修改后的 `account_id` 与同 Agent 下现有 Feishu 绑定冲突 |
+
+### 5.33 删除 Feishu 结构化通讯绑定
+
+#### `DELETE /api/admin/managed-agents/{agent_id}/comm-bindings-structured/feishu/{binding_id}`
+
+作用：删除 Feishu 通讯绑定。
+
+#### Path 参数
+
+| 参数 | 类型 | 必填 | 说明 |
+|---|---|---|---|
+| `agent_id` | string | 是 | 配置态 Agent ID |
+| `binding_id` | string | 是 | 绑定 ID |
+
+#### 成功返回
+
+- 状态码：`204`
+- 返回体：空
+
+#### 错误码
+
+| 状态码 | 说明 |
+|---|---|
+| `400` | 该绑定不是 Feishu 类型 |
+| `403` | 管理员鉴权失败 |
+| `404` | 绑定不存在或不属于该 Agent |
