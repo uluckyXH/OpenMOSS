@@ -421,7 +421,12 @@ function formatExpireDate(value: string | null) {
               <ScheduleTab :agent-id="agentId" :agent-role="selectedAgent?.role" :disabled="!isTabEditable('schedule')" />
             </TabsContent>
             <TabsContent value="comm" class="mt-5">
-              <CommBindingTab :agent-id="agentId" :disabled="!isTabEditable('comm')" />
+              <CommBindingTab
+                :agent-id="agentId"
+                :host-platform="currentPlatform"
+                :disabled="!isTabEditable('comm')"
+                @saved="onTabSaved"
+              />
             </TabsContent>
             <TabsContent value="bootstrap" class="mt-5">
               <BootstrapTab :agent-id="agentId" :disabled="!isTabEditable('bootstrap')" />

@@ -4,5 +4,6 @@ export { managedAgentHostConfigApi } from './host-config';
 export { managedAgentPromptAssetApi } from './prompt-asset';
 export { managedAgentScheduleApi } from './schedules';
 export { managedAgentCommBindingApi } from './comm-bindings';
+export { managedAgentFeishuCommBindingApi } from './comm-bindings-structured';
 export { managedAgentBootstrapApi } from './bootstrap';
 export { managedAgentMetaApi } from './meta';

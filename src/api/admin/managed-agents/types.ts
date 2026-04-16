@@ -74,6 +74,33 @@ export interface CommUIHints {
   description?: string
 }
 
+export type CommProviderFieldType = 'text' | 'password' | 'switch'
+
+export interface CommProviderSchemaField {
+  key: string
+  label: string
+  type: CommProviderFieldType
+  required: boolean
+  advanced?: boolean | null
+  placeholder?: string | null
+  description?: string | null
+  sensitive?: boolean | null
+  default?: string | boolean | number | null
+}
+
+export interface CommProviderSchema {
+  provider: ManagedAgentCommProvider
+  label: string
+  description: string
+  supports_multiple_bindings: boolean
+  fields: CommProviderSchemaField[]
+}
+
+export interface CommProviderValidateResponse {
+  valid: boolean
+  errors: string[]
+}
+
 export interface BootstrapUIHints {
   description?: string
   deploy_guide?: string
@@ -309,6 +336,41 @@ export interface ManagedAgentCommBindingUpdateInput {
   routing_policy_json?: string
   metadata_json?: string
   config_payload?: string
+}
+
+export interface FeishuCommBinding {
+  id: string
+  provider: 'feishu'
+  account_id: string
+  account_name: string | null
+  enabled: boolean
+  app_id_masked: string
+  app_secret_masked: string
+  created_at: string
+  updated_at: string
+}
+
+export interface FeishuCommBindingCreateInput {
+  account_id: string
+  app_id: string
+  app_secret: string
+  account_name?: string | null
+  enabled?: boolean
+}
+
+export interface FeishuCommBindingUpdateInput {
+  app_id?: string
+  app_secret?: string
+  account_name?: string | null
+  enabled?: boolean
+}
+
+export interface FeishuCommBindingValidateInput {
+  account_id?: string
+  app_id?: string
+  app_secret?: string
+  account_name?: string | null
+  enabled?: boolean
 }
 
 export interface ManagedAgentBootstrapTokenCreateInput {
