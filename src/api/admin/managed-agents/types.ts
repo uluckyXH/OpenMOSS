@@ -373,6 +373,12 @@ export interface FeishuCommBindingValidateInput {
   enabled?: boolean
 }
 
+export interface FeishuCommSuggestResponse {
+  account_id: string | null
+  host_agent_identifier: string | null
+  message: string | null
+}
+
 export interface ManagedAgentBootstrapTokenCreateInput {
   purpose: ManagedAgentBootstrapPurpose
   ttl_seconds: number

@@ -138,14 +138,14 @@ const tabsMeta: TabMeta[] = [
     isEditable: () => true },
   { key: 'host', label: '平台配置', icon: Settings, readinessKey: 'host', required: true,
     isEditable: () => true }, // 前置 = basic，始终满足
-  { key: 'prompt', label: 'Prompt', icon: FileText, readinessKey: 'prompt', required: true,
+  { key: 'prompt', label: 'Prompt', icon: FileText, readinessKey: 'prompt', required: false,
     isEditable: (r) => r.host, prerequisiteLabel: '平台配置' },
   { key: 'schedule', label: '定时任务', icon: Clock, readinessKey: 'schedule', required: false,
-    isEditable: (r) => r.prompt, prerequisiteLabel: 'Prompt' },
+    isEditable: (r) => r.host, prerequisiteLabel: '平台配置' },
   { key: 'comm', label: '通讯渠道', icon: MessageSquare, readinessKey: 'comm', required: false,
-    isEditable: (r) => r.prompt, prerequisiteLabel: 'Prompt' },
+    isEditable: (r) => r.host, prerequisiteLabel: '平台配置' },
   { key: 'bootstrap', label: '部署接入', icon: Rocket, readinessKey: 'bootstrap', required: false,
-    isEditable: (r) => r.host && r.prompt, prerequisiteLabel: '平台配置 + Prompt' },
+    isEditable: (r) => r.host, prerequisiteLabel: '平台配置' },
 ];
 
 const requiredTabs = tabsMeta.filter(t => t.required);

@@ -84,6 +84,13 @@ const router = createRouter({
         },
       ],
     },
+    // 404 catch-all — 必须放在最后
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'not-found',
+      component: () => import('@/views/NotFoundView.vue'),
+      meta: { requiresAuth: false },
+    },
   ],
 });
 

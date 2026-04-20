@@ -111,6 +111,7 @@ export {
   type FeishuCommBindingCreateInput,
   type FeishuCommBindingUpdateInput,
   type FeishuCommBindingValidateInput,
+  type FeishuCommSuggestResponse,
   type BootstrapUIHints,
   type PlatformUIHints,
   type ManagedAgentBootstrapPurpose,

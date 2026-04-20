@@ -6,13 +6,13 @@ export interface TabReadiness {
   basic: boolean;
   /** 平台配置 — 后端 readiness.host_config */
   host: boolean;
-  /** Prompt — 后端 readiness.prompt_asset */
+  /** Prompt — 后端 readiness.prompt_asset（选填） */
   prompt: boolean;
-  /** 定时任务 — 前置：prompt 就绪 */
+  /** 定时任务 — 前置：host 就绪 */
   schedule: boolean;
-  /** 通讯渠道 — 前置：prompt 就绪 */
+  /** 通讯渠道 — 前置：host 就绪 */
   comm: boolean;
-  /** 部署接入 — 后端 readiness.deploy_ready */
+  /** 部署接入 — 前置：host 就绪 */
   bootstrap: boolean;
 }
 
@@ -36,15 +36,15 @@ export function useAgentReadiness(agent: Ref<ManagedAgentListItem | null>) {
       basic: true,
       host: r.host_config,
       prompt: r.prompt_asset,
-      schedule: r.prompt_asset, // 前置：prompt 就绪
-      comm: r.prompt_asset,     // 前置：prompt 就绪
-      bootstrap: r.deploy_ready,
+      schedule: r.host_config,  // 前置：host 就绪
+      comm: r.host_config,      // 前置：host 就绪
+      bootstrap: r.host_config, // 前置：host 就绪（部署脚本仅需平台配置）
     };
   });
 
   /** 必填项完成数 / 总必填数 */
   const progress = computed(() => {
-    const required = [true, readiness.value.host, readiness.value.prompt];
+    const required = [true, readiness.value.host];
     return { done: required.filter(Boolean).length, total: required.length };
   });
 

@@ -240,7 +240,7 @@ const steps = [
                     M
                 </div>
                 <CardTitle class="text-2xl">欢迎使用 OpenMOSS</CardTitle>
-                <CardDescription>多 AI Agent 自组织协作平台 — 初始化设置</CardDescription>
+                <CardDescription>多Agent协同、自组织自修复自进化的AI公司操作系统 — 初始化设置</CardDescription>
             </CardHeader>
 
             <CardContent>

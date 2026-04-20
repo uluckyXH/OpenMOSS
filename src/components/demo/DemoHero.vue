@@ -8,7 +8,7 @@ const emit = defineEmits<{
 
 // Typewriter
 const phrases = [
-  'OpenMOSS AI 公司操作系统，让 AI Agent 帮你运营和管理公司的方方面面，24 小时自主运行、真人 0 接管，现已开源。',
+  'OpenMOSS——一个多Agent协同、自组织自修复自进化的AI公司操作系统，现已开源。',
   '4 种角色各司其职，全程零人工编排，7×24 无人值守。',
   '提交 → 审查 → 返工 → 再审，闭环质控保障每一份交付物。',
 ];

@@ -56,7 +56,7 @@ async function handleLogin() {
                     M
                 </div>
                 <CardTitle class="text-2xl font-bold tracking-tight">OpenMOSS</CardTitle>
-                <CardDescription class="text-muted-foreground/70">多 AI Agent 自组织协作平台</CardDescription>
+                <CardDescription class="text-muted-foreground/70">多Agent协同、自组织自修复自进化的AI公司操作系统</CardDescription>
             </CardHeader>
             <CardContent class="pt-2">
                 <form @submit.prevent="handleLogin" class="space-y-5">

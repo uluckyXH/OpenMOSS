@@ -15,9 +15,11 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { Switch } from '@/components/ui/switch';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import {
   AlertCircle,
   ChevronRight,
+  Info,
   Loader2,
   MessageSquare,
   Pencil,
@@ -138,7 +140,6 @@ const canCreateMore = computed(() =>
   activeSchema.value.supports_multiple_bindings || items.value.length === 0
 );
 const showAdvanced = ref(false);
-const expandedDescriptions = ref<Set<string>>(new Set());
 
 function getEnabledDefault() {
   const defaultValue = activeSchema.value.fields.find(field => field.key === 'enabled')?.default;
@@ -159,13 +160,22 @@ function closeForm() {
   showForm.value = false;
   editingId.value = null;
   saveErrors.value = [];
-  expandedDescriptions.value = new Set();
 }
 
-function openCreate() {
+async function openCreate() {
   resetForm();
   formMode.value = 'create';
   showForm.value = true;
+
+  // 调用 suggest 接口预填 account_id（高级字段）
+  try {
+    const { data } = await managedAgentFeishuCommBindingApi.suggest(props.agentId);
+    if (data.account_id) {
+      form.account_id = data.account_id;
+    }
+  } catch {
+    // suggest 失败不阻塞表单，后端创建时会兜底自动生成
+  }
 }
 
 function openEdit(item: FeishuCommBinding) {
@@ -242,27 +252,7 @@ function fieldBehaviorHint(field: CommProviderSchemaField) {
   return null;
 }
 
-function shouldCollapseDescription(text?: string | null) {
-  if (!text) return false;
-  const normalized = text.trim();
-  if (!normalized) return false;
-  return normalized.length > 72 || normalized.includes('\n');
-}
 
-function isDescriptionExpanded(key: string) {
-  return expandedDescriptions.value.has(key);
-}
-
-function toggleDescription(key: string) {
-  const next = new Set(expandedDescriptions.value);
-  if (next.has(key)) next.delete(key);
-  else next.add(key);
-  expandedDescriptions.value = next;
-}
-
-function descriptionKey(key: string) {
-  return `desc:${key}`;
-}
 
 function formatDate(value: string | null) {
   if (!value) return '—';
@@ -442,22 +432,9 @@ watch([() => props.agentId, () => props.hostPlatform], () => {
         </Badge>
         <Badge variant="outline" class="tabular-nums">{{ items.length }}</Badge>
       </div>
-      <div class="mt-2 space-y-1">
-        <p
-          class="text-sm leading-relaxed text-muted-foreground whitespace-pre-line"
-          :class="!isDescriptionExpanded(descriptionKey('schema')) && shouldCollapseDescription(activeSchema.description) ? 'description-clamp' : ''"
-        >
-          {{ activeSchema.description }}
-        </p>
-        <button
-          v-if="shouldCollapseDescription(activeSchema.description)"
-          type="button"
-          class="text-[11px] text-primary/80 hover:text-primary"
-          @click="toggleDescription(descriptionKey('schema'))"
-        >
-          {{ isDescriptionExpanded(descriptionKey('schema')) ? '收起说明' : '展开说明' }}
-        </button>
-      </div>
+      <p class="mt-2 text-sm leading-relaxed text-muted-foreground">
+        {{ activeSchema.description }}
+      </p>
     </div>
 
     <div class="flex items-center justify-between">
@@ -465,22 +442,15 @@ watch([() => props.agentId, () => props.hostPlatform], () => {
         <span class="text-xs font-medium uppercase tracking-wider text-muted-foreground/60">飞书绑定</span>
         <Badge variant="outline" class="text-[10px] tabular-nums">{{ items.length }}</Badge>
       </div>
-      <Button
-        variant="outline"
-        size="sm"
-        class="h-7 gap-1 text-xs"
-        :disabled="disabled || !canCreateMore"
-        @click="openCreate"
-      >
+      <Button variant="outline" size="sm" class="h-7 gap-1 text-xs" :disabled="disabled || !canCreateMore"
+        @click="openCreate">
         <Plus class="h-3 w-3" />
         新增
       </Button>
     </div>
 
-    <div
-      v-if="items.length === 0 && !showForm"
-      class="rounded-xl border border-dashed border-border bg-muted/10 p-8 text-center"
-    >
+    <div v-if="items.length === 0 && !showForm"
+      class="rounded-xl border border-dashed border-border bg-muted/10 p-8 text-center">
       <MessageSquare class="mx-auto mb-3 h-8 w-8 text-muted-foreground/30" />
       <p class="text-sm text-muted-foreground">暂无飞书绑定</p>
       <p class="mt-1 text-xs text-muted-foreground/60">
@@ -488,12 +458,9 @@ watch([() => props.agentId, () => props.hostPlatform], () => {
       </p>
     </div>
 
-    <div
-      v-for="(item, idx) in items"
-      :key="item.id"
+    <div v-for="(item, idx) in items" :key="item.id"
       class="rounded-xl border bg-card p-4 animate-slide-up transition-all"
-      :style="{ animationDelay: `${idx * 30}ms` }"
-    >
+      :style="{ animationDelay: `${idx * 30}ms` }">
       <div class="flex items-start justify-between gap-3">
         <div class="min-w-0 flex-1">
           <div class="mb-1 flex flex-wrap items-center gap-2">
@@ -502,11 +469,8 @@ watch([() => props.agentId, () => props.hostPlatform], () => {
             </Badge>
             <span class="text-sm font-medium font-mono">{{ item.account_id }}</span>
             <span v-if="item.account_name" class="text-xs text-muted-foreground">{{ item.account_name }}</span>
-            <Badge
-              variant="outline"
-              class="text-[10px]"
-              :class="item.enabled ? 'border-emerald-500/20 text-emerald-400' : 'border-zinc-500/20 text-zinc-400'"
-            >
+            <Badge variant="outline" class="text-[10px]"
+              :class="item.enabled ? 'border-emerald-500/20 text-emerald-400' : 'border-zinc-500/20 text-zinc-400'">
               {{ item.enabled ? '启用' : '禁用' }}
             </Badge>
           </div>
@@ -527,13 +491,8 @@ watch([() => props.agentId, () => props.hostPlatform], () => {
           <Button variant="ghost" size="icon" class="h-7 w-7" @click="openEdit(item)">
             <Pencil class="h-3 w-3" />
           </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            class="h-7 w-7 text-rose-400 hover:text-rose-500"
-            :disabled="deletingId === item.id"
-            @click="handleDelete(item.id)"
-          >
+          <Button variant="ghost" size="icon" class="h-7 w-7 text-rose-400 hover:text-rose-500"
+            :disabled="deletingId === item.id" @click="handleDelete(item.id)">
             <Loader2 v-if="deletingId === item.id" class="h-3 w-3 animate-spin" />
             <Trash2 v-else class="h-3 w-3" />
           </Button>
@@ -541,202 +500,189 @@ watch([() => props.agentId, () => props.hostPlatform], () => {
       </div>
     </div>
 
+    <!-- ═══════ 新增 / 编辑弹窗 ═══════ -->
     <Teleport to="body">
-      <div
-        v-if="showForm"
-        class="fixed inset-0 z-50 flex items-center justify-center p-4 animate-in fade-in duration-150"
-      >
+      <div v-if="showForm"
+        class="fixed inset-0 z-50 flex items-center justify-center p-4 animate-in fade-in duration-150">
         <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" @click="closeForm" />
         <div
-          class="relative z-10 w-full max-w-lg max-h-[85vh] overflow-y-auto rounded-xl border bg-background p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-200"
-        >
+          class="relative z-10 w-full max-w-lg max-h-[85vh] overflow-y-auto rounded-xl border bg-background p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+          <!-- 弹窗头部 -->
           <div class="flex items-start justify-between gap-3">
             <div>
               <h3 class="text-base font-semibold">
                 {{ formMode === 'create' ? '新增飞书绑定' : '编辑飞书绑定' }}
               </h3>
-              <p class="mt-1 text-sm text-muted-foreground">
+              <p class="mt-1 text-xs text-muted-foreground/70">
                 {{ activeSchema.description }}
               </p>
             </div>
-            <Badge variant="outline" class="border-blue-500/20 bg-blue-500/10 text-blue-400">OpenClaw / 飞书</Badge>
+            <Badge variant="outline" class="shrink-0 border-blue-500/20 bg-blue-500/10 text-blue-400">OpenClaw / 飞书
+            </Badge>
           </div>
 
           <Separator class="my-4" />
 
-          <div class="space-y-4">
-            <div v-for="field in basicFields" :key="field.key" class="space-y-1.5">
-              <label class="flex items-center gap-1.5 text-xs text-muted-foreground">
-                {{ field.label }}
-                <span v-if="isFieldRequired(field)" class="text-rose-500">*</span>
-                <span
-                  v-if="field.sensitive"
-                  class="inline-flex items-center gap-0.5 rounded border border-amber-500/20 bg-amber-500/10 px-1 py-0.5 text-[9px] text-amber-500"
-                >
-                  <ShieldAlert class="h-2.5 w-2.5" />
-                  敏感
-                </span>
-              </label>
-
-              <Input
-                v-if="field.type === 'text' || field.type === 'password'"
-                :model-value="getTextFieldValue(field.key)"
-                :type="field.type === 'password' ? 'password' : 'text'"
-                :placeholder="field.placeholder ?? undefined"
-                :disabled="isFieldDisabled(field)"
-                class="font-mono text-sm"
-                @update:model-value="(value) => setTextFieldValue(field.key, value)"
-              />
-
-              <div
-                v-else-if="field.type === 'switch'"
-                class="flex items-center justify-between rounded-lg border bg-muted/10 px-3 py-2"
-              >
+          <TooltipProvider :delay-duration="200">
+            <div class="space-y-5">
+              <!-- ─── 飞书应用凭证分组 ─── -->
+              <div class="rounded-lg border border-border/50 bg-muted/5 p-4 space-y-4">
                 <div>
-                  <p class="text-sm font-medium">{{ field.label }}</p>
-                  <div v-if="field.description" class="space-y-1">
-                    <p
-                      class="text-[11px] leading-relaxed text-muted-foreground/60 whitespace-pre-line"
-                      :class="!isDescriptionExpanded(descriptionKey(field.key)) && shouldCollapseDescription(field.description) ? 'description-clamp' : ''"
-                    >
-                      {{ field.description }}
-                    </p>
-                    <button
-                      v-if="shouldCollapseDescription(field.description)"
-                      type="button"
-                      class="text-[11px] text-primary/80 hover:text-primary"
-                      @click="toggleDescription(descriptionKey(field.key))"
-                    >
-                      {{ isDescriptionExpanded(descriptionKey(field.key)) ? '收起说明' : '展开说明' }}
-                    </button>
-                  </div>
-                </div>
-                <Switch
-                  :model-value="getBooleanFieldValue(field.key)"
-                  :disabled="isFieldDisabled(field)"
-                  @update:model-value="(value) => setBooleanFieldValue(field.key, value)"
-                />
-              </div>
-
-              <div v-if="field.type !== 'switch' && field.description" class="space-y-1">
-                <p
-                  class="text-[11px] leading-relaxed text-muted-foreground/50 whitespace-pre-line"
-                  :class="!isDescriptionExpanded(descriptionKey(field.key)) && shouldCollapseDescription(field.description) ? 'description-clamp' : ''"
-                >
-                  {{ field.description }}
-                </p>
-                <button
-                  v-if="shouldCollapseDescription(field.description)"
-                  type="button"
-                  class="text-[11px] text-primary/80 hover:text-primary"
-                  @click="toggleDescription(descriptionKey(field.key))"
-                >
-                  {{ isDescriptionExpanded(descriptionKey(field.key)) ? '收起说明' : '展开说明' }}
-                </button>
-              </div>
-              <p v-if="fieldBehaviorHint(field)" class="text-[11px] text-muted-foreground/40">
-                {{ fieldBehaviorHint(field) }}
-              </p>
-            </div>
-
-            <div v-if="advancedFields.length > 0" class="space-y-3 rounded-lg border border-dashed border-border/70 bg-muted/5 p-4">
-              <button
-                type="button"
-                class="flex w-full items-center justify-between text-left"
-                @click="showAdvanced = !showAdvanced"
-              >
-                <div>
-                  <p class="text-xs font-medium uppercase tracking-wider text-muted-foreground/70">高级选项</p>
-                  <p class="mt-1 text-[11px] text-muted-foreground/50">
-                    用于宿主平台内部标识等进阶配置；通常保持默认即可。
+                  <p class="text-xs font-medium text-foreground/80">飞书应用凭证</p>
+                  <p class="mt-0.5 text-[11px] text-muted-foreground/50">
+                    可在飞书开放平台「凭证与基础信息」页面获取
                   </p>
                 </div>
-                <span class="inline-flex h-7 items-center rounded-md px-2 text-xs text-muted-foreground/70">
-                  {{ showAdvanced ? '收起' : '展开' }}
-                </span>
-              </button>
 
-              <div v-if="showAdvanced" class="space-y-4">
-                <Separator />
+                <template v-for="field in basicFields.filter(f => f.key === 'app_id' || f.key === 'app_secret')"
+                  :key="field.key">
+                  <div class="space-y-1.5">
+                    <label class="flex items-center gap-1.5 text-xs text-muted-foreground">
+                      {{ field.label }}
+                      <span v-if="isFieldRequired(field)" class="text-rose-500">*</span>
+                      <span v-if="field.sensitive"
+                        class="inline-flex items-center gap-0.5 rounded border border-amber-500/20 bg-amber-500/10 px-1 py-0.5 text-[9px] text-amber-500">
+                        <ShieldAlert class="h-2.5 w-2.5" />
+                        加密存储
+                      </span>
+                      <Tooltip v-if="field.description">
+                        <TooltipTrigger as-child>
+                          <Info
+                            class="h-3 w-3 text-muted-foreground/30 hover:text-muted-foreground/60 transition-colors cursor-help" />
+                        </TooltipTrigger>
+                        <TooltipContent side="top" class="max-w-xs text-xs leading-relaxed">
+                          {{ field.description }}
+                        </TooltipContent>
+                      </Tooltip>
+                    </label>
+                    <Input :model-value="getTextFieldValue(field.key)"
+                      :type="field.type === 'password' ? 'password' : 'text'"
+                      :placeholder="field.placeholder ?? undefined" :disabled="isFieldDisabled(field)"
+                      class="font-mono text-sm" @update:model-value="(value) => setTextFieldValue(field.key, value)" />
+                    <p v-if="fieldBehaviorHint(field)" class="text-[11px] text-muted-foreground/40">
+                      {{ fieldBehaviorHint(field) }}
+                    </p>
+                  </div>
+                </template>
+              </div>
 
-                <div v-for="field in advancedFields" :key="field.key" class="space-y-1.5">
+              <!-- ─── 其他基础字段（排除凭证和 switch） ─── -->
+              <template
+                v-for="field in basicFields.filter(f => f.key !== 'app_id' && f.key !== 'app_secret' && f.type !== 'switch')"
+                :key="field.key">
+                <div class="space-y-1.5">
                   <label class="flex items-center gap-1.5 text-xs text-muted-foreground">
                     {{ field.label }}
                     <span v-if="isFieldRequired(field)" class="text-rose-500">*</span>
-                    <Badge variant="outline" class="text-[9px] text-muted-foreground/60">高级</Badge>
-                    <span
-                      v-if="field.sensitive"
-                      class="inline-flex items-center gap-0.5 rounded border border-amber-500/20 bg-amber-500/10 px-1 py-0.5 text-[9px] text-amber-500"
-                    >
-                      <ShieldAlert class="h-2.5 w-2.5" />
-                      敏感
-                    </span>
+                    <Tooltip v-if="field.description">
+                      <TooltipTrigger as-child>
+                        <Info
+                          class="h-3 w-3 text-muted-foreground/30 hover:text-muted-foreground/60 transition-colors cursor-help" />
+                      </TooltipTrigger>
+                      <TooltipContent side="top" class="max-w-xs text-xs leading-relaxed">
+                        {{ field.description }}
+                      </TooltipContent>
+                    </Tooltip>
                   </label>
-
-                  <Input
-                    v-if="field.type === 'text' || field.type === 'password'"
-                    :model-value="getTextFieldValue(field.key)"
+                  <Input :model-value="getTextFieldValue(field.key)"
                     :type="field.type === 'password' ? 'password' : 'text'"
-                    :placeholder="field.placeholder ?? undefined"
-                    :disabled="isFieldDisabled(field)"
-                    class="font-mono text-sm"
-                    @update:model-value="(value) => setTextFieldValue(field.key, value)"
-                  />
-
-                  <div
-                    v-else-if="field.type === 'switch'"
-                    class="flex items-center justify-between rounded-lg border bg-muted/10 px-3 py-2"
-                  >
-                    <div>
-                      <p class="text-sm font-medium">{{ field.label }}</p>
-                      <div v-if="field.description" class="space-y-1">
-                        <p
-                          class="text-[11px] leading-relaxed text-muted-foreground/60 whitespace-pre-line"
-                          :class="!isDescriptionExpanded(descriptionKey(field.key)) && shouldCollapseDescription(field.description) ? 'description-clamp' : ''"
-                        >
-                          {{ field.description }}
-                        </p>
-                        <button
-                          v-if="shouldCollapseDescription(field.description)"
-                          type="button"
-                          class="text-[11px] text-primary/80 hover:text-primary"
-                          @click="toggleDescription(descriptionKey(field.key))"
-                        >
-                          {{ isDescriptionExpanded(descriptionKey(field.key)) ? '收起说明' : '展开说明' }}
-                        </button>
-                      </div>
-                    </div>
-                    <Switch
-                      :model-value="getBooleanFieldValue(field.key)"
-                      :disabled="isFieldDisabled(field)"
-                      @update:model-value="(value) => setBooleanFieldValue(field.key, value)"
-                    />
-                  </div>
-
-                  <div v-if="field.type !== 'switch' && field.description" class="space-y-1">
-                    <p
-                      class="text-[11px] leading-relaxed text-muted-foreground/50 whitespace-pre-line"
-                      :class="!isDescriptionExpanded(descriptionKey(field.key)) && shouldCollapseDescription(field.description) ? 'description-clamp' : ''"
-                    >
-                      {{ field.description }}
-                    </p>
-                    <button
-                      v-if="shouldCollapseDescription(field.description)"
-                      type="button"
-                      class="text-[11px] text-primary/80 hover:text-primary"
-                      @click="toggleDescription(descriptionKey(field.key))"
-                    >
-                      {{ isDescriptionExpanded(descriptionKey(field.key)) ? '收起说明' : '展开说明' }}
-                    </button>
-                  </div>
+                    :placeholder="field.placeholder ?? undefined" :disabled="isFieldDisabled(field)"
+                    class="font-mono text-sm" @update:model-value="(value) => setTextFieldValue(field.key, value)" />
                   <p v-if="fieldBehaviorHint(field)" class="text-[11px] text-muted-foreground/40">
                     {{ fieldBehaviorHint(field) }}
                   </p>
                 </div>
+              </template>
+
+              <!-- ─── Switch 字段 ─── -->
+              <template v-for="field in basicFields.filter(f => f.type === 'switch')" :key="field.key">
+                <div class="flex items-center justify-between rounded-lg border bg-muted/10 px-3 py-2.5">
+                  <div class="flex items-center gap-1.5">
+                    <p class="text-sm font-medium">{{ field.label }}</p>
+                    <Tooltip v-if="field.description">
+                      <TooltipTrigger as-child>
+                        <Info
+                          class="h-3 w-3 text-muted-foreground/30 hover:text-muted-foreground/60 transition-colors cursor-help" />
+                      </TooltipTrigger>
+                      <TooltipContent side="top" class="max-w-xs text-xs leading-relaxed">
+                        {{ field.description }}
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
+                  <Switch :model-value="getBooleanFieldValue(field.key)" :disabled="isFieldDisabled(field)"
+                    @update:model-value="(value) => setBooleanFieldValue(field.key, value)" />
+                </div>
+              </template>
+
+              <!-- ─── 高级选项 ─── -->
+              <div v-if="advancedFields.length > 0"
+                class="space-y-3 rounded-lg border border-dashed border-border/70 bg-muted/5 p-4">
+                <button type="button" class="flex w-full items-center justify-between text-left"
+                  @click="showAdvanced = !showAdvanced">
+                  <div>
+                    <p class="text-xs font-medium uppercase tracking-wider text-muted-foreground/70">高级选项</p>
+                    <p class="mt-1 text-[11px] text-muted-foreground/50">
+                      用于宿主平台内部标识等进阶配置；通常保持默认即可。
+                    </p>
+                  </div>
+                  <span class="inline-flex h-7 items-center rounded-md px-2 text-xs text-muted-foreground/70">
+                    {{ showAdvanced ? '收起' : '展开' }}
+                  </span>
+                </button>
+
+                <div v-if="showAdvanced" class="space-y-4">
+                  <Separator />
+
+                  <div v-for="field in advancedFields" :key="field.key" class="space-y-1.5">
+                    <label class="flex items-center gap-1.5 text-xs text-muted-foreground">
+                      {{ field.label }}
+                      <span v-if="isFieldRequired(field)" class="text-rose-500">*</span>
+                      <Badge variant="outline" class="text-[9px] text-muted-foreground/60">高级</Badge>
+                      <Tooltip v-if="field.description">
+                        <TooltipTrigger as-child>
+                          <Info
+                            class="h-3 w-3 text-muted-foreground/30 hover:text-muted-foreground/60 transition-colors cursor-help" />
+                        </TooltipTrigger>
+                        <TooltipContent side="top" class="max-w-xs text-xs leading-relaxed">
+                          {{ field.description }}
+                        </TooltipContent>
+                      </Tooltip>
+                    </label>
+
+                    <Input v-if="field.type === 'text' || field.type === 'password'"
+                      :model-value="getTextFieldValue(field.key)"
+                      :type="field.type === 'password' ? 'password' : 'text'"
+                      :placeholder="field.placeholder ?? undefined" :disabled="isFieldDisabled(field)"
+                      class="font-mono text-sm" @update:model-value="(value) => setTextFieldValue(field.key, value)" />
+
+                    <div v-else-if="field.type === 'switch'"
+                      class="flex items-center justify-between rounded-lg border bg-muted/10 px-3 py-2.5">
+                      <div class="flex items-center gap-1.5">
+                        <p class="text-sm font-medium">{{ field.label }}</p>
+                        <Tooltip v-if="field.description">
+                          <TooltipTrigger as-child>
+                            <Info
+                              class="h-3 w-3 text-muted-foreground/30 hover:text-muted-foreground/60 transition-colors cursor-help" />
+                          </TooltipTrigger>
+                          <TooltipContent side="top" class="max-w-xs text-xs leading-relaxed">
+                            {{ field.description }}
+                          </TooltipContent>
+                        </Tooltip>
+                      </div>
+                      <Switch :model-value="getBooleanFieldValue(field.key)" :disabled="isFieldDisabled(field)"
+                        @update:model-value="(value) => setBooleanFieldValue(field.key, value)" />
+                    </div>
+
+                    <p v-if="fieldBehaviorHint(field)" class="text-[11px] text-muted-foreground/40">
+                      {{ fieldBehaviorHint(field) }}
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
+          </TooltipProvider>
 
+          <!-- 错误提示 -->
           <div v-if="saveErrors.length > 0" class="mt-4 rounded-lg border border-rose-500/20 bg-rose-500/10 p-3">
             <div class="flex items-center gap-2 text-sm font-medium text-rose-500">
               <AlertCircle class="h-4 w-4" />
@@ -750,6 +696,7 @@ watch([() => props.agentId, () => props.hostPlatform], () => {
             </ul>
           </div>
 
+          <!-- 操作按钮 -->
           <div class="mt-5 flex gap-3">
             <Button variant="outline" class="flex-1" :disabled="saving || validating" @click="closeForm">
               取消
@@ -766,10 +713,5 @@ watch([() => props.agentId, () => props.hostPlatform], () => {
 </template>
 
 <style scoped>
-.description-clamp {
-  display: -webkit-box;
-  overflow: hidden;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-}
+/* reserved for future field animations */
 </style>
