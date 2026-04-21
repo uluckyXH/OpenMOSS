@@ -43,6 +43,7 @@ from tools.task_cli.runtime import DEFAULT_CLI_VERSION
 
 
 BOOTSTRAP_PURPOSES = {"download_script", "register_runtime"}
+DOWNLOAD_SCRIPT_MIN_REUSE_REMAINING_SECONDS = 3600
 REPO_ROOT = Path(__file__).resolve().parents[2]
 TEMPLATE_ROOT = REPO_ROOT / "shells" / "templates"
 TASK_CLI_TEMPLATE_ROOT = REPO_ROOT / "tools" / "task_cli" / "templates"
@@ -58,6 +59,33 @@ SUPPORTED_COMM_PROVIDER_TEMPLATES = {
 def hash_bootstrap_token(token: str) -> str:
     """对明文 token 做哈希。"""
     return hashlib.sha256(token.encode("utf-8")).hexdigest()
+
+
+def _issue_bootstrap_token_value() -> str:
+    """生成新的 bootstrap token 明文。"""
+    return f"bt_{secrets.token_urlsafe(32)}"
+
+
+def _serialize_scope(scope: Optional[dict[str, Any]]) -> Optional[str]:
+    """稳定序列化 scope，便于同 scope token 复用。"""
+    if scope is None:
+        return None
+    return json.dumps(scope, ensure_ascii=False, separators=(",", ":"), sort_keys=True)
+
+
+def _serialize_created_bootstrap_token(
+    row: ManagedAgentBootstrapToken,
+    token: str,
+) -> dict[str, Any]:
+    """把新建/复用后的 token 记录序列化为创建响应。"""
+    return {
+        "id": row.id,
+        "managed_agent_id": row.managed_agent_id,
+        "token": token,
+        "purpose": row.purpose,
+        "expires_at": row.expires_at,
+        "created_at": row.created_at,
+    }
 
 
 def _load_template(relative_path: str) -> str:
@@ -244,16 +272,14 @@ def create_bootstrap_token(
     if ttl_seconds <= 0:
         raise ValidationError("ttl_seconds 必须大于 0")
 
-    token = f"bt_{secrets.token_urlsafe(32)}"
+    token = _issue_bootstrap_token_value()
     now = datetime.now()
     row = ManagedAgentBootstrapToken(
         id=str(uuid.uuid4()),
         managed_agent_id=managed_agent_id,
         token_hash=hash_bootstrap_token(token),
         purpose=purpose,
-        scope_json=json.dumps(scope, ensure_ascii=False, separators=(",", ":"))
-        if scope is not None
-        else None,
+        scope_json=_serialize_scope(scope),
         expires_at=now + timedelta(seconds=ttl_seconds),
         created_at=now,
     )
@@ -261,14 +287,74 @@ def create_bootstrap_token(
     db.commit()
     db.refresh(row)
 
-    return {
-        "id": row.id,
-        "managed_agent_id": row.managed_agent_id,
-        "token": token,
-        "purpose": row.purpose,
-        "expires_at": row.expires_at,
-        "created_at": row.created_at,
-    }
+    return _serialize_created_bootstrap_token(row, token)
+
+
+def create_or_reissue_bootstrap_token(
+    db: Session,
+    managed_agent_id: str,
+    purpose: str,
+    ttl_seconds: int,
+    scope: Optional[dict[str, Any]] = None,
+    min_remaining_seconds: int = 0,
+) -> dict[str, Any]:
+    """优先复用同 scope 的有效 token 记录，避免重复创建。
+
+    注意：当前数据库只存 token_hash，不存明文 token。
+    因此复用时会对同一条记录重新签发一个新的明文 token，
+    旧明文 token 随即失效，但记录 id / expires_at 不变。
+    """
+    get_managed_agent_or_404(db, managed_agent_id)
+
+    if purpose not in BOOTSTRAP_PURPOSES:
+        raise ValidationError(f"不支持的 bootstrap token purpose: {purpose}")
+    if ttl_seconds <= 0:
+        raise ValidationError("ttl_seconds 必须大于 0")
+    if min_remaining_seconds < 0:
+        raise ValidationError("min_remaining_seconds 不能小于 0")
+
+    now = datetime.now()
+    serialized_scope = _serialize_scope(scope)
+    query = (
+        db.query(ManagedAgentBootstrapToken)
+        .filter(ManagedAgentBootstrapToken.managed_agent_id == managed_agent_id)
+        .filter(ManagedAgentBootstrapToken.purpose == purpose)
+        .filter(ManagedAgentBootstrapToken.revoked_at.is_(None))
+        .filter(ManagedAgentBootstrapToken.expires_at > now)
+    )
+    if purpose == "register_runtime":
+        query = query.filter(ManagedAgentBootstrapToken.used_at.is_(None))
+
+    if serialized_scope is None:
+        query = query.filter(ManagedAgentBootstrapToken.scope_json.is_(None))
+    else:
+        query = query.filter(ManagedAgentBootstrapToken.scope_json == serialized_scope)
+
+    reusable = (
+        query.order_by(
+            ManagedAgentBootstrapToken.expires_at.desc(),
+            ManagedAgentBootstrapToken.created_at.desc(),
+        )
+        .first()
+    )
+
+    if reusable:
+        remaining_seconds = (reusable.expires_at - now).total_seconds()
+        if remaining_seconds > min_remaining_seconds:
+            token = _issue_bootstrap_token_value()
+            reusable.token_hash = hash_bootstrap_token(token)
+            reusable.created_at = now
+            db.commit()
+            db.refresh(reusable)
+            return _serialize_created_bootstrap_token(reusable, token)
+
+    return create_bootstrap_token(
+        db,
+        managed_agent_id=managed_agent_id,
+        purpose=purpose,
+        ttl_seconds=ttl_seconds,
+        scope=scope,
+    )
 
 
 def list_bootstrap_tokens(db: Session, managed_agent_id: str) -> list[ManagedAgentBootstrapToken]:
@@ -773,6 +859,7 @@ def bootstrap_register(
 __all__ = [
     "BOOTSTRAP_PURPOSES",
     "create_bootstrap_token",
+    "create_or_reissue_bootstrap_token",
     "deserialize_bootstrap_scope",
     "bootstrap_register",
     "get_bootstrap_token_or_404",

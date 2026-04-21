@@ -1,6 +1,6 @@
 # Bootstrap 接口
 
-> 最后同步：2026-04-08
+> 最后同步：2026-04-20
 > 接口前缀：`/api/bootstrap`
 > 对应代码：`app/routers/bootstrap.py`
 
@@ -15,6 +15,13 @@
 当前未实现：
 
 - `task-cli.py` 下载
+
+补充口径：
+
+- `download_script` token 默认有效期为 24 小时，可在 TTL 内多次使用。
+- `register_runtime` token 默认有效期为 1 小时，且注册成功后立即失效。
+- 管理端反复生成“接入说明 / 脚本预览”时，会优先复用同 scope 且剩余有效期大于 1 小时的 `download_script` token 记录。
+- 由于服务端只存 `token_hash`，当管理端复用该记录时，会重新签发最新明文 token；因此应始终以最新生成的 `curl` 命令或脚本文本为准。
 
 ## 2. 请求头
 
@@ -38,7 +45,7 @@ Content-Type: application/json
 
 #### `GET /api/bootstrap/agents/{managed_agent_id}/script`
 
-作用：使用 `download_script` 类型的 Bootstrap Token 下载渲染后的完整部署脚本。服务端会在返回脚本前，临时创建一个短期 `register_runtime` token 并嵌入脚本。
+作用：使用 `download_script` 类型的 Bootstrap Token 下载渲染后的完整部署脚本。服务端会在返回脚本前，临时创建一个新的短期 `register_runtime` token 并嵌入脚本。
 
 #### Path 参数
 

@@ -552,20 +552,27 @@ def get_bootstrap_script(
             purpose="register_runtime",
             ttl_seconds=register_ttl_seconds,
         )
-        bundle_token = bootstrap_svc.create_bootstrap_token(
+        bundle_scope = _build_script_scope(
+            selected_artifacts=selected_artifacts,
+            include_schedule=include_schedule,
+            include_comm_bindings=include_comm_bindings,
+        )
+        bundle_token = bootstrap_svc.create_or_reissue_bootstrap_token(
             db,
             managed_agent_id=agent_id,
             purpose="download_script",
             ttl_seconds=bundle_ttl_seconds,
+            scope=bundle_scope,
+            min_remaining_seconds=bootstrap_svc.DOWNLOAD_SCRIPT_MIN_REUSE_REMAINING_SECONDS,
         )
         script = bootstrap_svc.render_bootstrap_script(
             db,
             managed_agent_id=agent_id,
             register_token=register_token["token"],
             skill_bundle_token=bundle_token["token"],
-            selected_artifacts=selected_artifacts,
-            include_schedule=include_schedule,
-            include_comm_bindings=include_comm_bindings,
+            selected_artifacts=bundle_scope.get("selected_artifacts"),
+            include_schedule=bundle_scope["include_schedule"],
+            include_comm_bindings=bundle_scope["include_comm_bindings"],
         )
         return ManagedAgentBootstrapScriptResponse(
             script=script,
@@ -588,16 +595,18 @@ def get_onboarding_message(
 ):
     """生成当前配置态 Agent 的接入说明和 curl 命令。"""
     try:
-        download_token = bootstrap_svc.create_bootstrap_token(
+        download_scope = _build_script_scope(
+            selected_artifacts=selected_artifacts,
+            include_schedule=include_schedule,
+            include_comm_bindings=include_comm_bindings,
+        )
+        download_token = bootstrap_svc.create_or_reissue_bootstrap_token(
             db,
             managed_agent_id=agent_id,
             purpose="download_script",
             ttl_seconds=download_ttl_seconds,
-            scope=_build_script_scope(
-                selected_artifacts=selected_artifacts,
-                include_schedule=include_schedule,
-                include_comm_bindings=include_comm_bindings,
-            ),
+            scope=download_scope,
+            min_remaining_seconds=bootstrap_svc.DOWNLOAD_SCRIPT_MIN_REUSE_REMAINING_SECONDS,
         )
         curl_command = bootstrap_svc.render_curl_command(agent_id, download_token["token"])
         message = bootstrap_svc.render_onboarding_message(

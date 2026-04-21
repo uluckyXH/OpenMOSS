@@ -1126,6 +1126,11 @@ Content-Type: application/json
 | `404` | 配置态 Agent 不存在 |
 | `422` | 请求体验证失败 |
 
+补充说明：
+
+- 该接口属于“手动新建”，每次调用都会创建一条新的 Bootstrap Token 记录。
+- 自动生成脚本 / 接入说明时使用的“同 scope 优先复用”规则，仅作用于 `bootstrap-script / onboarding-message` 两个接口。
+
 #### 请求示例
 
 ```json
@@ -1209,7 +1214,7 @@ Content-Type: application/json
 
 #### `GET /api/admin/managed-agents/{agent_id}/bootstrap-script`
 
-作用：为当前配置态 Agent 生成一份完整的 Bootstrap 脚本预览。接口会内部创建一个短期 `register_runtime` token，并直接嵌入脚本文本。
+作用：为当前配置态 Agent 生成一份完整的 Bootstrap 脚本预览。接口会内部创建一个短期 `register_runtime` token，并直接嵌入脚本文本；脚本里用于下载 Skill Bundle 的 `download_script` token 会按同 scope 优先复用。
 
 #### Query 参数
 
@@ -1219,6 +1224,7 @@ Content-Type: application/json
 | `include_schedule` | bool | 否 | `true` | 是否包含定时任务片段 |
 | `include_comm_bindings` | bool | 否 | `true` | 是否包含宿主通讯渠道片段 |
 | `register_ttl_seconds` | int | 否 | `3600` | 内嵌 `register_runtime` token 的有效期 |
+| `bundle_ttl_seconds` | int | 否 | `86400` | 脚本内嵌的 Skill Bundle 下载 token 总有效期 |
 
 #### 成功返回
 
@@ -1242,11 +1248,19 @@ Content-Type: application/json
 | `404` | 配置态 Agent 不存在 |
 | `422` | Query 参数格式错误 |
 
+补充说明：
+
+- `register_runtime` token 仍按每次“生成脚本预览”单独新建，默认 1 小时、一次性使用。
+- `download_script` token 会按 `selected_artifacts + include_schedule + include_comm_bindings` 组成的 scope 查找可复用记录。
+- 若存在同 scope 且剩余有效期大于 1 小时的 `download_script` token，系统会复用该记录，不新增列表项。
+- 若同 scope token 已临近过期（剩余时间小于等于 1 小时）或不存在，则创建新记录。
+- 由于服务端只存 `token_hash`，复用时会重新签发该记录对应的明文 token；因此再次生成后的脚本应以最新返回结果为准，旧脚本文本中的下载 token 会失效。
+
 ### 5.26 获取接入说明和 curl 命令
 
 #### `GET /api/admin/managed-agents/{agent_id}/onboarding-message`
 
-作用：生成一段可以直接发给用户或远端 Agent 的接入说明文本，同时内部创建一个 `download_script` token 并返回对应的 `curl` 命令。
+作用：生成一段可以直接发给用户或远端 Agent 的接入说明文本，同时内部获取一个 `download_script` token 并返回对应的 `curl` 命令。
 
 #### Query 参数
 
@@ -1267,7 +1281,7 @@ Content-Type: application/json
 |---|---|---|
 | `message` | string | 接入说明文本，已包含 curl 命令 |
 | `curl_command` | string | 一键下载并执行脚本的命令 |
-| `download_token_id` | string | 本次创建的 `download_script` token ID |
+| `download_token_id` | string | 当前使用的 `download_script` token ID；可能是复用记录，也可能是新建记录 |
 | `download_token_expires_at` | datetime | 该 token 的过期时间 |
 
 #### 错误码
@@ -1278,6 +1292,14 @@ Content-Type: application/json
 | `403` | 管理员鉴权失败 |
 | `404` | 配置态 Agent 不存在 |
 | `422` | Query 参数格式错误 |
+
+补充说明：
+
+- `download_script` token 默认总有效期为 24 小时。
+- 该接口会按 scope 优先复用同一条健康的 `download_script` 记录；scope 规则与“获取 Bootstrap 脚本预览”一致。
+- 若存在同 scope 且剩余有效期大于 1 小时的 token，则返回同一条记录的 `download_token_id`，不会新增列表项。
+- 若同 scope token 已临近过期（剩余时间小于等于 1 小时）或不存在，则创建新记录。
+- 由于服务端只存 `token_hash`，复用时会重新签发该记录对应的明文 token；因此再次生成接入说明后，应以最新 `curl_command` 为准，旧命令中的下载 token 会失效。
 
 ### 5.27 获取 Feishu 通讯绑定 Schema
 
