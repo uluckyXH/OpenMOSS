@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref, watch, computed } from 'vue';
-import { toast } from 'vue-sonner';
-import { managedAgentApi, managedAgentBootstrapApi, type ManagedAgentListItem, type ManagedAgentBootstrapScriptResponse } from '@/api/client';
+import { managedAgentApi, type ManagedAgentListItem } from '@/api/client';
 import { usePlatformMeta } from '@/composables/agents/usePlatformMeta';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -9,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   ChevronLeft, Loader2, AlertCircle, Pencil, Trash2,
   Settings, FileText, Clock, MessageSquare, Rocket, Info,
-  CheckCircle2, Circle, Lock, Copy, Check, X, AlertTriangle,
+  CheckCircle2, Circle, Lock, AlertTriangle,
 } from 'lucide-vue-next';
 import {
   formatRole, getRoleBadgeClass,
@@ -88,38 +87,7 @@ const currentCapabilities = computed(() =>
   platforms.value.find(p => p.key === currentPlatform.value)?.capabilities ?? null
 );
 
-// ─── 部署脚本弹窗 ───
-const showDeployDialog = ref(false);
-const loadingScript = ref(false);
-const scriptResult = ref<ManagedAgentBootstrapScriptResponse | null>(null);
-const copiedScript = ref(false);
 
-async function handleGetScript() {
-  loadingScript.value = true;
-  try {
-    const res = await managedAgentBootstrapApi.getBootstrapScript(props.agentId);
-    scriptResult.value = res.data;
-  } catch (err: unknown) {
-    const msg = (err as { response?: { data?: { detail?: string } } })?.response?.data?.detail;
-    toast.error(msg ?? '生成脚本失败');
-  } finally {
-    loadingScript.value = false;
-  }
-}
-
-async function copyScript() {
-  if (!scriptResult.value) return;
-  await navigator.clipboard.writeText(scriptResult.value.script);
-  copiedScript.value = true;
-  setTimeout(() => { copiedScript.value = false; }, 2000);
-}
-
-function openDeployDialog() {
-  scriptResult.value = null;
-  copiedScript.value = false;
-  showDeployDialog.value = true;
-  void handleGetScript();
-}
 
 // ─── Tab 配置 ───
 interface TabMeta {
@@ -134,18 +102,30 @@ interface TabMeta {
 }
 
 const tabsMeta: TabMeta[] = [
-  { key: 'basic', label: '基础信息', icon: Info, readinessKey: 'basic', required: true,
-    isEditable: () => true },
-  { key: 'host', label: '平台配置', icon: Settings, readinessKey: 'host', required: true,
-    isEditable: () => true }, // 前置 = basic，始终满足
-  { key: 'prompt', label: 'Prompt', icon: FileText, readinessKey: 'prompt', required: false,
-    isEditable: (r) => r.host, prerequisiteLabel: '平台配置' },
-  { key: 'schedule', label: '定时任务', icon: Clock, readinessKey: 'schedule', required: false,
-    isEditable: (r) => r.host, prerequisiteLabel: '平台配置' },
-  { key: 'comm', label: '通讯渠道', icon: MessageSquare, readinessKey: 'comm', required: false,
-    isEditable: (r) => r.host, prerequisiteLabel: '平台配置' },
-  { key: 'bootstrap', label: '部署接入', icon: Rocket, readinessKey: 'bootstrap', required: false,
-    isEditable: (r) => r.host, prerequisiteLabel: '平台配置' },
+  {
+    key: 'basic', label: '基础信息', icon: Info, readinessKey: 'basic', required: true,
+    isEditable: () => true
+  },
+  {
+    key: 'host', label: '平台配置', icon: Settings, readinessKey: 'host', required: true,
+    isEditable: () => true
+  }, // 前置 = basic，始终满足
+  {
+    key: 'prompt', label: 'Prompt', icon: FileText, readinessKey: 'prompt', required: false,
+    isEditable: (r) => r.host, prerequisiteLabel: '平台配置'
+  },
+  {
+    key: 'schedule', label: '定时任务', icon: Clock, readinessKey: 'schedule', required: false,
+    isEditable: (r) => r.host, prerequisiteLabel: '平台配置'
+  },
+  {
+    key: 'comm', label: '通讯渠道', icon: MessageSquare, readinessKey: 'comm', required: false,
+    isEditable: (r) => r.host, prerequisiteLabel: '平台配置'
+  },
+  {
+    key: 'bootstrap', label: '部署接入', icon: Rocket, readinessKey: 'bootstrap', required: false,
+    isEditable: (r) => r.host, prerequisiteLabel: '平台配置'
+  },
 ];
 
 const requiredTabs = tabsMeta.filter(t => t.required);
@@ -219,14 +199,7 @@ function onTabSaved() {
   void loadDetail(props.agentId);
 }
 
-function formatExpireDate(value: string | null) {
-  if (!value) return '—';
-  try {
-    return new Date(value).toLocaleString('zh-CN', {
-      month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit',
-    });
-  } catch { return value; }
-}
+
 </script>
 
 <template>
@@ -327,8 +300,7 @@ function formatExpireDate(value: string | null) {
                 </div>
                 <div class="flex gap-2 mb-3">
                   <button v-for="tab in visibleRequiredTabs" :key="tab.key"
-                    class="flex items-center gap-1 text-[11px] px-2.5 py-1 rounded-md transition-colors"
-                    :class="[
+                    class="flex items-center gap-1 text-[11px] px-2.5 py-1 rounded-md transition-colors" :class="[
                       readiness[tab.readinessKey]
                         ? 'text-emerald-400 bg-emerald-500/5 hover:bg-emerald-500/10'
                         : nextStep?.key === tab.key
@@ -338,8 +310,7 @@ function formatExpireDate(value: string | null) {
                     <CheckCircle2 v-if="readiness[tab.readinessKey]" class="h-3 w-3" />
                     <Circle v-else class="h-3 w-3" />
                     {{ tab.label }}
-                    <span v-if="nextStep?.key === tab.key"
-                      class="text-[9px] ml-0.5 text-primary/70">← 下一步</span>
+                    <span v-if="nextStep?.key === tab.key" class="text-[9px] ml-0.5 text-primary/70">← 下一步</span>
                   </button>
                 </div>
 
@@ -351,31 +322,20 @@ function formatExpireDate(value: string | null) {
                     @click="tryChangeTab(tab.key)">
                     {{ tab.label }}
                     <template v-if="tab.key === 'schedule' && rawReadiness">
-                      <Badge v-if="rawReadiness.schedules_count > 0" variant="outline" class="text-[9px] px-1 py-0 h-3.5 text-muted-foreground/40">
+                      <Badge v-if="rawReadiness.schedules_count > 0" variant="outline"
+                        class="text-[9px] px-1 py-0 h-3.5 text-muted-foreground/40">
                         {{ rawReadiness.schedules_count }}
                       </Badge>
                     </template>
                     <template v-if="tab.key === 'comm' && rawReadiness">
-                      <Badge v-if="rawReadiness.comm_bindings_count > 0" variant="outline" class="text-[9px] px-1 py-0 h-3.5 text-muted-foreground/40">
+                      <Badge v-if="rawReadiness.comm_bindings_count > 0" variant="outline"
+                        class="text-[9px] px-1 py-0 h-3.5 text-muted-foreground/40">
                         {{ rawReadiness.comm_bindings_count }}
                       </Badge>
                     </template>
                   </button>
                 </div>
 
-                <!-- 🚀 部署按钮 -->
-                <div class="mt-4">
-                  <Button v-if="readiness.bootstrap" size="sm"
-                    class="gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm shadow-emerald-500/20"
-                    @click="openDeployDialog">
-                    <Rocket class="h-3.5 w-3.5" />
-                    生成部署脚本
-                  </Button>
-                  <div v-else-if="nextStep" class="flex items-center gap-1.5 text-[11px] text-muted-foreground/40">
-                    <Lock class="h-3 w-3" />
-                    完成所有必填配置后可生成部署脚本
-                  </div>
-                </div>
               </div>
             </div>
           </div>
@@ -390,8 +350,7 @@ function formatExpireDate(value: string | null) {
                 <!-- Tab 就绪指示：已完成 = 绿点，前置未满足 = Lock -->
                 <span v-if="tab.required && readiness[tab.readinessKey]"
                   class="absolute top-1.5 right-1.5 h-1.5 w-1.5 rounded-full bg-emerald-400" />
-                <Lock v-else-if="!tab.isEditable(readiness)"
-                  class="h-2.5 w-2.5 text-muted-foreground/30 ml-0.5" />
+                <Lock v-else-if="!tab.isEditable(readiness)" class="h-2.5 w-2.5 text-muted-foreground/30 ml-0.5" />
               </TabsTrigger>
             </TabsList>
 
@@ -412,21 +371,20 @@ function formatExpireDate(value: string | null) {
               <BasicInfoTab :agent="selectedAgent" @saved="onTabSaved" />
             </TabsContent>
             <TabsContent value="host" class="mt-5">
-              <PlatformConfigTab ref="platformConfigTabRef" :agent-id="agentId" :host-platform="currentPlatform" @saved="onTabSaved" />
+              <PlatformConfigTab ref="platformConfigTabRef" :agent-id="agentId" :host-platform="currentPlatform"
+                @saved="onTabSaved" />
             </TabsContent>
             <TabsContent value="prompt" class="mt-5">
-              <PromptTab ref="promptTabRef" :agent-id="agentId" :host-platform="currentPlatform" :disabled="!isTabEditable('prompt')" @saved="onTabSaved" />
+              <PromptTab ref="promptTabRef" :agent-id="agentId" :host-platform="currentPlatform"
+                :disabled="!isTabEditable('prompt')" @saved="onTabSaved" />
             </TabsContent>
             <TabsContent value="schedule" class="mt-5">
-              <ScheduleTab :agent-id="agentId" :agent-role="selectedAgent?.role" :disabled="!isTabEditable('schedule')" />
+              <ScheduleTab :agent-id="agentId" :agent-role="selectedAgent?.role"
+                :disabled="!isTabEditable('schedule')" />
             </TabsContent>
             <TabsContent value="comm" class="mt-5">
-              <CommBindingTab
-                :agent-id="agentId"
-                :host-platform="currentPlatform"
-                :disabled="!isTabEditable('comm')"
-                @saved="onTabSaved"
-              />
+              <CommBindingTab :agent-id="agentId" :host-platform="currentPlatform" :disabled="!isTabEditable('comm')"
+                @saved="onTabSaved" />
             </TabsContent>
             <TabsContent value="bootstrap" class="mt-5">
               <BootstrapTab :agent-id="agentId" :disabled="!isTabEditable('bootstrap')" />
@@ -460,53 +418,6 @@ function formatExpireDate(value: string | null) {
       </div>
     </Teleport>
 
-    <!-- ─── 部署脚本弹窗 ─── -->
-    <Teleport to="body">
-      <div v-if="showDeployDialog"
-        class="fixed inset-0 z-50 flex items-center justify-center p-4 animate-in fade-in duration-150">
-        <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" @click="showDeployDialog = false" />
-        <div
-          class="relative z-10 w-full max-w-2xl max-h-[80vh] overflow-y-auto rounded-xl border bg-background p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
-          <div class="flex items-center justify-between mb-4">
-            <div class="flex items-center gap-2">
-              <Rocket class="h-5 w-5 text-emerald-400" />
-              <h3 class="text-base font-semibold">部署脚本</h3>
-            </div>
-            <Button variant="ghost" size="icon" class="h-7 w-7" @click="showDeployDialog = false">
-              <X class="h-4 w-4" />
-            </Button>
-          </div>
-          <p class="text-xs text-muted-foreground/60 mb-4">
-            在目标机器上执行此脚本，Agent 将自动下载配置并注册运行态。
-          </p>
 
-          <!-- 加载中 -->
-          <div v-if="loadingScript" class="flex items-center justify-center py-12">
-            <Loader2 class="h-6 w-6 animate-spin text-muted-foreground" />
-          </div>
-
-          <!-- 脚本内容 -->
-          <template v-else-if="scriptResult">
-            <div class="relative">
-              <pre
-                class="rounded-lg bg-muted/30 border p-4 text-xs font-mono whitespace-pre-wrap break-all max-h-72 overflow-y-auto leading-relaxed select-all">{{ scriptResult.script }}</pre>
-              <Button variant="ghost" size="sm"
-                class="absolute top-2 right-2 h-7 gap-1 text-xs bg-background/80 backdrop-blur-sm"
-                @click="copyScript">
-                <Check v-if="copiedScript" class="h-3 w-3 text-emerald-400" />
-                <Copy v-else class="h-3 w-3" />
-                {{ copiedScript ? '已复制' : '复制' }}
-              </Button>
-            </div>
-            <p class="text-[11px] text-muted-foreground/40 mt-3">
-              注册 Token 过期：{{ formatExpireDate(scriptResult.register_token_expires_at) }}
-            </p>
-            <p class="text-[11px] text-muted-foreground/30 mt-1">
-              更多选项（自定义参数、Onboarding 消息等）请前往「部署接入」Tab。
-            </p>
-          </template>
-        </div>
-      </div>
-    </Teleport>
   </div>
 </template>
