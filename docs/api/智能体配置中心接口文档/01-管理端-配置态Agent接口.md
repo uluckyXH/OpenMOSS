@@ -1,6 +1,6 @@
 # 管理端配置态 Agent 接口
 
-> 最后同步：2026-04-13
+> 最后同步：2026-04-22
 > 接口前缀：`/api/admin/managed-agents`
 > 鉴权方式：`X-Admin-Token`
 > 对应代码：`app/routers/admin/managed_agents.py`
@@ -12,14 +12,13 @@
 - 宿主平台能力查询
 - Prompt 模板示例查询
 - 配置态 Agent 基础 CRUD
-- 列表/详情内嵌配置就绪度 `readiness`
 - 宿主平台配置管理
 - Prompt 资产管理
 - Prompt 渲染预览
 - 定时任务管理
-- 宿主通讯渠道配置管理（通用）
-- **Feishu 结构化通讯绑定**（schema 发现 / 预校验 / 结构化 CRUD）
+- 宿主通讯渠道配置管理
 - Bootstrap Token 管理
+- 部署变更集（deploy-preview / deploy-script / deployment-snapshots / dismiss）
 
 ## 2. 请求头
 
@@ -48,83 +47,7 @@ Content-Type: application/json
 | `page` | int | 当前页码 |
 | `page_size` | int | 每页条数 |
 
-### 4.2 宿主平台元数据响应 `ManagedAgentHostPlatformMetaResponse`
-
-| 字段 | 类型 | 说明 |
-|---|---|---|
-| `items` | array | 当前后端真实支持的宿主平台能力列表 |
-
-`items[]` 字段说明：
-
-| 字段 | 类型 | 说明 |
-|---|---|---|
-| `key` | string | 宿主平台标识 |
-| `label` | string | 前端展示名称 |
-| `description` | string | 平台简介，用于创建弹窗或平台说明区 |
-| `access_modes` | array | 支持的宿主访问方式：`local / remote` |
-| `deployment_modes` | array | 支持的部署模式 |
-| `capabilities.renderer` | bool | 是否已实现 renderer |
-| `capabilities.bootstrap_script` | bool | 是否支持生成 bootstrap script |
-| `capabilities.skill_bundle` | bool | 是否支持生成 skill-bundle |
-| `capabilities.prompt_preview` | bool | 是否支持 prompt 渲染预览 |
-| `capabilities.schedule` | bool | 是否支持 schedule |
-| `capabilities.comm_binding` | bool | 是否支持宿主通讯渠道配置 |
-| `supported_comm_providers` | array | 当前已支持的通讯渠道 provider 列表；按当前真实实现，OpenClaw 仅返回 `feishu` |
-| `ui_hints` | object | 前端动态渲染提示；只描述展示和表单，不代表新平台能力已经实现 |
-
-`ui_hints` 结构说明：
-
-| 字段 | 类型 | 说明 |
-|---|---|---|
-| `host_config.description` | string | 平台配置 Tab 顶部说明 |
-| `host_config.fields[]` | array | 平台配置字段列表，按顺序渲染 |
-| `prompt.description` | string | Prompt Tab 顶部说明 |
-| `prompt.render_strategies[]` | array | 渲染策略选项 |
-| `prompt.sections[]` | array | Prompt 段落定义 |
-| `schedule` | object/null | 定时任务 Tab 的说明和默认值 |
-| `comm` | object/null | 宿主通讯渠道 Tab 的说明 |
-| `bootstrap` | object/null | 部署接入 Tab 的说明 |
-
-`host_config.fields[]` 字段说明：
-
-| 字段 | 类型 | 说明 |
-|---|---|---|
-| `key` | string | 对应宿主配置 API 入参；标准字段包括 `host_agent_identifier / workdir_path / host_config_payload / host_metadata_json` |
-| `label` | string | 展示标签 |
-| `type` | string | 控件类型：`text / textarea / password / json / select` |
-| `placeholder` | string/null | 占位提示 |
-| `description` | string/null | 字段帮助说明 |
-| `required` | bool | 是否必填，仅用于前端校验 |
-| `sensitive` | bool/null | 是否敏感字段；敏感字段保存后只回显脱敏结果 |
-| `group` | string/null | 前端分组名 |
-
-`prompt.render_strategies[]` 字段说明：
-
-| 字段 | 类型 | 说明 |
-|---|---|---|
-| `value` | string | 渲染策略值；OpenClaw 当前只向前端暴露 `openclaw_workspace_files` |
-| `label` | string | 展示标签 |
-| `description` | string | 策略说明 |
-| `is_default` | bool/null | 是否为默认策略；只有一个策略时前端可自动选中并隐藏选择器 |
-
-`prompt.sections[]` 字段说明：
-
-| 字段 | 类型 | 说明 |
-|---|---|---|
-| `key` | string | 对应 Prompt 资产 API 入参；标准字段包括 `system_prompt_content / persona_prompt_content / identity_content` |
-| `label` | string | 展示标签；OpenClaw 使用文件语义，如 `工作规则（AGENTS.md）` |
-| `placeholder` | string/null | 占位提示 |
-| `required` | bool | 是否必填；OpenClaw 当前三段都是可选 |
-| `description` | string/null | 一句话简介，适合常显在标题下方 |
-| `detail` | string/null | 完整说明，适合放在帮助展开内容里 |
-
-说明：
-
-- `ui_hints` 来自后端代码注册表，不来自数据库，也不是用户配置。
-- 当前真实支持的平台只有 `openclaw`；Claude Code / Codex CLI 等只属于未来设计示例。
-- `ui_hints` 只驱动前端展示和表单，后端真实能力仍以 `capabilities`、renderer、bootstrap 实现为准。
-
-### 4.3 列表项 / 详情 `ManagedAgentListItem` / `ManagedAgentDetail`
+### 4.2 列表项 / 详情 `ManagedAgentListItem` / `ManagedAgentDetail`
 
 | 字段 | 类型 | 说明 |
 |---|---|---|
@@ -138,55 +61,15 @@ Content-Type: application/json
 | `host_access_mode` | string | 宿主访问方式：`local / remote` |
 | `status` | string | 状态：`draft / configured / deployed / disabled / archived` |
 | `runtime_agent_id` | string/null | 关联的运行态 Agent ID |
-| `config_version` | int | 当前目标部署版本；首次部署前默认保持 `1`，部署后首次再修改才会推进到下一版本 |
-| `deployed_config_version` | int/null | 当前已部署版本；未部署时为 `null` |
+| `config_version` | int | 当前配置版本 |
+| `deployed_config_version` | int/null | 已部署版本 |
 | `needs_redeploy` | bool | 是否需要重新部署 |
 | `online_status` | string/null | 在线状态，当前未实际写入 |
 | `data_source` | string | 当前固定为 `managed` |
-| `readiness` | object | 配置就绪度，列表和详情接口都会返回 |
-| `runtime_identity` | object | 运行态身份摘要，包含脱敏 API Key；完整 API Key 不会在详情接口回显 |
 | `created_at` | datetime | 创建时间 |
 | `updated_at` | datetime | 更新时间 |
 
-版本字段规则：
-
-- `config_version` 表示当前目标部署版本，不是每次编辑都会递增的修订计数。
-- 首次部署前，`config_version` 固定保持 `1`，多次编辑不会持续递增。
-- 部署成功后，`deployed_config_version` 会更新为当前 `config_version`。
-- 已部署后首次再修改配置，`config_version` 才推进到下一个待部署版本。
-- 已经存在待部署版本时，继续编辑仍保持当前 `config_version`，直到下一次部署成功。
-- `needs_redeploy = true` 表示 `config_version != deployed_config_version`。
-
-`readiness` 字段说明：
-
-| 字段 | 类型 | 说明 |
-|---|---|---|
-| `host_config` | bool | 宿主平台配置是否已有实质内容；当前规则为 `host_agent_identifier` 或 `workdir_path` 至少一个非空 |
-| `prompt_asset` | bool | Prompt 资产是否已有实质内容；当前规则为 `system_prompt_content / persona_prompt_content / identity_content` 任意一个非空 |
-| `schedules_count` | int | 定时任务数量，`0` 表示未配置；定时任务不是部署必填项 |
-| `comm_bindings_count` | int | 宿主通讯渠道数量，`0` 表示未配置；通讯渠道不是部署必填项 |
-| `deploy_ready` | bool | 是否满足部署前置条件；当前规则为 `host_config`。OpenClaw Prompt 文件都是可选配置，不再阻塞部署 |
-
-说明：
-
-- `readiness` 是后端统一计算的配置就绪度，前端不应再自行请求 `host-config` / `prompt-asset` 做探测判断。
-- `GET /api/admin/managed-agents` 会批量计算 `readiness`，避免列表页 N+1 请求。
-
-`runtime_identity` 字段说明：
-
-| 字段 | 类型 | 说明 |
-|---|---|---|
-| `registered` | bool | 是否已完成运行态 Agent 注册 |
-| `runtime_agent_id` | string/null | 关联的运行态 Agent ID |
-| `api_key_masked` | string/null | 脱敏后的运行态 API Key；未注册时为 `null` |
-
-说明：
-
-- 完整 `api_key` 只在 bootstrap 注册成功或主动重置成功当次返回。
-- 详情接口只返回 `api_key_masked`，前端基础信息页应使用该字段展示“API Key 已生成”状态。
-- 如果用户丢失完整 `api_key`，应调用重置接口生成新 key，不提供普通查看完整旧 key 的接口。
-
-### 4.4 宿主配置响应 `ManagedAgentHostConfigResponse`
+### 4.3 宿主配置响应 `ManagedAgentHostConfigResponse`
 
 | 字段 | 类型 | 说明 |
 |---|---|---|
@@ -200,22 +83,22 @@ Content-Type: application/json
 | `created_at` | datetime | 创建时间 |
 | `updated_at` | datetime | 更新时间 |
 
-### 4.5 Prompt 资产响应 `ManagedAgentPromptAssetResponse`
+### 4.4 Prompt 资产响应 `ManagedAgentPromptAssetResponse`
 
 | 字段 | 类型 | 说明 |
 |---|---|---|
 | `id` | string | Prompt 资产 ID |
 | `managed_agent_id` | string | 所属配置态 Agent ID |
 | `template_role` | string/null | 初始化时使用的角色模板 |
-| `system_prompt_content` | string | 工作规则内容，对应 OpenClaw `AGENTS.md` |
-| `persona_prompt_content` | string | 人格设定内容，对应 OpenClaw `SOUL.md` |
-| `identity_content` | string | 身份信息内容，对应 OpenClaw `IDENTITY.md` |
+| `system_prompt_content` | string | 系统提示词 |
+| `persona_prompt_content` | string | 人格提示词 |
+| `identity_content` | string | 身份内容 |
 | `host_render_strategy` | string | 渲染策略 |
 | `authority_source` | string | 当前固定为 `database` |
 | `notes` | string/null | 备注 |
 | `updated_at` | datetime | 更新时间 |
 
-### 4.6 Prompt 渲染预览响应 `ManagedAgentPromptRenderPreviewResponse`
+### 4.5 Prompt 渲染预览响应 `ManagedAgentPromptRenderPreviewResponse`
 
 | 字段 | 类型 | 说明 |
 |---|---|---|
@@ -230,7 +113,7 @@ Content-Type: application/json
 | `name` | string | 文件名 |
 | `content` | string | 文件内容 |
 
-### 4.7 定时任务响应 `ManagedAgentScheduleResponse`
+### 4.6 定时任务响应 `ManagedAgentScheduleResponse`
 
 | 字段 | 类型 | 说明 |
 |---|---|---|
@@ -247,7 +130,7 @@ Content-Type: application/json
 | `created_at` | datetime | 创建时间 |
 | `updated_at` | datetime | 更新时间 |
 
-### 4.8 宿主通讯渠道响应 `ManagedAgentCommBindingResponse`
+### 4.7 宿主通讯渠道响应 `ManagedAgentCommBindingResponse`
 
 | 字段 | 类型 | 说明 |
 |---|---|---|
@@ -263,7 +146,7 @@ Content-Type: application/json
 | `created_at` | datetime | 创建时间 |
 | `updated_at` | datetime | 更新时间 |
 
-### 4.9 Bootstrap Token 响应
+### 4.8 Bootstrap Token 响应
 
 #### 创建响应 `ManagedAgentBootstrapTokenCreateResponse`
 
@@ -292,216 +175,25 @@ Content-Type: application/json
 | `created_at` | datetime | 创建时间 |
 | `is_valid` | bool | 当前是否仍有效 |
 
-### 4.10 Feishu 结构化通讯绑定响应 `FeishuCommBindingResponse`
-
-| 字段 | 类型 | 说明 |
-|---|---|---|
-| `id` | string | 绑定 ID |
-| `provider` | string | 固定为 `feishu` |
-| `account_id` | string | OpenClaw 内部账号标识（映射自通用表 `binding_key`） |
-| `account_name` | string/null | 展示名（映射自通用表 `display_name`） |
-| `enabled` | bool | 是否启用 |
-| `app_id_masked` | string | 飞书 App ID（原值返回，不脱敏） |
-| `app_secret_masked` | string | 飞书 App Secret（固定返回 `***`） |
-| `created_at` | datetime | 创建时间 |
-| `updated_at` | datetime | 更新时间 |
-
-说明：
-
-- 该响应体仅用于 Feishu 结构化接口（`comm-bindings-structured/feishu`），不影响通用 `comm-bindings` 接口的返回格式。
-- `app_secret_masked` 始终为 `***`，不回显任何部分明文；`app_id_masked` 当前阶段返回原值。
-
 ---
 
 ## 5. 接口清单
 
-### 5.1 获取当前支持的宿主平台能力
+### 5.0 元数据接口
 
 #### `GET /api/admin/managed-agents/meta/host-platforms`
 
-作用：返回当前后端真实支持的宿主平台能力。前端应基于该接口决定可选宿主平台、部署模式、访问方式，以及是否展示 schedule、comm-binding、bootstrap 等能力入口。
-
-#### 成功返回
-
-- 状态码：`200`
-- 返回体：`ManagedAgentHostPlatformMetaResponse`
-
-#### 错误码
-
-| 状态码 | 说明 |
-|---|---|
-| `403` | 管理员鉴权失败 |
-
-#### 响应示例
-
-```json
-{
-  "items": [
-    {
-      "key": "openclaw",
-      "label": "OpenClaw",
-      "description": "OpenClaw Agent 平台，当前 OpenMOSS 已落地支持的首个宿主平台。",
-      "access_modes": ["local", "remote"],
-      "deployment_modes": [
-        "create_sub_agent",
-        "bind_existing_agent",
-        "bind_main_agent"
-      ],
-      "capabilities": {
-        "renderer": true,
-        "bootstrap_script": true,
-        "skill_bundle": true,
-        "prompt_preview": true,
-        "schedule": true,
-        "comm_binding": true
-      },
-      "supported_comm_providers": ["feishu"],
-      "ui_hints": {
-        "host_config": {
-          "description": "配置此 Agent 在 OpenClaw 平台上的运行参数。",
-          "fields": [
-            {
-              "key": "host_agent_identifier",
-              "label": "Agent ID",
-              "type": "text",
-              "placeholder": "content-executor-01",
-              "description": "OpenClaw 中的系统唯一标识。仅限英文小写字母、数字、下划线和连字符（a-z 0-9 _ -），首字符为字母或数字，最长 64 位。合法示例：content-executor-01、review-agent-01。",
-              "required": true,
-              "group": "基本"
-            },
-            {
-              "key": "workdir_path",
-              "label": "工作空间（Workspace）",
-              "type": "text",
-              "placeholder": "~/.openclaw/workspace-{Agent ID}",
-              "description": "Agent 的专属文件空间，也是默认的文件操作目录，用于存放提示词（AGENTS.md/SOUL.md）、记忆、技能和任务产出。通常为 ~/.openclaw/workspace-{Agent ID}，留空时将根据 Agent ID 自动生成。",
-              "required": false,
-              "group": "基本"
-            },
-            {
-              "key": "host_config_payload",
-              "label": "平台配置数据",
-              "type": "textarea",
-              "description": "除标准字段外的宿主平台扩展配置。留空表示不修改现有值；输入新内容会替换旧值，保存后仅返回脱敏结果。",
-              "required": false,
-              "sensitive": true,
-              "group": "高级"
-            },
-            {
-              "key": "host_metadata_json",
-              "label": "扩展元数据",
-              "type": "json",
-              "placeholder": "{}",
-              "description": "平台侧的额外元数据，JSON 格式。",
-              "required": false,
-              "group": "高级"
-            }
-          ]
-        },
-        "prompt": {
-          "description": "定义 Agent 在 OpenClaw Workspace 中的工作规则、人格设定和身份信息。这些内容都是可选配置，保存后会渲染为 AGENTS.md、SOUL.md、IDENTITY.md。",
-          "render_strategies": [
-            {
-              "value": "openclaw_workspace_files",
-              "label": "Workspace 文件",
-              "description": "渲染为 OpenClaw Workspace 文件：AGENTS.md、SOUL.md、IDENTITY.md。",
-              "is_default": true
-            }
-          ],
-          "sections": [
-            {
-              "key": "system_prompt_content",
-              "label": "工作规则（AGENTS.md）",
-              "placeholder": "填写 Agent 的工作流程、工具使用规则和协作约束。",
-              "required": false,
-              "description": "定义 Agent 的工作规则和执行流程。",
-              "detail": "对应 OpenClaw Workspace 中的 AGENTS.md。用于描述 Agent 的操作手册，包括工作流程、安全边界、工具使用规则、记忆策略和协作约束。这是最核心的行为规则文件，可根据实际情况决定是否添加或修改。"
-            },
-            {
-              "key": "persona_prompt_content",
-              "label": "人格设定（SOUL.md）",
-              "placeholder": "填写 Agent 的性格、语气和沟通风格。",
-              "required": false,
-              "description": "定义 Agent 的性格和说话风格。",
-              "detail": "对应 OpenClaw Workspace 中的 SOUL.md。用于描述 Agent 的语气、态度、个性和与用户的关系边界，决定 Agent 是偏工具化还是更有独立个性。"
-            },
-            {
-              "key": "identity_content",
-              "label": "身份信息（IDENTITY.md）",
-              "placeholder": "填写 Agent 的名称、外显身份和展示信息。",
-              "required": false,
-              "description": "定义 Agent 的名称和外显身份。",
-              "detail": "对应 OpenClaw Workspace 中的 IDENTITY.md。用于描述 Agent 的名字、emoji、头像等对外展示信息，比人格设定更轻量，主要用于标识而非行为规则。"
-            }
-          ]
-        },
-        "schedule": {
-          "description": "配置 OpenClaw Agent 的定时唤醒任务。定时任务不是部署必填项，但一旦创建就应一次性提交完整配置。",
-          "supported_types": ["interval", "cron"],
-          "default_expr": "15m",
-          "default_timeout": 1800,
-          "required_fields": [
-            "schedule_type",
-            "schedule_expr",
-            "timeout_seconds",
-            "schedule_message_content"
-          ],
-          "expr_help": {
-            "interval": "间隔格式：数字 + 单位，单位支持 s/m/h/d，例如 15m、1h、2d。",
-            "cron": "cron 格式：标准 5 段表达式，例如 0 9 * * *。"
-          },
-          "message_label": "定时唤醒提示词"
-        },
-        "comm": {
-          "description": "配置宿主平台侧通讯渠道。当前后端只落地 Feishu，其他 provider 仍是预留枚举。"
-        },
-        "bootstrap": {
-          "description": "生成 OpenClaw 接入脚本、注册 token 和 skill-bundle 下载入口。",
-          "deploy_guide": "将生成的脚本复制到 OpenClaw 部署机器执行，完成 Agent 文件写入和运行态注册。",
-          "onboarding_guide": "接入说明会生成带一次性 bootstrap token 的 curl 命令，token 过期后需要重新生成。"
-        }
-      }
-    }
-  ]
-}
-```
-
-### 5.1.1 获取 Prompt 模板示例
+作用：返回当前后端真实支持的宿主平台能力与 OpenClaw `ui_hints`，前端应用它决定平台选择、部署模式和各个配置 Tab 的展示方式。
 
 #### `GET /api/admin/managed-agents/meta/prompt-templates`
 
-作用：返回 Agent 管理域当前可用的角色 Prompt 模板示例，供前端做“一键填充示例”或“按角色载入默认内容”。该接口只是读取当前仓库中的模板文件，不代表重新启用旧 Prompt 管理作为 Agent Prompt 主入口。
+作用：返回 Agent 管理域当前可用的角色 Prompt 模板示例，供前端做“一键填充示例”或按角色载入默认内容。该接口读取的是当前仓库中的模板文件，不代表重新启用旧 Prompt 管理作为 Agent Prompt 主入口。
 
 #### Query 参数
 
 | 参数 | 类型 | 必填 | 默认值 | 说明 |
 |---|---|---|---|---|
 | `role` | string | 否 | - | 按角色过滤，支持 `planner / executor / reviewer / patrol` |
-
-#### 成功返回
-
-- 状态码：`200`
-- 返回体：对象，字段如下
-
-| 字段 | 类型 | 说明 |
-|---|---|---|
-| `items` | array | 模板示例列表 |
-
-`items[]` 字段说明：
-
-| 字段 | 类型 | 说明 |
-|---|---|---|
-| `role` | string | 模板角色 |
-| `label` | string | 角色展示名 |
-| `filename` | string | 当前命中的模板文件名，兼容 `{role}.md` / `task-{role}.md` |
-| `content` | string | 模板原文内容 |
-
-#### 错误码
-
-| 状态码 | 说明 |
-|---|---|
-| `403` | 管理员鉴权失败 |
-| `422` | `role` 不在允许枚举中 |
 
 #### 响应示例
 
@@ -522,10 +214,8 @@ Content-Type: application/json
 
 - 前端默认应始终传 `role`，正常填充示例场景下只需要当前 Agent 角色对应的那一条模板。
 - 不传 `role` 时会返回当前仓库中所有可用的角色模板示例，这个行为更适合内部调试或模板管理场景，不建议前端默认使用。
-- 该接口适合给前端填充 `AGENTS.md` 示例内容，也可以作为定时唤醒提示词的参考模版来源。
-- 模板文件继续保留在 `prompts/templates/*`，当前没有删除。
 
-### 5.2 分页获取配置态 Agent 列表
+### 5.1 分页获取配置态 Agent 列表
 
 #### `GET /api/admin/managed-agents`
 
@@ -559,8 +249,8 @@ Content-Type: application/json
   "items": [
     {
       "id": "6df7f65f-7d43-4f0e-bdf0-38c7f37fe84e",
-      "name": "内容执行 Agent",
-      "slug": "content-executor-01",
+      "name": "AI小灰",
+      "slug": "ai-xiaohui",
       "role": "executor",
       "description": "内容执行 Agent",
       "host_platform": "openclaw",
@@ -573,18 +263,6 @@ Content-Type: application/json
       "needs_redeploy": false,
       "online_status": null,
       "data_source": "managed",
-      "readiness": {
-        "host_config": true,
-        "prompt_asset": false,
-        "schedules_count": 2,
-        "comm_bindings_count": 0,
-        "deploy_ready": false
-      },
-      "runtime_identity": {
-        "registered": false,
-        "runtime_agent_id": null,
-        "api_key_masked": null
-      },
       "created_at": "2026-04-03T12:00:00",
       "updated_at": "2026-04-03T12:00:00"
     }
@@ -595,7 +273,7 @@ Content-Type: application/json
 }
 ```
 
-### 5.3 创建配置态 Agent
+### 5.2 创建配置态 Agent
 
 #### `POST /api/admin/managed-agents`
 
@@ -620,18 +298,11 @@ Content-Type: application/json
 - 状态码：`201`
 - 返回体：`ManagedAgentDetail`
 
-补充说明：
-
-- 新建配置态 Agent 时，`config_version` 初始为 `1`
-- 返回体会包含 `readiness`；如果创建请求已提供 `host_agent_identifier` 或 `workdir_path`，则 `readiness.host_config = true`
-- 在首次部署成功前，反复修改配置不会持续递增版本号
-- 首次部署成功后，再次修改配置时，`config_version` 才会推进到新的待部署版本
-
 #### 错误码
 
 | 状态码 | 说明 |
 |---|---|
-| `400` | 例如 slug 冲突，错误信息示例：`slug 'content-executor-01' 已被使用` |
+| `400` | 例如 slug 冲突，错误信息示例：`slug 'ai-xiaohui' 已被使用` |
 | `403` | 管理员鉴权失败 |
 | `422` | 请求体字段缺失或格式不合法 |
 
@@ -639,19 +310,19 @@ Content-Type: application/json
 
 ```json
 {
-  "name": "内容执行 Agent",
-  "slug": "content-executor-01",
+  "name": "AI小灰",
+  "slug": "ai-xiaohui",
   "role": "executor",
   "description": "内容执行 Agent",
   "host_platform": "openclaw",
   "deployment_mode": "create_sub_agent",
   "host_access_mode": "local",
-  "host_agent_identifier": "content-executor-01",
-  "workdir_path": "~/.openclaw/workspace-content-executor-01"
+  "host_agent_identifier": "ai-xiaohui",
+  "workdir_path": "~/.openclaw/workspace-ai-xiaohui"
 }
 ```
 
-### 5.4 获取配置态 Agent 详情
+### 5.3 获取配置态 Agent 详情
 
 #### `GET /api/admin/managed-agents/{agent_id}`
 
@@ -668,10 +339,6 @@ Content-Type: application/json
 - 状态码：`200`
 - 返回体：`ManagedAgentDetail`
 
-补充说明：
-
-- 返回体会包含后端统一计算的 `readiness`，前端详情页不需要再额外请求子资源探测配置完整度。
-
 #### 错误码
 
 | 状态码 | 说明 |
@@ -679,7 +346,7 @@ Content-Type: application/json
 | `403` | 管理员鉴权失败 |
 | `404` | Agent 不存在 |
 
-### 5.5 更新配置态 Agent 基础信息
+### 5.4 更新配置态 Agent 基础信息
 
 #### `PUT /api/admin/managed-agents/{agent_id}`
 
@@ -715,41 +382,7 @@ Content-Type: application/json
 | `403` | 管理员鉴权失败 |
 | `422` | 请求体不合法 |
 
-### 5.6 重置运行态 API Key
-
-#### `POST /api/admin/managed-agents/{agent_id}/runtime-api-key/reset`
-
-作用：重置当前配置态 Agent 关联运行态 Agent 的长期身份凭证。该接口仅在重置成功当次返回完整新 `api_key`；详情接口只返回脱敏后的 `runtime_identity.api_key_masked`。
-
-#### Path 参数
-
-| 参数 | 类型 | 必填 | 说明 |
-|---|---|---|---|
-| `agent_id` | string | 是 | 配置态 Agent ID |
-
-#### 成功返回
-
-- 状态码：`200`
-- 返回体：
-
-```json
-{
-  "runtime_agent_id": "runtime-agent-id",
-  "api_key": "ak_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-  "api_key_masked": "ak_x***xx",
-  "message": "API Key 已重置，请立即复制，关闭后不可再次查看完整值"
-}
-```
-
-#### 错误码
-
-| 状态码 | 说明 |
-|---|---|
-| `403` | 管理员鉴权失败 |
-| `404` | 配置态 Agent 或关联运行态 Agent 不存在 |
-| `409` | 配置态 Agent 尚未完成运行态注册，无法重置 |
-
-### 5.7 删除配置态 Agent
+### 5.5 删除配置态 Agent
 
 #### `DELETE /api/admin/managed-agents/{agent_id}`
 
@@ -773,7 +406,7 @@ Content-Type: application/json
 | `403` | 管理员鉴权失败 |
 | `404` | Agent 不存在 |
 
-### 5.8 获取宿主平台配置
+### 5.6 获取宿主平台配置
 
 #### `GET /api/admin/managed-agents/{agent_id}/host-config`
 
@@ -798,7 +431,7 @@ Content-Type: application/json
 | `403` | 管理员鉴权失败 |
 | `404` | 宿主平台配置未配置 |
 
-### 5.9 更新宿主平台配置
+### 5.7 更新宿主平台配置
 
 #### `PUT /api/admin/managed-agents/{agent_id}/host-config`
 
@@ -818,7 +451,7 @@ Content-Type: application/json
 - 状态码：`200`
 - 返回体：`ManagedAgentHostConfigResponse`
 
-### 5.10 获取 Prompt 资产
+### 5.8 获取 Prompt 资产
 
 #### `GET /api/admin/managed-agents/{agent_id}/prompt-asset`
 
@@ -837,20 +470,20 @@ Content-Type: application/json
 | `403` | 管理员鉴权失败 |
 | `404` | Prompt 资产未配置 |
 
-### 5.11 更新 Prompt 资产
+### 5.9 更新 Prompt 资产
 
 #### `PUT /api/admin/managed-agents/{agent_id}/prompt-asset`
 
-作用：更新 OpenClaw 工作规则、人格设定、身份信息三段可选 Prompt 文件内容。
+作用：更新 `system / persona / identity` 三段 Prompt。
 
 #### 请求体
 
 | 字段 | 类型 | 必填 | 说明 |
 |---|---|---|---|
-| `system_prompt_content` | string/null | 否 | 工作规则内容，对应 OpenClaw `AGENTS.md` |
-| `persona_prompt_content` | string/null | 否 | 人格设定内容，对应 OpenClaw `SOUL.md` |
-| `identity_content` | string/null | 否 | 身份信息内容，对应 OpenClaw `IDENTITY.md` |
-| `host_render_strategy` | string/null | 否 | 渲染策略。OpenClaw 前端当前只暴露 `openclaw_workspace_files`；`host_default / openclaw_inline_schedule` 仅作为后端兼容枚举保留 |
+| `system_prompt_content` | string/null | 否 | 系统提示词 |
+| `persona_prompt_content` | string/null | 否 | 人格提示词 |
+| `identity_content` | string/null | 否 | 身份内容 |
+| `host_render_strategy` | string/null | 否 | 渲染策略：`host_default / openclaw_workspace_files / openclaw_inline_schedule` |
 | `notes` | string/null | 否 | 内部备注 |
 
 #### 成功返回
@@ -858,7 +491,7 @@ Content-Type: application/json
 - 状态码：`200`
 - 返回体：`ManagedAgentPromptAssetResponse`
 
-### 5.12 从模板重置 Prompt 资产
+### 5.10 从模板重置 Prompt 资产
 
 #### `POST /api/admin/managed-agents/{agent_id}/prompt-asset/reset-from-template`
 
@@ -876,7 +509,7 @@ Content-Type: application/json
 | `400` | Agent 不存在、角色模板不存在等 |
 | `403` | 管理员鉴权失败 |
 
-### 5.13 预览 Prompt 渲染结果
+### 5.11 预览 Prompt 渲染结果
 
 #### `POST /api/admin/managed-agents/{agent_id}/prompt-asset/render-preview`
 
@@ -896,21 +529,21 @@ Content-Type: application/json
   "artifacts": [
     {
       "name": "AGENTS.md",
-      "content": "这里是工作规则内容"
+      "content": "你是系统提示词"
     },
     {
       "name": "SOUL.md",
-      "content": "这里是人格设定内容"
+      "content": "你是人格提示词"
     },
     {
       "name": "IDENTITY.md",
-      "content": "这里是身份信息内容"
+      "content": "你是身份内容"
     }
   ]
 }
 ```
 
-### 5.14 获取定时任务列表
+### 5.12 获取定时任务列表
 
 #### `GET /api/admin/managed-agents/{agent_id}/schedules`
 
@@ -928,7 +561,7 @@ Content-Type: application/json
 | `403` | 管理员鉴权失败 |
 | `404` | Agent 不存在 |
 
-### 5.15 创建定时任务
+### 5.13 创建定时任务
 
 #### `POST /api/admin/managed-agents/{agent_id}/schedules`
 
@@ -957,7 +590,7 @@ Content-Type: application/json
 - 状态码：`201`
 - 返回体：`ManagedAgentScheduleResponse`
 
-### 5.16 更新定时任务
+### 5.14 更新定时任务
 
 #### `PUT /api/admin/managed-agents/{agent_id}/schedules/{schedule_id}`
 
@@ -974,13 +607,6 @@ Content-Type: application/json
 
 支持部分更新，但更新后的整条 schedule 仍必须保持完整可用。
 
-例如：
-
-- 可以只改 `name`
-- 可以只改 `model_override`
-- 不允许把 `schedule_message_content` 清空
-- 如果只改 `schedule_type`，则必须保证与当前或本次提交的 `schedule_expr` 仍然匹配
-
 #### 成功返回
 
 - 状态码：`200`
@@ -995,7 +621,7 @@ Content-Type: application/json
 | `404` | 定时任务不属于该 Agent |
 | `422` | 创建时缺少必填字段，或更新时显式传 `null` 给必填字段 |
 
-### 5.17 删除定时任务
+### 5.15 删除定时任务
 
 #### `DELETE /api/admin/managed-agents/{agent_id}/schedules/{schedule_id}`
 
@@ -1006,7 +632,7 @@ Content-Type: application/json
 - 状态码：`204`
 - 返回体：空
 
-### 5.18 获取宿主通讯渠道配置列表
+### 5.16 获取宿主通讯渠道配置列表
 
 #### `GET /api/admin/managed-agents/{agent_id}/comm-bindings`
 
@@ -1017,7 +643,7 @@ Content-Type: application/json
 - 状态码：`200`
 - 返回体：`ManagedAgentCommBindingResponse[]`
 
-### 5.19 创建宿主通讯渠道配置
+### 5.17 创建宿主通讯渠道配置
 
 #### `POST /api/admin/managed-agents/{agent_id}/comm-bindings`
 
@@ -1044,10 +670,10 @@ Content-Type: application/json
 
 | 状态码 | 说明 |
 |---|---|
-| `400` | `provider` 或 `binding_key` 为空等业务错误；当前脚本生成真实支持的 provider 仅为 `feishu` |
+| `400` | `provider` 或 `binding_key` 为空等业务错误 |
 | `403` | 管理员鉴权失败 |
 
-### 5.20 更新宿主通讯渠道配置
+### 5.18 更新宿主通讯渠道配置
 
 #### `PUT /api/admin/managed-agents/{agent_id}/comm-bindings/{binding_id}`
 
@@ -1077,7 +703,7 @@ Content-Type: application/json
 | `403` | 管理员鉴权失败 |
 | `404` | 宿主通讯渠道配置不属于该 Agent |
 
-### 5.21 删除宿主通讯渠道配置
+### 5.19 删除宿主通讯渠道配置
 
 #### `DELETE /api/admin/managed-agents/{agent_id}/comm-bindings/{binding_id}`
 
@@ -1095,7 +721,7 @@ Content-Type: application/json
 | `403` | 管理员鉴权失败 |
 | `404` | 宿主通讯渠道配置不存在或不属于该 Agent |
 
-### 5.22 创建 Bootstrap Token
+### 5.20 创建 Bootstrap Token
 
 #### `POST /api/admin/managed-agents/{agent_id}/bootstrap-tokens`
 
@@ -1126,11 +752,6 @@ Content-Type: application/json
 | `404` | 配置态 Agent 不存在 |
 | `422` | 请求体验证失败 |
 
-补充说明：
-
-- 该接口属于“手动新建”，每次调用都会创建一条新的 Bootstrap Token 记录。
-- 自动生成脚本 / 接入说明时使用的“同 scope 优先复用”规则，仅作用于 `bootstrap-script / onboarding-message` 两个接口。
-
 #### 请求示例
 
 ```json
@@ -1155,7 +776,7 @@ Content-Type: application/json
 }
 ```
 
-### 5.23 获取 Bootstrap Token 列表
+### 5.21 获取 Bootstrap Token 列表
 
 #### `GET /api/admin/managed-agents/{agent_id}/bootstrap-tokens`
 
@@ -1192,7 +813,7 @@ Content-Type: application/json
 ]
 ```
 
-### 5.24 撤销 Bootstrap Token
+### 5.22 撤销 Bootstrap Token
 
 #### `DELETE /api/admin/managed-agents/{agent_id}/bootstrap-tokens/{token_id}`
 
@@ -1210,11 +831,11 @@ Content-Type: application/json
 | `403` | 管理员鉴权失败 |
 | `404` | Token 不存在或不属于该 Agent |
 
-### 5.25 获取 Bootstrap 脚本预览
+### 5.23 获取 Bootstrap 脚本预览
 
 #### `GET /api/admin/managed-agents/{agent_id}/bootstrap-script`
 
-作用：为当前配置态 Agent 生成一份完整的 Bootstrap 脚本预览。接口会内部创建一个短期 `register_runtime` token，并直接嵌入脚本文本；脚本里用于下载 Skill Bundle 的 `download_script` token 会按同 scope 优先复用。
+作用：为当前配置态 Agent 生成一份完整的 Bootstrap 脚本预览。接口会内部创建一个短期 `register_runtime` token，并直接嵌入脚本文本。
 
 #### Query 参数
 
@@ -1224,7 +845,6 @@ Content-Type: application/json
 | `include_schedule` | bool | 否 | `true` | 是否包含定时任务片段 |
 | `include_comm_bindings` | bool | 否 | `true` | 是否包含宿主通讯渠道片段 |
 | `register_ttl_seconds` | int | 否 | `3600` | 内嵌 `register_runtime` token 的有效期 |
-| `bundle_ttl_seconds` | int | 否 | `86400` | 脚本内嵌的 Skill Bundle 下载 token 总有效期 |
 
 #### 成功返回
 
@@ -1248,19 +868,11 @@ Content-Type: application/json
 | `404` | 配置态 Agent 不存在 |
 | `422` | Query 参数格式错误 |
 
-补充说明：
-
-- `register_runtime` token 仍按每次“生成脚本预览”单独新建，默认 1 小时、一次性使用。
-- `download_script` token 会按 `selected_artifacts + include_schedule + include_comm_bindings` 组成的 scope 查找可复用记录。
-- 若存在同 scope 且剩余有效期大于 1 小时的 `download_script` token，系统会复用该记录，不新增列表项。
-- 若同 scope token 已临近过期（剩余时间小于等于 1 小时）或不存在，则创建新记录。
-- 由于服务端只存 `token_hash`，复用时会重新签发该记录对应的明文 token；因此再次生成后的脚本应以最新返回结果为准，旧脚本文本中的下载 token 会失效。
-
-### 5.26 获取接入说明和 curl 命令
+### 5.24 获取接入说明和 curl 命令
 
 #### `GET /api/admin/managed-agents/{agent_id}/onboarding-message`
 
-作用：生成一段可以直接发给用户或远端 Agent 的接入说明文本，同时内部获取一个 `download_script` token 并返回对应的 `curl` 命令。
+作用：生成一段可以直接发给用户或远端 Agent 的接入说明文本，同时内部创建一个 `download_script` token 并返回对应的 `curl` 命令。
 
 #### Query 参数
 
@@ -1281,7 +893,7 @@ Content-Type: application/json
 |---|---|---|
 | `message` | string | 接入说明文本，已包含 curl 命令 |
 | `curl_command` | string | 一键下载并执行脚本的命令 |
-| `download_token_id` | string | 当前使用的 `download_script` token ID；可能是复用记录，也可能是新建记录 |
+| `download_token_id` | string | 本次创建的 `download_script` token ID |
 | `download_token_expires_at` | datetime | 该 token 的过期时间 |
 
 #### 错误码
@@ -1293,132 +905,13 @@ Content-Type: application/json
 | `404` | 配置态 Agent 不存在 |
 | `422` | Query 参数格式错误 |
 
-补充说明：
+### 5.25 部署变更预检
 
-- `download_script` token 默认总有效期为 24 小时。
-- 该接口会按 scope 优先复用同一条健康的 `download_script` 记录；scope 规则与“获取 Bootstrap 脚本预览”一致。
-- 若存在同 scope 且剩余有效期大于 1 小时的 token，则返回同一条记录的 `download_token_id`，不会新增列表项。
-- 若同 scope token 已临近过期（剩余时间小于等于 1 小时）或不存在，则创建新记录。
-- 由于服务端只存 `token_hash`，复用时会重新签发该记录对应的明文 token；因此再次生成接入说明后，应以最新 `curl_command` 为准，旧命令中的下载 token 会失效。
+#### `POST /api/admin/managed-agents/{agent_id}/deploy-preview`
 
-### 5.27 获取 Feishu 通讯绑定 Schema
+作用：对比上次已确认的部署快照与本次选择，生成变更集（新增 / 更新 / 删除），同时校验所选资源的完整性。前端可用此接口在用户提交前展示变更清单。
 
-#### `GET /api/admin/managed-agents/meta/host-platforms/openclaw/comm-providers/feishu/schema`
-
-作用：返回 Feishu 通讯绑定的字段定义（能力发现），供前端动态渲染表单。
-
-#### 成功返回
-
-- 状态码：`200`
-- 返回体：
-
-| 字段 | 类型 | 说明 |
-|---|---|---|
-| `provider` | string | `feishu` |
-| `label` | string | 展示名 |
-| `description` | string | 功能说明 |
-| `supports_multiple_bindings` | bool | 是否支持同一 Agent 绑定多个账号 |
-| `fields` | array | 字段定义列表 |
-
-`fields[]` 字段说明：
-
-| 字段 | 类型 | 说明 |
-|---|---|---|
-| `key` | string | 字段标识 |
-| `label` | string | 展示标签 |
-| `type` | string | 控件类型：`text / password / switch` |
-| `required` | bool | 是否必填 |
-| `placeholder` | string/null | 占位提示 |
-| `description` | string/null | 帮助说明 |
-| `sensitive` | bool/null | 是否敏感字段 |
-| `default` | any/null | 默认值 |
-| `advanced` | bool/null | 是否建议放入高级区域 |
-
-#### 响应示例
-
-```json
-{
-  "provider": "feishu",
-  "label": "飞书（Feishu）",
-  "description": "为 Agent 配置飞书通讯渠道。绑定后即可在飞书中与该 Agent 对话，Agent 通过飞书机器人自动收发消息。支持绑定多个飞书账号，对应不同的飞书应用。",
-  "supports_multiple_bindings": true,
-  "fields": [
-    {
-      "key": "account_id",
-      "label": "OpenClaw 内部账号标识",
-      "type": "text",
-      "required": false,
-      "advanced": true,
-      "placeholder": "留空自动生成（推荐）",
-      "description": "OpenClaw 中用于标识这条飞书机器人账号配置的内部 key。对应的账号配置会在 OpenClaw 中保存该机器人的 app_id、app_secret 等信息。它不是飞书官方账号 ID，也不是在飞书侧看到的名称，而是 OpenClaw 内部用来区分、存储和引用这条飞书机器人配置的键。留空时系统会根据当前 Agent 的 OpenClaw Agent ID 自动生成。"
-    },
-    {
-      "key": "app_id",
-      "label": "飞书 App ID",
-      "type": "text",
-      "required": true,
-      "placeholder": "cli_xxxxxxxxxxxx",
-      "description": "飞书开放平台的应用凭证，可在「凭证与基础信息」页面获取。"
-    },
-    {
-      "key": "app_secret",
-      "label": "飞书 App Secret",
-      "type": "password",
-      "required": true,
-      "sensitive": true,
-      "placeholder": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-      "description": "飞书应用密钥，与 App ID 配对使用，可在「凭证与基础信息」页面获取。提交后加密存储。"
-    },
-    {
-      "key": "account_name",
-      "label": "账号备注名",
-      "type": "text",
-      "required": false,
-      "placeholder": "我的飞书助手",
-      "description": "给 OpenClaw 配置中这条飞书账号写的备注名。主要用于自己识别和管理，不是功能性参数；可能会在部分界面展示，但不保证处处显示，不填也不影响飞书绑定本身。"
-    },
-    {"key": "enabled", "label": "是否启用", "type": "switch", "required": false, "default": true}
-  ]
-}
-```
-
-### 5.28 预校验 Feishu 通讯绑定
-
-#### `POST /api/admin/managed-agents/meta/host-platforms/openclaw/comm-providers/feishu/validate`
-
-作用：在正式提交创建之前，预校验 Feishu 绑定参数。
-
-#### 请求体
-
-| 字段 | 类型 | 必填 | 说明 |
-|---|---|---|---|
-| `account_id` | string | 否 | OpenClaw 内部账号标识；可不传，留空时后端会按 `{host_agent_identifier}-feishu` 自动生成建议值并用于创建 |
-| `app_id` | string | 否 | 飞书 App ID |
-| `app_secret` | string | 否 | 飞书 App Secret |
-| `account_name` | string/null | 否 | 账号备注名 |
-| `enabled` | bool | 否 | 是否启用 |
-
-#### 成功返回
-
-- 状态码：`200`
-- 返回体：
-
-| 字段 | 类型 | 说明 |
-|---|---|---|
-| `valid` | bool | 是否通过校验 |
-| `errors` | string[] | 不通过时的错误列表 |
-
-#### 响应示例
-
-```json
-{"valid": false, "errors": ["app_id 不能为空", "app_secret 不能为空"]}
-```
-
-### 5.29 获取 Feishu 通讯绑定建议默认值
-
-#### `GET /api/admin/managed-agents/{agent_id}/comm-bindings-structured/feishu/suggest`
-
-作用：为“新建 Feishu 绑定”表单返回建议默认值，主要用于自动填充 `account_id`。该接口不会保留或锁定该值，正式创建时后端仍会再次做唯一性校验。
+> 设计文档：[13-选择式脚本生成与部署变更集设计.md](../../agent-config-center/13-选择式脚本生成与部署变更集设计.md)
 
 #### Path 参数
 
@@ -1426,181 +919,250 @@ Content-Type: application/json
 |---|---|---|---|
 | `agent_id` | string | 是 | 配置态 Agent ID |
 
-#### 成功返回
-
-- 状态码：`200`
-- 返回体：`FeishuCommSuggestResponse`
-
-| 字段 | 类型 | 说明 |
-|---|---|---|
-| `account_id` | string/null | 建议的 OpenClaw 内部账号标识；如果当前无法生成则为 `null` |
-| `host_agent_identifier` | string/null | 当前 Agent 的 OpenClaw Agent ID |
-| `message` | string/null | 无法生成时的提示信息 |
-
-#### 响应示例
-
-已配置 `host_agent_identifier`：
-
-```json
-{
-  "account_id": "xiaohui-feishu",
-  "host_agent_identifier": "xiaohui",
-  "message": null
-}
-```
-
-未配置 `host_agent_identifier`：
-
-```json
-{
-  "account_id": null,
-  "host_agent_identifier": null,
-  "message": "当前 Agent 尚未配置 OpenClaw Agent ID，无法自动生成飞书账号标识。请先完成平台配置。"
-}
-```
-
-#### 错误码
-
-| 状态码 | 说明 |
-|---|---|
-| `403` | 管理员鉴权失败 |
-| `404` | Agent 不存在 |
-
-### 5.30 列出 Feishu 结构化通讯绑定
-
-#### `GET /api/admin/managed-agents/{agent_id}/comm-bindings-structured/feishu`
-
-作用：列出该 Agent 下的 Feishu 通讯绑定，返回结构化 DTO 而非通用表字段。
-
-#### Path 参数
-
-| 参数 | 类型 | 必填 | 说明 |
-|---|---|---|---|
-| `agent_id` | string | 是 | 配置态 Agent ID |
-
-#### 成功返回
-
-- 状态码：`200`
-- 返回体：`FeishuCommBindingResponse[]`
-
-#### 错误码
-
-| 状态码 | 说明 |
-|---|---|
-| `403` | 管理员鉴权失败 |
-| `404` | Agent 不存在 |
-
-### 5.31 创建 Feishu 结构化通讯绑定
-
-#### `POST /api/admin/managed-agents/{agent_id}/comm-bindings-structured/feishu`
-
-作用：为 Agent 创建一条 Feishu 通讯绑定。前端只需提交 Feishu 语义字段，`provider` 由路由隐含，`binding_key` 由后端从 `account_id` 映射；如果未传 `account_id`，后端会基于当前 Agent 的 `host_agent_identifier` 自动生成。
-
 #### 请求体
 
 | 字段 | 类型 | 必填 | 说明 |
 |---|---|---|---|
-| `account_id` | string/null | 否 | OpenClaw 内部账号标识，映射到通用表 `binding_key`；留空时后端自动生成 |
-| `app_id` | string | 是 | 飞书 App ID |
-| `app_secret` | string | 是 | 飞书 App Secret（敏感） |
-| `account_name` | string/null | 否 | 账号备注名，映射到通用表 `display_name` |
-| `enabled` | bool | 否 | 默认 `true` |
+| `script_intent` | string | 是 | `bootstrap / sync` |
+| `prompt_artifact_keys` | string[] | 否 | 语义资产 key 列表，如 `["system_prompt", "persona_prompt"]` |
+| `schedule_ids` | string[] | 否 | 定时任务 ID 列表 |
+| `comm_binding_ids` | string[] | 否 | 通讯绑定 ID 列表 |
 
 #### 成功返回
 
-- 状态码：`201`
-- 返回体：`FeishuCommBindingResponse`
+- 状态码：`200`
 
-#### 错误码
+响应字段：
 
-| 状态码 | 说明 |
-|---|---|
-| `400` | `app_id` / `app_secret` 为空等校验错误；或未传 `account_id` 且当前 Agent 未配置 `host_agent_identifier` |
-| `403` | 管理员鉴权失败 |
-| `404` | Agent 不存在 |
-| `409` | 同 Agent 下已存在相同 `account_id` 的 Feishu 绑定 |
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `script_intent` | string | 请求的意图 |
+| `changeset.items` | array | 变更项列表 |
+| `changeset.validation_errors` | string[] | 校验错误列表（为空则校验通过） |
+| `changeset.is_valid` | bool | 是否通过校验 |
+| `has_removals` | bool | 是否包含待删除项 |
+
+`changeset.items[]` 字段说明：
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `resource_type` | string | `prompt / schedule / comm_binding` |
+| `change_type` | string | `add / update / remove` |
+| `resource_id` | string/null | 资源 ID（schedule / comm_binding） |
+| `resource_key` | string/null | 资源 key（prompt） |
+| `label` | string | 前端展示文本 |
+| `enabled` | bool/null | 资源是否启用 |
 
 #### 请求示例
 
 ```json
 {
-  "app_id": "cli_a9348a45ebb8dbef",
-  "app_secret": "<secret>",
-  "account_name": "内容助手飞书",
-  "enabled": true
+  "script_intent": "sync",
+  "prompt_artifact_keys": ["system_prompt"],
+  "schedule_ids": ["e5a6f0b2-..."],
+  "comm_binding_ids": []
 }
 ```
 
-补充说明：
+#### 响应示例
 
-- `account_id` 建议作为高级字段展示，普通用户通常不需要手填。
-- 如果前端想提前展示默认值，建议先调用 `GET .../comm-bindings-structured/feishu/suggest` 获取建议值。
-- 正式创建时后端仍会再次校验唯一性。
+```json
+{
+  "script_intent": "sync",
+  "changeset": {
+    "items": [
+      {
+        "resource_type": "prompt",
+        "change_type": "update",
+        "resource_id": null,
+        "resource_key": "system_prompt",
+        "label": "Prompt: system_prompt",
+        "enabled": null
+      },
+      {
+        "resource_type": "schedule",
+        "change_type": "update",
+        "resource_id": "e5a6f0b2-...",
+        "resource_key": null,
+        "label": "Schedule: 每日巡检",
+        "enabled": true
+      }
+    ],
+    "validation_errors": [],
+    "is_valid": true
+  },
+  "has_removals": false
+}
+```
 
-### 5.32 更新 Feishu 结构化通讯绑定
+#### 错误码
 
-#### `PUT /api/admin/managed-agents/{agent_id}/comm-bindings-structured/feishu/{binding_id}`
+| 状态码 | 说明 |
+|---|---|
+| `403` | 管理员鉴权失败 |
+| `404` | 配置态 Agent 不存在 |
 
-作用：部分更新 Feishu 通讯绑定。只传需要修改的字段；未传的字段保持原值。
+### 5.26 生成部署脚本
+
+#### `POST /api/admin/managed-agents/{agent_id}/deploy-script`
+
+作用：计算变更集、校验通过后写入 pending 快照并返回变更清单。后续 Shell 脚本执行结果通过 `/api/deploy/{id}/report` 回传。
 
 #### Path 参数
 
 | 参数 | 类型 | 必填 | 说明 |
 |---|---|---|---|
 | `agent_id` | string | 是 | 配置态 Agent ID |
-| `binding_id` | string | 是 | 绑定 ID |
 
 #### 请求体
 
 | 字段 | 类型 | 必填 | 说明 |
 |---|---|---|---|
-| `account_id` | string | 否 | 更新 OpenClaw 内部账号标识（高级字段） |
-| `app_id` | string | 否 | 更新飞书 App ID |
-| `app_secret` | string | 否 | 更新飞书 App Secret |
-| `account_name` | string/null | 否 | 更新账号备注名 |
-| `enabled` | bool | 否 | 更新启用状态 |
-
-说明：
-
-- `account_id` 支持通过此接口修改，但属于高级字段；如果修改，需要重新部署脚本才能在 OpenClaw 侧生效。
-- 只更新 `app_secret` 时，后端会自动保留原有 `app_id`，反之亦然。
+| `script_intent` | string | 是 | `bootstrap / sync` |
+| `prompt_artifact_keys` | string[] | 否 | 语义资产 key 列表 |
+| `schedule_ids` | string[] | 否 | 定时任务 ID 列表 |
+| `comm_binding_ids` | string[] | 否 | 通讯绑定 ID 列表 |
+| `register_ttl_seconds` | int | 否 | 注册 token 有效期（秒），默认 `3600`，最小 `60`，仅 bootstrap |
+| `download_ttl_seconds` | int | 否 | 下载 token 有效期（秒），默认 `86400`，最小 `60`，仅 bootstrap |
 
 #### 成功返回
 
 - 状态码：`200`
-- 返回体：`FeishuCommBindingResponse`
+
+响应字段：
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `snapshot_id` | string | 新创建的 pending 快照 ID |
+| `status` | string | 固定为 `pending` |
+| `config_version` | int | 对应的配置版本号 |
+| `changeset` | object | 变更集，结构同 deploy-preview |
+
+#### 请求示例
+
+```json
+{
+  "script_intent": "bootstrap",
+  "prompt_artifact_keys": ["system_prompt", "persona_prompt"],
+  "schedule_ids": ["e5a6f0b2-..."],
+  "comm_binding_ids": ["c8d3a1f4-..."],
+  "register_ttl_seconds": 3600,
+  "download_ttl_seconds": 86400
+}
+```
+
+#### 响应示例
+
+```json
+{
+  "snapshot_id": "a1b2c3d4-...",
+  "status": "pending",
+  "config_version": 3,
+  "changeset": {
+    "items": [
+      {
+        "resource_type": "prompt",
+        "change_type": "add",
+        "resource_key": "system_prompt",
+        "label": "Prompt: system_prompt"
+      }
+    ],
+    "validation_errors": [],
+    "is_valid": true
+  }
+}
+```
 
 #### 错误码
 
 | 状态码 | 说明 |
 |---|---|
-| `400` | 校验错误（如字段为空白字符串），或该绑定不是 Feishu 类型 |
 | `403` | 管理员鉴权失败 |
-| `404` | 绑定不存在或不属于该 Agent |
-| `409` | 修改后的 `account_id` 与同 Agent 下现有 Feishu 绑定冲突 |
+| `404` | 配置态 Agent 不存在 |
+| `422` | 变更集校验失败（返回 `errors` 数组），或 sync 意图未选择任何资源 |
 
-### 5.33 删除 Feishu 结构化通讯绑定
+### 5.27 查看部署历史
 
-#### `DELETE /api/admin/managed-agents/{agent_id}/comm-bindings-structured/feishu/{binding_id}`
+#### `GET /api/admin/managed-agents/{agent_id}/deployment-snapshots`
 
-作用：删除 Feishu 通讯绑定。
+作用：获取该 Agent 的全部部署快照记录，按创建时间倒序排列。
 
 #### Path 参数
 
 | 参数 | 类型 | 必填 | 说明 |
 |---|---|---|---|
 | `agent_id` | string | 是 | 配置态 Agent ID |
-| `binding_id` | string | 是 | 绑定 ID |
 
 #### 成功返回
 
-- 状态码：`204`
-- 返回体：空
+- 状态码：`200`
+
+响应字段（数组元素）：
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `id` | string | 快照 ID |
+| `managed_agent_id` | string | 所属配置态 Agent ID |
+| `script_intent` | string | `bootstrap / sync` |
+| `config_version` | int | 对应配置版本号 |
+| `snapshot_json` | string | 本次部署的资源 ID 清单（JSON 文本） |
+| `status` | string | `pending / confirmed / failed` |
+| `failure_detail_json` | string/null | 失败时的错误详情（JSON 文本） |
+| `created_at` | datetime | 创建时间 |
+| `confirmed_at` | datetime/null | 确认完成时间 |
 
 #### 错误码
 
 | 状态码 | 说明 |
 |---|---|
-| `400` | 该绑定不是 Feishu 类型 |
 | `403` | 管理员鉴权失败 |
-| `404` | 绑定不存在或不属于该 Agent |
+| `404` | 配置态 Agent 不存在 |
+
+### 5.28 忽略已删除资源的清理提醒
+
+#### `POST /api/admin/managed-agents/{agent_id}/deployment-snapshot/dismiss`
+
+作用：从最近一次 confirmed 快照中移除指定资源 ID，使后续 diff 不再产出该资源的删除变更项。适用于用户主动选择"不同步此删除"的场景。
+
+#### Path 参数
+
+| 参数 | 类型 | 必填 | 说明 |
+|---|---|---|---|
+| `agent_id` | string | 是 | 配置态 Agent ID |
+
+#### 请求体
+
+| 字段 | 类型 | 必填 | 说明 |
+|---|---|---|---|
+| `schedule_ids` | string[] | 否 | 要忽略的定时任务 ID 列表 |
+| `comm_binding_ids` | string[] | 否 | 要忽略的通讯绑定 ID 列表 |
+| `prompt_artifact_keys` | string[] | 否 | 要忽略的 Prompt key 列表 |
+
+#### 成功返回
+
+- 状态码：`200`
+
+响应字段：
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `message` | string | 操作结果。无已确认快照时返回"没有已确认的快照" |
+| `snapshot_id` | string | 被修改的快照 ID（仅在有快照时返回） |
+
+#### 请求示例
+
+```json
+{
+  "schedule_ids": ["e5a6f0b2-..."],
+  "comm_binding_ids": [],
+  "prompt_artifact_keys": []
+}
+```
+
+#### 错误码
+
+| 状态码 | 说明 |
+|---|---|
+| `403` | 管理员鉴权失败 |
+| `404` | 配置态 Agent 不存在 |
+

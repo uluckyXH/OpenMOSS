@@ -4,7 +4,7 @@
   <img src="docs/logo.png" alt="OpenMOSS Logo" width="200" />
 </p>
 
-**OpenMOSS，可让多 Agent 自主运行的 AI 公司操作系统**
+**OpenMOSS——一个多 Agent 协同、自组织自修复自进化的 AI 公司操作系统**
 
 <p align="center">
 🚀 <a href="#一为什么需要-openmoss">为什么选 OpenMOSS</a> · 
@@ -29,7 +29,7 @@
 
 > **给你的 AI 公司装上操作系统。**
 
-OpenMOSS 是一个可让多 Agent 自主运行的「AI 公司操作系统」，它凭借 OpenClaw、Claude Code 等 AI Agent 系统的模拟工作能力，实现了**自组织、自修复、自优化、自进化、自巡监、自激励、闭环质量控制、Skill 可插拔、循环任务**等堪比真人团队的工作能力，高度还原真人工作流。经过实测它在一定程度上具备替代「重复劳动办公环境」的可能性，使其可以获得无限进步的生产力。
+OpenMOSS 是一个多 Agent 协同、自组织自修复自进化的「AI 公司操作系统」，它凭借 OpenClaw、Claude Code 等 AI Agent 系统的模拟工作能力，实现了**自组织、自修复、自优化、自进化、自巡监、自激励、闭环质量控制、Skill 可插拔、循环任务**等堪比真人团队的工作能力，高度还原真人工作流。经过实测它在一定程度上具备替代「重复劳动办公环境」的可能性，使其可以获得无限进步的生产力。
 
 📖 [实际效果展示及详细使用说明（LINUX DO）](https://linux.do/t/topic/1709670) · 🌐 [English](README_EN.md)
 
@@ -229,45 +229,48 @@ OpenMOSS/
 |
 |-- app/                            # 后端应用（FastAPI）
 |   |-- main.py                     # 入口：路由注册、中间件、SPA 静态服务
-|   |-- config.py                   # 配置加载（config.yaml）
 |   |-- database.py                 # 数据库初始化（SQLAlchemy）
+|   |-- config/                     # 配置加载（config.yaml）
+|   |   |-- core.py                 # 核心配置类
+|   |   |-- admin.py                # 管理员配置
+|   |   |-- properties.py           # 属性定义
+|   |   +-- initialize.py           # 初始化逻辑
 |   |-- auth/                       # 认证模块
 |   |   +-- dependencies.py         # API Key / Admin Token 校验
 |   |-- middleware/                  # 中间件
 |   |   +-- request_logger.py       # 请求日志记录（驱动活动流）
-|   |-- models/                     # 数据模型
+|   |-- models/                     # 数据模型（按聚合根命名，不分包）
 |   |   |-- task.py                 # 任务
-|   |   |-- module.py               # 模块
 |   |   |-- sub_task.py             # 子任务
 |   |   |-- agent.py                # Agent
+|   |   |-- managed_agent.py        # 配置态 Agent（8 张表）
 |   |   |-- rule.py                 # 规则
 |   |   |-- review_record.py        # 审查记录
 |   |   |-- reward_log.py           # 积分变动记录
 |   |   |-- activity_log.py         # 活动日志
 |   |   |-- request_log.py          # 请求日志
 |   |   +-- patrol_record.py        # 巡查记录
-|   |-- routers/                    # API 路由
-|   |   |-- agents.py               # Agent 注册 / 查询 / 状态
-|   |   |-- tasks.py                # 任务 CRUD
-|   |   |-- sub_tasks.py            # 子任务生命周期
-|   |   |-- rules.py                # 规则查询
-|   |   |-- review_records.py       # 审查提交
-|   |   |-- scores.py               # 积分 / 排行榜
-|   |   |-- logs.py                 # 活动日志
-|   |   |-- feed.py                 # 活动流
-|   |   |-- admin.py                # 管理员登录
-|   |   |-- admin_agents.py         # 管理端 Agent 查询
-|   |   |-- admin_config.py         # 管理端配置查询 / 保存
-|   |   |-- admin_dashboard.py      # 管理端仪表盘统计
-|   |   |-- admin_logs.py           # 管理端日志查询
-|   |   |-- admin_reviews.py        # 管理端审查记录查询
-|   |   |-- admin_scores.py         # 管理端积分与排行
-|   |   |-- admin_tasks.py          # 管理端任务查询
+|   |-- routers/                    # API 路由（按功能域分包）
+|   |   |-- admin/                  # 管理端路由
+|   |   |   |-- managed_agents/     # 域1: 配置态 Agent 管理（9 个子路由文件）
+|   |   |   |-- agents/             # 域4: Agent 查询
+|   |   |   +-- ...                 # auth / config / dashboard / logs / prompts / reviews / scores / tasks
+|   |   |-- bootstrap_deploy/       # 域2: 引导部署（bootstrap + deploy）
+|   |   |-- task_core/              # 域3: 任务调度（tasks / sub_tasks / rules / scores / review_records）
+|   |   |-- agent_runtime/          # 域5: Agent 交互（agents / feed / logs / tools）
 |   |   |-- setup.py                # 初始化向导接口
-|   |   |-- tools.py                # CLI / 工具下载
 |   |   +-- webui.py                # WebUI 版本更新与静态资源接口
-|   |-- services/                   # 业务逻辑层
-|   +-- schemas/                    # Pydantic 序列化模型
+|   |-- services/                   # 业务逻辑层（按功能域分包）
+|   |   |-- managed_agent/          # 域1: Agent 配置 CRUD + 子资源管理
+|   |   |-- bootstrap/              # 域2: Token / 注册 / 脚本渲染 / Skill Bundle
+|   |   |-- task_core/              # 域3: 任务 / 子任务 / 审查 / 奖励 / 规则
+|   |   |-- admin_query/            # 域4: 管理端查询（仪表盘 / Agent / 任务 / 审查 / 积分）
+|   |   |-- prompt/                 # 域6: 提示词管理（模板 / Agent Prompt / 组合渲染）
+|   |   |-- host_renderers/         # 宿主平台渲染器
+|   |   +-- agent_service.py        # 域5: Agent 注册 / 心跳
+|   +-- schemas/                    # Pydantic 序列化模型（按功能域分包）
+|       |-- managed_agent/          # 域1: Agent 配置 Schema（7 个子文件）
+|       +-- admin/                  # 域4: 管理端查询 Schema（6 个子文件）
 |
 |-- static/                         # WebUI 静态前端文件（服务启动时由 webui_updater 自动从 GitHub Release 下载解压）
 |
@@ -292,7 +295,7 @@ OpenMOSS/
 |
 |-- rules/                          # 全局规则模板
 |-- docs/                           # 面向用户的图片、部署文档等
-|-- dev-docs/                       # 开发中的设计文档 / 方案草稿（默认不纳入正式发布说明）
+|-- CLAUDE.md                       # AI 开发助手规范（功能域、行数限制、架构约定）
 |-- config.example.yaml             # 配置文件模板
 |-- requirements.txt                # Python 依赖
 |-- Dockerfile                      # Docker 构建文件

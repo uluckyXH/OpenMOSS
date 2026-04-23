@@ -6,12 +6,12 @@ from sqlalchemy.orm import Session
 
 from app.auth.dependencies import verify_admin
 from app.database import get_db
-from app.schemas.admin_dashboard import (
+from app.schemas.admin.dashboard import (
     AdminDashboardHighlightsResponse,
     AdminDashboardOverviewResponse,
     AdminDashboardTrendsResponse,
 )
-from app.services import admin_dashboard_query_service
+from app.services.admin_query import dashboard as admin_dashboard_query_service
 
 
 router = APIRouter(prefix="/admin", tags=["Admin Dashboard"])

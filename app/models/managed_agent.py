@@ -135,6 +135,21 @@ class ManagedAgentBootstrapToken(Base):
     created_at = Column(DateTime, default=datetime.now, comment="创建时间")
 
 
+class ManagedAgentDeploymentSnapshot(Base):
+    """部署快照，记录每次脚本生成时选择了哪些资源。"""
+    __tablename__ = "managed_agent_deployment_snapshot"
+
+    id = Column(String(36), primary_key=True, default=_uuid)
+    managed_agent_id = Column(String(36), nullable=False, index=True, comment="关联 managed_agent.id")
+    script_intent = Column(String(20), nullable=False, comment="bootstrap / sync")
+    config_version = Column(Integer, nullable=False, comment="对应的配置版本号")
+    snapshot_json = Column(Text, nullable=False, comment="本次部署的资源 ID 清单（JSON 文本）")
+    status = Column(String(20), nullable=False, default="pending", comment="pending / confirmed / failed")
+    failure_detail_json = Column(Text, nullable=True, comment="失败时的错误详情（JSON 文本）")
+    created_at = Column(DateTime, default=datetime.now, comment="创建时间")
+    confirmed_at = Column(DateTime, nullable=True, comment="确认完成时间")
+
+
 class AgentRuntimePresence(Base):
     """运行态 Agent 在线状态与心跳"""
     __tablename__ = "agent_runtime_presence"
@@ -144,3 +159,4 @@ class AgentRuntimePresence(Base):
     last_heartbeat_at = Column(DateTime, nullable=True, comment="最近心跳时间")
     last_heartbeat_ip = Column(String(45), nullable=True, comment="最近心跳来源 IP")
     updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now, comment="更新时间")
+

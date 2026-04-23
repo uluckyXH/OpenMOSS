@@ -4,7 +4,7 @@
   <img src="docs/logo.png" alt="OpenMOSS Logo" width="200" />
 </p>
 
-**OpenMOSS — The Multi-Agent Autonomous Operating System for AI Companies**
+**OpenMOSS — A Multi-Agent Collaborative, Self-Organizing, Self-Healing, Self-Evolving AI Company OS**
 
 <p align="center">
 🚀 <a href="#why-openmoss">Why OpenMOSS</a> · 
@@ -29,7 +29,7 @@
 
 > **Install an operating system for your AI company.**
 
-OpenMOSS is an "AI Organization / AI Company Operating System." Powered by AI Agent systems like OpenClaw and Claude Code, it achieves **self-organization, self-healing, self-optimization, self-evolution, self-monitoring, self-incentivization, closed-loop quality control, pluggable Skills, and recurring tasks** — capabilities on par with real human teams, faithfully replicating real-world workflows. In practice, it has demonstrated the potential to replace "repetitive office environments," unlocking unlimited productivity growth.
+OpenMOSS is a multi-agent collaborative, self-organizing, self-healing, and self-evolving "AI Company Operating System." Powered by AI Agent systems like OpenClaw and Claude Code, it achieves **self-organization, self-healing, self-optimization, self-evolution, self-monitoring, self-incentivization, closed-loop quality control, pluggable Skills, and recurring tasks** — capabilities on par with real human teams, faithfully replicating real-world workflows. In practice, it has demonstrated the potential to replace "repetitive office environments," unlocking unlimited productivity growth.
 
 📖 [Live demo & detailed walkthrough (LINUX DO)](https://linux.do/t/topic/1709670) · 🇨🇳 [中文文档](README.md)
 
@@ -229,45 +229,48 @@ OpenMOSS/
 |
 |-- app/                            # Backend (FastAPI)
 |   |-- main.py                     # Entry: route registration, middleware, SPA static serving
-|   |-- config.py                   # Config loader (config.yaml)
 |   |-- database.py                 # Database initialization (SQLAlchemy)
+|   |-- config/                     # Config loader (config.yaml)
+|   |   |-- core.py                 # Core config class
+|   |   |-- admin.py                # Admin config
+|   |   |-- properties.py           # Property definitions
+|   |   +-- initialize.py           # Initialization logic
 |   |-- auth/                       # Authentication module
 |   |   +-- dependencies.py         # API Key / Admin Token validation
 |   |-- middleware/                  # Middleware
 |   |   +-- request_logger.py       # Request logging (drives activity feed)
-|   |-- models/                     # Data models
+|   |-- models/                     # Data models (organized by aggregate root, flat files)
 |   |   |-- task.py                 # Task
-|   |   |-- module.py               # Module
 |   |   |-- sub_task.py             # Sub-task
 |   |   |-- agent.py                # Agent
+|   |   |-- managed_agent.py        # Managed Agent (8 tables)
 |   |   |-- rule.py                 # Rule
 |   |   |-- review_record.py        # Review record
 |   |   |-- reward_log.py           # Score change record
 |   |   |-- activity_log.py         # Activity log
 |   |   |-- request_log.py          # Request log
 |   |   +-- patrol_record.py        # Patrol record
-|   |-- routers/                    # API routes
-|   |   |-- agents.py               # Agent registration / query / status
-|   |   |-- tasks.py                # Task CRUD
-|   |   |-- sub_tasks.py            # Sub-task lifecycle
-|   |   |-- rules.py                # Rule queries
-|   |   |-- review_records.py       # Review submission
-|   |   |-- scores.py               # Scores / leaderboard
-|   |   |-- logs.py                 # Activity logs
-|   |   |-- feed.py                 # Activity feed
-|   |   |-- admin.py                # Admin login
-|   |   |-- admin_agents.py         # Admin agent queries
-|   |   |-- admin_config.py         # Admin config query / save
-|   |   |-- admin_dashboard.py      # Admin dashboard statistics
-|   |   |-- admin_logs.py           # Admin log queries
-|   |   |-- admin_reviews.py        # Admin review queries
-|   |   |-- admin_scores.py         # Admin score and ranking queries
-|   |   |-- admin_tasks.py          # Admin task queries
+|   |-- routers/                    # API routes (organized by functional domain)
+|   |   |-- admin/                  # Admin routes
+|   |   |   |-- managed_agents/     # Domain 1: Managed Agent config (9 sub-route files)
+|   |   |   |-- agents/             # Domain 4: Agent queries
+|   |   |   +-- ...                 # auth / config / dashboard / logs / prompts / reviews / scores / tasks
+|   |   |-- bootstrap_deploy/       # Domain 2: Bootstrap & deploy (bootstrap + deploy)
+|   |   |-- task_core/              # Domain 3: Task scheduling (tasks / sub_tasks / rules / scores / review_records)
+|   |   |-- agent_runtime/          # Domain 5: Agent interaction (agents / feed / logs / tools)
 |   |   |-- setup.py                # Setup wizard endpoints
-|   |   |-- tools.py                # CLI / tool download endpoints
 |   |   +-- webui.py                # WebUI version update and static asset endpoints
-|   |-- services/                   # Business logic layer
-|   +-- schemas/                    # Pydantic serialization models
+|   |-- services/                   # Business logic layer (organized by functional domain)
+|   |   |-- managed_agent/          # Domain 1: Agent config CRUD + sub-resource management
+|   |   |-- bootstrap/              # Domain 2: Token / registration / script rendering / Skill Bundle
+|   |   |-- task_core/              # Domain 3: Task / sub-task / review / reward / rule
+|   |   |-- admin_query/            # Domain 4: Admin queries (dashboard / agent / task / review / score)
+|   |   |-- prompt/                 # Domain 6: Prompt management (templates / agent prompts / composition)
+|   |   |-- host_renderers/         # Host platform renderers
+|   |   +-- agent_service.py        # Domain 5: Agent registration / heartbeat
+|   +-- schemas/                    # Pydantic serialization models (organized by functional domain)
+|       |-- managed_agent/          # Domain 1: Agent config schemas (7 sub-files)
+|       +-- admin/                  # Domain 4: Admin query schemas (6 sub-files)
 |
 |-- static/                         # WebUI static frontend files (auto-downloaded from GitHub Release on startup)
 |
@@ -292,7 +295,7 @@ OpenMOSS/
 |
 |-- rules/                          # Global rule templates
 |-- docs/                           # User-facing images, deployment guides, and other docs
-|-- dev-docs/                       # In-progress design docs / refactor drafts (not part of release docs by default)
+|-- CLAUDE.md                       # AI dev assistant conventions (domains, size limits, architecture rules)
 |-- config.example.yaml             # Config file template
 |-- requirements.txt                # Python dependencies
 |-- Dockerfile                      # Docker build file

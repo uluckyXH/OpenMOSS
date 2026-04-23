@@ -6,7 +6,6 @@ tests/
 skills/dist/
 docs/WordPress_API.md
 dev-docs/
-CLAUDE.md
 .DS_Store
 
 # Byte-compiled / optimized / DLL files

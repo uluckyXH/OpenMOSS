@@ -8,8 +8,8 @@ from sqlalchemy.orm import Session
 
 from app.auth.dependencies import verify_admin
 from app.database import get_db
-from app.schemas.admin_log import AdminActivityLogPageResponse
-from app.services import admin_log_query_service
+from app.schemas.admin.log import AdminActivityLogPageResponse
+from app.services.admin_query import log as admin_log_query_service
 
 
 router = APIRouter(prefix="/admin", tags=["Admin Log"])

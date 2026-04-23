@@ -8,14 +8,14 @@ from sqlalchemy.orm import Session
 
 from app.auth.dependencies import verify_admin
 from app.database import get_db
-from app.schemas.admin_score import (
+from app.schemas.admin.score import (
     AdminScoreAdjustRequest,
     AdminScoreAdjustResponse,
     AdminScoreLeaderboardPageResponse,
     AdminScoreLogPageResponse,
     AdminScoreSummaryResponse,
 )
-from app.services import admin_score_query_service, admin_score_service
+from app.services.admin_query import score as admin_score_service
 
 
 router = APIRouter(prefix="/admin", tags=["Admin Score"])
@@ -27,7 +27,7 @@ async def get_admin_score_summary(
     db: Session = Depends(get_db),
 ):
     """查看管理端积分排行榜顶部概览统计"""
-    return admin_score_query_service.get_score_summary(db)
+    return admin_score_service.get_score_summary(db)
 
 
 @router.get(
@@ -49,7 +49,7 @@ async def list_admin_score_leaderboard(
     db: Session = Depends(get_db),
 ):
     """分页查看管理端积分排行榜"""
-    return admin_score_query_service.list_score_leaderboard(
+    return admin_score_service.list_score_leaderboard(
         db,
         page=page,
         page_size=page_size,
@@ -80,7 +80,7 @@ async def list_admin_score_logs(
     db: Session = Depends(get_db),
 ):
     """分页查看管理端全局积分流水"""
-    return admin_score_query_service.list_score_logs(
+    return admin_score_service.list_score_logs(
         db,
         page=page,
         page_size=page_size,

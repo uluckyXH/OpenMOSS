@@ -1,27 +1,20 @@
 # Bootstrap 接口
 
-> 最后同步：2026-04-20
-> 接口前缀：`/api/bootstrap`
-> 对应代码：`app/routers/bootstrap.py`
+> 最后同步：2026-04-22
+> 接口前缀：`/api/bootstrap` + `/api/deploy`
+> 对应代码：`app/routers/bootstrap.py` + `app/routers/deploy.py`
 
 ## 1. 模块概览
 
 当前已实现：
 
 - 脚本下载
-- Skill Bundle 下载
 - 运行态注册闭环
+- 部署结果回传
 
 当前未实现：
 
 - `task-cli.py` 下载
-
-补充口径：
-
-- `download_script` token 默认有效期为 24 小时，可在 TTL 内多次使用。
-- `register_runtime` token 默认有效期为 1 小时，且注册成功后立即失效。
-- 管理端反复生成“接入说明 / 脚本预览”时，会优先复用同 scope 且剩余有效期大于 1 小时的 `download_script` token 记录。
-- 由于服务端只存 `token_hash`，当管理端复用该记录时，会重新签发最新明文 token；因此应始终以最新生成的 `curl` 命令或脚本文本为准。
 
 ## 2. 请求头
 
@@ -45,7 +38,7 @@ Content-Type: application/json
 
 #### `GET /api/bootstrap/agents/{managed_agent_id}/script`
 
-作用：使用 `download_script` 类型的 Bootstrap Token 下载渲染后的完整部署脚本。服务端会在返回脚本前，临时创建一个新的短期 `register_runtime` token 并嵌入脚本。
+作用：使用 `download_script` 类型的 Bootstrap Token 下载渲染后的完整部署脚本。服务端会在返回脚本前，临时创建一个短期 `register_runtime` token 并嵌入脚本。
 
 #### Path 参数
 
@@ -125,21 +118,11 @@ Content-Type: application/json
 }
 ```
 
-### 4.3 下载当前 Agent 专属 Skill Bundle
+### 4.3 部署结果回传
 
-#### `GET /api/bootstrap/agents/{managed_agent_id}/skill-bundle`
+#### `POST /api/deploy/{managed_agent_id}/report`
 
-作用：使用 `download_script` 类型的 Bootstrap Token 下载当前配置态 Agent 对应的专属 Skill Bundle。返回 zip 压缩包，包含：
-
-- `SKILL.md`
-- `scripts/task-cli.py`
-- `scripts/task_cli/...`
-- `references/...`
-
-当前约束：
-
-- 该配置态 Agent 必须已经完成运行态注册
-- 返回的 `scripts/task-cli.py` 已注入当前运行态 Agent 的默认 `api_key`
+作用：脚本执行完毕后回传执行结果。使用 `register_runtime` 类型 token 认证。成功时追平 `deployed_config_version`，失败时记录错误详情。
 
 #### Path 参数
 
@@ -151,23 +134,56 @@ Content-Type: application/json
 
 | Header | 必填 | 说明 |
 |---|---|---|
-| `X-Bootstrap-Token` | 是 | `download_script` 类型 token |
+| `X-Bootstrap-Token` | 是 | `register_runtime` 类型 token |
+
+#### 请求体
+
+| 字段 | 类型 | 必填 | 说明 |
+|---|---|---|---|
+| `snapshot_id` | string | 是 | 部署快照 ID |
+| `status` | string | 是 | `confirmed / failed` |
+| `exit_code` | int/null | 否 | 失败时的退出码 |
+| `last_stage` | string/null | 否 | 失败时执行到的最后阶段 |
+| `message` | string/null | 否 | 附加说明 |
 
 #### 成功返回
 
 - 状态码：`200`
-- 返回体：zip 二进制流
-- `Content-Type`：`application/zip`
-- `Content-Disposition`：附件下载，文件名如 `task-executor-skill.zip`
+
+响应字段：
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `snapshot_id` | string | 快照 ID |
+| `status` | string | 更新后的状态 |
+
+#### 请求示例
+
+```json
+{
+  "snapshot_id": "a1b2c3d4-...",
+  "status": "confirmed"
+}
+```
+
+#### 失败回传示例
+
+```json
+{
+  "snapshot_id": "a1b2c3d4-...",
+  "status": "failed",
+  "exit_code": 1,
+  "last_stage": "schedule_sync"
+}
+```
 
 #### 错误码
 
 | 状态码 | 说明 |
 |---|---|
-| `403` | `X-Bootstrap-Token` 无效、已过期，或 purpose 不为 `download_script` |
-| `404` | 配置态 Agent 不存在 |
-| `409` | 当前配置态 Agent 尚未完成运行态注册，无法生成 Skill Bundle |
-| `422` | 缺少 `X-Bootstrap-Token` |
+| `400` | 快照状态不为 pending，无法更新 |
+| `403` | `X-Bootstrap-Token` 无效或已过期 |
+| `404` | 快照不存在或不属于该 Agent |
 
 ## 5. 当前未实现接口
 

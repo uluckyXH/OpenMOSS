@@ -1,8 +1,8 @@
 # 智能体配置中心接口文档
 
-> 最后同步：2026-04-10
+> 最后同步：2026-04-22
 > 适用范围：智能体配置中心重构当前已落地后端接口
-> 当前代码状态：已实现配置态 Agent 管理主链、宿主平台 Meta 与 OpenClaw `ui_hints`、列表/详情 readiness 内嵌、Agent 心跳接口、Bootstrap Token 管理、脚本预览、接入说明、Bootstrap 注册/脚本下载闭环，以及 `skill-bundle` 下载接口；运行态 Agent 也已支持下载自己的 `skill-bundle`；`task-cli.py` 单文件下载尚未落地
+> 当前代码状态：已实现配置态 Agent 管理主链、Agent 心跳接口、Bootstrap Token 管理、脚本预览、接入说明、Bootstrap 注册/脚本下载闭环和部署变更集；`task-cli.py` 下载尚未落地
 
 ## 1. 文档说明
 
@@ -27,7 +27,6 @@
 - `POST /api/admin/managed-agents`
 - `GET /api/admin/managed-agents/{agent_id}`
 - `PUT /api/admin/managed-agents/{agent_id}`
-- `POST /api/admin/managed-agents/{agent_id}/runtime-api-key/reset`
 - `DELETE /api/admin/managed-agents/{agent_id}`
 - `GET /api/admin/managed-agents/{agent_id}/host-config`
 - `PUT /api/admin/managed-agents/{agent_id}/host-config`
@@ -48,6 +47,10 @@
 - `DELETE /api/admin/managed-agents/{agent_id}/bootstrap-tokens/{token_id}`
 - `GET /api/admin/managed-agents/{agent_id}/bootstrap-script`
 - `GET /api/admin/managed-agents/{agent_id}/onboarding-message`
+- `POST /api/admin/managed-agents/{agent_id}/deploy-preview`
+- `POST /api/admin/managed-agents/{agent_id}/deploy-script`
+- `GET /api/admin/managed-agents/{agent_id}/deployment-snapshots`
+- `POST /api/admin/managed-agents/{agent_id}/deployment-snapshot/dismiss`
 
 ### 2.2 Agent 侧运行态接口
 
@@ -61,7 +64,6 @@
 - `PUT /api/agents/{agent_id}/status`
 - `POST /api/agents/me/heartbeat`
 - `GET /api/agents/me/skill`
-- `GET /api/agents/me/skill-bundle`
 
 ### 2.3 Bootstrap 接口
 
@@ -70,8 +72,15 @@
 已实现接口：
 
 - `GET /api/bootstrap/agents/{managed_agent_id}/script`
-- `GET /api/bootstrap/agents/{managed_agent_id}/skill-bundle`
 - `POST /api/bootstrap/agents/{managed_agent_id}/register`
+
+### 2.4 部署回传接口
+
+接口前缀：`/api/deploy`
+
+已实现接口：
+
+- `POST /api/deploy/{managed_agent_id}/report`
 
 ## 3. 当前未实现但设计中已预留的接口
 

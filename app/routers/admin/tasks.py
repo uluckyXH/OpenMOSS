@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 
 from app.auth.dependencies import verify_admin
 from app.database import get_db
-from app.schemas.admin_task import (
+from app.schemas.admin.task import (
     AdminModuleDetail,
     AdminModulePageResponse,
     AdminSubTaskDetail,
@@ -16,7 +16,7 @@ from app.schemas.admin_task import (
     AdminTaskDetail,
     AdminTaskPageResponse,
 )
-from app.services import admin_task_query_service
+from app.services.admin_query import task as admin_task_query_service
 
 
 router = APIRouter(prefix="/admin", tags=["Admin Task"])

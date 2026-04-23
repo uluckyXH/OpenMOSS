@@ -8,8 +8,8 @@ from sqlalchemy.orm import Session
 
 from app.auth.dependencies import verify_admin
 from app.database import get_db
-from app.schemas.admin_review import AdminReviewDetail, AdminReviewPageResponse
-from app.services import admin_review_query_service
+from app.schemas.admin.review import AdminReviewDetail, AdminReviewPageResponse
+from app.services.admin_query import review as admin_review_query_service
 
 
 router = APIRouter(prefix="/admin", tags=["Admin Review"])

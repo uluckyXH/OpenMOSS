@@ -30,18 +30,16 @@ from app.routers.admin import (
     managed_agents_router as admin_managed_agents,
 )
 from app.routers import (
-    agents,
-    bootstrap,
-    feed,
-    review_records,
-    rules,
-    scores,
+    bootstrap_deploy,
     setup,
-    sub_tasks,
-    tasks,
-    tools,
+    task_core,
     webui,
-    logs,
+)
+from app.routers.agent_runtime import (
+    agents_router as agent_runtime_agents,
+    feed_router as agent_runtime_feed,
+    tools_router as agent_runtime_tools,
+    logs_router as agent_runtime_logs,
 )
 from app.middleware.request_logger import RequestLoggerMiddleware
 
@@ -98,7 +96,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     title=f"{config.project_name} 任务调度中间件",
-    description="基于 OpenClaw 的自组织自协作自进化多 Agent 作业平台",
+    description="一个多 Agent 协同、自组织自修复自进化的 AI 公司操作系统",
     version="1.0.0",
     lifespan=lifespan,
 )
@@ -164,16 +162,12 @@ async def get_notification_config(agent=Depends(get_current_agent)):
 # 注册路由（统一 /api 前缀）
 API_PREFIX = "/api"
 # --- Agent 侧 API ---
-app.include_router(agents.router, prefix=API_PREFIX)
-app.include_router(bootstrap.router, prefix=API_PREFIX)
-app.include_router(tasks.router, prefix=API_PREFIX)
-app.include_router(sub_tasks.router, prefix=API_PREFIX)
-app.include_router(rules.router, prefix=API_PREFIX)
-app.include_router(review_records.router, prefix=API_PREFIX)
-app.include_router(scores.router, prefix=API_PREFIX)
-app.include_router(logs.router, prefix=API_PREFIX)
-app.include_router(feed.router, prefix=API_PREFIX)
-app.include_router(tools.router, prefix=API_PREFIX)
+app.include_router(agent_runtime_agents, prefix=API_PREFIX)
+app.include_router(bootstrap_deploy.router, prefix=API_PREFIX)
+app.include_router(task_core.router, prefix=API_PREFIX)
+app.include_router(agent_runtime_logs, prefix=API_PREFIX)
+app.include_router(agent_runtime_feed, prefix=API_PREFIX)
+app.include_router(agent_runtime_tools, prefix=API_PREFIX)
 app.include_router(setup.router, prefix=API_PREFIX)
 
 # --- 管理端 API ---

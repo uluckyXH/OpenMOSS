@@ -6,7 +6,7 @@ from pydantic import BaseModel, Field
 from typing import Optional
 
 from app.auth.dependencies import verify_admin
-from app.services import prompt_service
+from app.services import prompt as prompt_service
 
 router = APIRouter(prefix="/admin/prompts", tags=["Admin Prompts"])
 
