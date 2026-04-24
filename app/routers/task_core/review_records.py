@@ -85,13 +85,20 @@ async def list_reviews(
     - page_size=0（默认）: 返回全部
     - page_size>0: 分页返回
     """
-    from app.services.pagination import paginate
-    from app.models.review_record import ReviewRecord
-    query = db.query(ReviewRecord)
-    if sub_task_id:
-        query = query.filter(ReviewRecord.sub_task_id == sub_task_id)
-    query = query.order_by(ReviewRecord.created_at.desc())
-    return paginate(query, page=page, page_size=page_size)
+    rows = review_service.list_reviews(db, sub_task_id=sub_task_id)
+    if page_size > 0:
+        total = len(rows)
+        page = max(1, page)
+        page_size = min(page_size, 100)
+        total_pages = max(1, (total + page_size - 1) // page_size)
+        start = (page - 1) * page_size
+        items = rows[start:start + page_size]
+        return {
+            "items": items, "total": total, "page": page,
+            "page_size": page_size, "total_pages": total_pages,
+            "has_more": page < total_pages,
+        }
+    return {"items": rows, "total": len(rows), "page": 1, "page_size": 0, "total_pages": 1, "has_more": False}
 
 
 @router.get("/{review_id}", response_model=ReviewResponse, summary="查看审查详情")

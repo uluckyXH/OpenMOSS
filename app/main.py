@@ -65,6 +65,22 @@ def _cleanup_old_request_logs():
         db.close()
 
 
+def _expire_stale_deployment_snapshots():
+    """启动时标记超时的 pending 部署快照。"""
+    from app.database import SessionLocal
+    from app.services.managed_agent import expire_stale_pending_snapshots
+
+    db = SessionLocal()
+    try:
+        expired = expire_stale_pending_snapshots(db)
+        if expired > 0:
+            logger.info("已标记 %s 条超时部署快照", expired)
+    except Exception:
+        logger.exception("部署快照超时标记失败")
+    finally:
+        db.close()
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """应用生命周期：启动时初始化数据库"""
@@ -81,6 +97,7 @@ async def lifespan(app: FastAPI):
 
     # 清理过期请求日志
     _cleanup_old_request_logs()
+    _expire_stale_deployment_snapshots()
 
     # 确保 WebUI 前端存在（首次部署 / Docker 启动时自动从 GitHub Release 拉取）
     from app.services.webui_updater import webui_updater

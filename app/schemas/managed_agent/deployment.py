@@ -19,6 +19,12 @@ class DeployScriptRequest(BaseModel):
     comm_binding_ids: List[str] = Field(default_factory=list, description="通讯绑定 ID 列表")
     register_ttl_seconds: int = Field(default=3600, ge=60, description="注册 token 有效期（秒），仅 bootstrap")
     download_ttl_seconds: int = Field(default=86400, ge=60, description="下载 token 有效期（秒），仅 bootstrap")
+    snapshot_timeout_seconds: int = Field(
+        default=1800,
+        ge=60,
+        le=86400,
+        description="部署快照超时时间（秒），默认 30 分钟",
+    )
 
 
 class DeployPreviewRequest(BaseModel):
@@ -75,7 +81,7 @@ class DeploySnapshotDismissRequest(BaseModel):
     prompt_artifact_keys: List[str] = Field(default_factory=list)
 
 
-DeploymentSnapshotStatus = Literal["pending", "confirmed", "failed"]
+DeploymentSnapshotStatus = Literal["pending", "confirmed", "failed", "timeout"]
 
 
 class DeploymentSnapshotListItem(BaseModel):
@@ -88,7 +94,9 @@ class DeploymentSnapshotListItem(BaseModel):
     script_intent: DeployScriptIntent
     config_version: int
     snapshot_json: str
-    status: str
+    status: DeploymentSnapshotStatus
     failure_detail_json: Optional[str] = None
     created_at: datetime
+    expires_at: Optional[datetime] = None
     confirmed_at: Optional[datetime] = None
+    is_likely_timeout: bool = False

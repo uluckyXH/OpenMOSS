@@ -7,7 +7,7 @@ from typing import Optional
 
 from app.config import config
 from app.database import SessionLocal
-from app.models.agent import Agent
+from app.services import agent_runtime as agent_service
 
 router = APIRouter(prefix="/setup", tags=["Setup"])
 
@@ -37,8 +37,7 @@ def _has_existing_data() -> bool:
     """检查数据库中是否已有 Agent 记录"""
     db = SessionLocal()
     try:
-        count = db.query(Agent).count()
-        return count > 0
+        return agent_service.has_any_agent(db)
     finally:
         db.close()
 

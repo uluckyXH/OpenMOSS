@@ -12,7 +12,7 @@ from app.database import get_db
 from app.exceptions import BusinessError
 from app.schemas.managed_agent import DeployReportRequest
 from app.services.bootstrap import validate_bootstrap_token
-from app.services.managed_agent.deployment import (
+from app.services.managed_agent import (
     confirm_deployment_snapshot,
     fail_deployment_snapshot,
 )

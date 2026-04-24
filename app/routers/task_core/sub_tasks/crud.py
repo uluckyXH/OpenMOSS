@@ -11,6 +11,7 @@ from app.database import get_db
 from app.auth.dependencies import get_current_agent, require_role
 from app.exceptions import BusinessError
 from app.services.task_core import sub_task as sub_task_service
+from app.services.pagination import paginate
 from app.models.agent import Agent
 
 
@@ -106,17 +107,21 @@ async def list_sub_tasks(
     - page_size=0（默认）: 返回全部
     - page_size>0: 分页返回
     """
-    from app.services.pagination import paginate
-    from app.models.sub_task import SubTask
-    query = db.query(SubTask)
-    if task_id:
-        query = query.filter(SubTask.task_id == task_id)
-    if module_id:
-        query = query.filter(SubTask.module_id == module_id)
-    if status:
-        query = query.filter(SubTask.status == status)
-    query = query.order_by(SubTask.created_at.desc())
-    return paginate(query, page=page, page_size=page_size)
+    rows = sub_task_service.list_sub_tasks(db, task_id=task_id, module_id=module_id, status=status)
+    # 兼容已有分页接口：当 page_size > 0 时在内存做分页
+    if page_size > 0:
+        total = len(rows)
+        page = max(1, page)
+        page_size = min(page_size, 100)
+        total_pages = max(1, (total + page_size - 1) // page_size)
+        start = (page - 1) * page_size
+        items = rows[start:start + page_size]
+        return {
+            "items": items, "total": total, "page": page,
+            "page_size": page_size, "total_pages": total_pages,
+            "has_more": page < total_pages,
+        }
+    return {"items": rows, "total": len(rows), "page": 1, "page_size": 0, "total_pages": 1, "has_more": False}
 
 
 @router.get("/mine", summary="查看我的子任务")
@@ -132,13 +137,20 @@ async def get_my_sub_tasks(
     - page_size=0（默认）: 返回全部
     - page_size>0: 分页返回
     """
-    from app.services.pagination import paginate
-    from app.models.sub_task import SubTask
-    query = db.query(SubTask).filter(SubTask.assigned_agent == agent.id)
-    if status:
-        query = query.filter(SubTask.status == status)
-    query = query.order_by(SubTask.created_at.desc())
-    return paginate(query, page=page, page_size=page_size)
+    rows = sub_task_service.list_sub_tasks(db, assigned_agent=agent.id, status=status)
+    if page_size > 0:
+        total = len(rows)
+        page = max(1, page)
+        page_size = min(page_size, 100)
+        total_pages = max(1, (total + page_size - 1) // page_size)
+        start = (page - 1) * page_size
+        items = rows[start:start + page_size]
+        return {
+            "items": items, "total": total, "page": page,
+            "page_size": page_size, "total_pages": total_pages,
+            "has_more": page < total_pages,
+        }
+    return {"items": rows, "total": len(rows), "page": 1, "page_size": 0, "total_pages": 1, "has_more": False}
 
 
 @router.get("/available", summary="查看待认领子任务")
@@ -153,11 +165,20 @@ async def get_available_sub_tasks(
     - page_size=0（默认）: 返回全部
     - page_size>0: 分页返回
     """
-    from app.services.pagination import paginate
-    from app.models.sub_task import SubTask
-    query = db.query(SubTask).filter(SubTask.status == "pending")
-    query = query.order_by(SubTask.created_at.desc())
-    return paginate(query, page=page, page_size=page_size)
+    rows = sub_task_service.list_sub_tasks(db, status="pending")
+    if page_size > 0:
+        total = len(rows)
+        page = max(1, page)
+        page_size = min(page_size, 100)
+        total_pages = max(1, (total + page_size - 1) // page_size)
+        start = (page - 1) * page_size
+        items = rows[start:start + page_size]
+        return {
+            "items": items, "total": total, "page": page,
+            "page_size": page_size, "total_pages": total_pages,
+            "has_more": page < total_pages,
+        }
+    return {"items": rows, "total": len(rows), "page": 1, "page_size": 0, "total_pages": 1, "has_more": False}
 
 
 @router.get("/latest", response_model=SubTaskResponse, summary="获取最新子任务")
@@ -170,16 +191,11 @@ async def get_latest_sub_task(
     快速获取某任务下分配给自己的最新一个子任务。
     适用于执行者唤醒后快速定位当前工作。
     """
-    from app.models.sub_task import SubTask
-    sub_task = (
-        db.query(SubTask)
-        .filter(SubTask.task_id == task_id, SubTask.assigned_agent == agent.id)
-        .order_by(SubTask.updated_at.desc())
-        .first()
-    )
-    if not sub_task:
+    rows = sub_task_service.list_sub_tasks(db, task_id=task_id, assigned_agent=agent.id)
+    if not rows:
         raise HTTPException(status_code=404, detail="该任务下没有分配给你的子任务")
-    return sub_task
+    # list_sub_tasks 已按 created_at desc 排序，取第一条
+    return rows[0]
 
 
 @router.get("/{sub_task_id}", response_model=SubTaskResponse, summary="查看子任务详情")

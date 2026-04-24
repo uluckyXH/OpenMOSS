@@ -61,17 +61,7 @@ async def get_leaderboard(
     db: Session = Depends(get_db),
 ):
     """查看积分排行榜（所有 Agent 按 total_score 降序）"""
-    agents = db.query(Agent).order_by(Agent.total_score.desc()).all()
-    return [
-        LeaderboardItem(
-            rank=i + 1,
-            agent_id=a.id,
-            agent_name=a.name,
-            role=a.role,
-            total_score=a.total_score,
-        )
-        for i, a in enumerate(agents)
-    ]
+    return reward_service.get_leaderboard(db)
 
 
 @router.get("/me", response_model=ScoreSummaryResponse, summary="查看我的积分")
@@ -108,11 +98,7 @@ async def get_my_reward_logs(
     - page_size=0（默认）: 返回全部
     - page_size>0: 分页返回
     """
-    from app.services.pagination import paginate
-    from app.models.reward_log import RewardLog
-    query = db.query(RewardLog).filter(RewardLog.agent_id == agent.id)
-    query = query.order_by(RewardLog.created_at.desc())
-    return paginate(query, page=page, page_size=page_size)
+    return reward_service.list_reward_logs_paginated(db, agent.id, page=page, page_size=page_size)
 
 
 @router.get("/{agent_id}/logs", summary="查看积分明细")
@@ -128,11 +114,7 @@ async def get_agent_reward_logs(
     - page_size=0（默认）: 返回全部
     - page_size>0: 分页返回
     """
-    from app.services.pagination import paginate
-    from app.models.reward_log import RewardLog
-    query = db.query(RewardLog).filter(RewardLog.agent_id == agent_id)
-    query = query.order_by(RewardLog.created_at.desc())
-    return paginate(query, page=page, page_size=page_size)
+    return reward_service.list_reward_logs_paginated(db, agent_id, page=page, page_size=page_size)
 
 
 # ============================================================

@@ -11,7 +11,7 @@ from sqlalchemy.orm import Session
 from app.exceptions import ConflictError, NotFoundError
 from app.models.agent import Agent
 from app.models.managed_agent import ManagedAgent
-from app.services.agent_service import generate_api_key
+from app.services.agent_runtime import generate_api_key
 
 from .core import get_managed_agent_or_404
 from .shared import _mask

@@ -11,7 +11,7 @@ from typing import Optional, List
 from app.database import get_db
 from app.auth.dependencies import get_current_agent, verify_admin
 from app.exceptions import BusinessError
-from app.services import agent_service
+from app.services import agent_runtime as agent_service
 from app.services.bootstrap import build_skill_bundle_zip_for_runtime_agent
 from app.models.agent import Agent
 from app.config import config

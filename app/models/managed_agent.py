@@ -144,9 +144,10 @@ class ManagedAgentDeploymentSnapshot(Base):
     script_intent = Column(String(20), nullable=False, comment="bootstrap / sync")
     config_version = Column(Integer, nullable=False, comment="对应的配置版本号")
     snapshot_json = Column(Text, nullable=False, comment="本次部署的资源 ID 清单（JSON 文本）")
-    status = Column(String(20), nullable=False, default="pending", comment="pending / confirmed / failed")
+    status = Column(String(20), nullable=False, default="pending", comment="pending / confirmed / failed / timeout")
     failure_detail_json = Column(Text, nullable=True, comment="失败时的错误详情（JSON 文本）")
     created_at = Column(DateTime, default=datetime.now, comment="创建时间")
+    expires_at = Column(DateTime, nullable=True, comment="超时截止时间，创建时锁定")
     confirmed_at = Column(DateTime, nullable=True, comment="确认完成时间")
 
 
@@ -159,4 +160,3 @@ class AgentRuntimePresence(Base):
     last_heartbeat_at = Column(DateTime, nullable=True, comment="最近心跳时间")
     last_heartbeat_ip = Column(String(45), nullable=True, comment="最近心跳来源 IP")
     updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now, comment="更新时间")
-

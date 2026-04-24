@@ -21,7 +21,7 @@ from app.schemas.admin.agent import (
     AdminAgentUpdateRequest,
     AdminAgentWriteResponse,
 )
-from app.services import agent_service
+from app.services import agent_runtime as agent_service
 from app.services.admin_query import agent as admin_agent_query_service
 
 

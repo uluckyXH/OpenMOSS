@@ -9,7 +9,7 @@ from sqlalchemy.orm import Session
 
 from app.exceptions import ConflictError
 from app.models.agent import Agent
-from app.services.agent_service import generate_api_key
+from app.services.agent_runtime import generate_api_key
 from app.services.managed_agent.core import get_managed_agent_or_404
 from app.services.bootstrap.token import validate_bootstrap_token
 

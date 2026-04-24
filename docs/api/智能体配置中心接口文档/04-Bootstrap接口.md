@@ -1,20 +1,29 @@
 # Bootstrap 接口
 
-> 最后同步：2026-04-22
+> 最后同步：2026-04-24
 > 接口前缀：`/api/bootstrap` + `/api/deploy`
-> 对应代码：`app/routers/bootstrap.py` + `app/routers/deploy.py`
+> 对应代码：`app/routers/bootstrap_deploy/bootstrap.py` + `app/routers/bootstrap_deploy/deploy.py`
 
 ## 1. 模块概览
 
 当前已实现：
 
 - 脚本下载
+- Skill Bundle 下载
 - 运行态注册闭环
 - 部署结果回传
 
 当前未实现：
 
 - `task-cli.py` 下载
+
+补充口径：
+
+- 管理端选择式脚本生成、部署变更预检和部署快照接口不在本文件描述，见 [01-管理端-配置态Agent接口.md](01-管理端-配置态Agent接口.md) 的 `deploy-preview / deploy-script / deployment-snapshots`。
+- `download_script` token 默认有效期为 24 小时，可在 TTL 内多次使用。
+- `register_runtime` token 默认有效期为 1 小时，且注册成功后立即失效。
+- 管理端反复生成“接入说明 / 脚本预览”时，会优先复用同 scope 且剩余有效期大于 1 小时的 `download_script` token 记录。
+- 由于服务端只存 `token_hash`，当管理端复用该记录时，会重新签发最新明文 token；因此应始终以最新生成的 `curl` 命令或脚本文本为准。
 
 ## 2. 请求头
 
@@ -38,7 +47,7 @@ Content-Type: application/json
 
 #### `GET /api/bootstrap/agents/{managed_agent_id}/script`
 
-作用：使用 `download_script` 类型的 Bootstrap Token 下载渲染后的完整部署脚本。服务端会在返回脚本前，临时创建一个短期 `register_runtime` token 并嵌入脚本。
+作用：使用 `download_script` 类型的 Bootstrap Token 下载渲染后的完整部署脚本。服务端会在返回脚本前，临时创建一个新的短期 `register_runtime` token 并嵌入脚本。
 
 #### Path 参数
 
@@ -118,7 +127,51 @@ Content-Type: application/json
 }
 ```
 
-### 4.3 部署结果回传
+### 4.3 下载当前 Agent 专属 Skill Bundle
+
+#### `GET /api/bootstrap/agents/{managed_agent_id}/skill-bundle`
+
+作用：使用 `download_script` 类型的 Bootstrap Token 下载当前配置态 Agent 对应的专属 Skill Bundle。返回 zip 压缩包，包含：
+
+- `SKILL.md`
+- `scripts/task-cli.py`
+- `scripts/task_cli/...`
+- `references/...`
+
+当前约束：
+
+- 该配置态 Agent 必须已经完成运行态注册
+- 返回的 `scripts/task-cli.py` 已注入当前运行态 Agent 的默认 `api_key`
+
+#### Path 参数
+
+| 参数 | 类型 | 必填 | 说明 |
+|---|---|---|---|
+| `managed_agent_id` | string | 是 | 配置态 Agent ID |
+
+#### Header
+
+| Header | 必填 | 说明 |
+|---|---|---|
+| `X-Bootstrap-Token` | 是 | `download_script` 类型 token |
+
+#### 成功返回
+
+- 状态码：`200`
+- 返回体：zip 二进制流
+- `Content-Type`：`application/zip`
+- `Content-Disposition`：附件下载，文件名如 `task-executor-skill.zip`
+
+#### 错误码
+
+| 状态码 | 说明 |
+|---|---|
+| `403` | `X-Bootstrap-Token` 无效、已过期，或 purpose 不为 `download_script` |
+| `404` | 配置态 Agent 不存在 |
+| `409` | 当前配置态 Agent 尚未完成运行态注册，无法生成 Skill Bundle |
+| `422` | 缺少 `X-Bootstrap-Token` |
+
+### 4.4 部署结果回传
 
 #### `POST /api/deploy/{managed_agent_id}/report`
 

@@ -201,3 +201,9 @@ def delete_agent(db: Session, agent_id: str, confirm_name: str) -> dict:
     db.commit()
 
     return counts
+
+
+def has_any_agent(db: Session) -> bool:
+    """检查数据库中是否已有 Agent 记录。"""
+    return db.query(Agent).count() > 0
+

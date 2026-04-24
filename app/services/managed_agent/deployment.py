@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import json
 import uuid
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Any, Optional
 
 from sqlalchemy.orm import Session
@@ -72,10 +72,12 @@ def create_deployment_snapshot(
     script_intent: str,
     config_version: int,
     snapshot_json: str,
+    timeout_seconds: int = 1800,
 ) -> ManagedAgentDeploymentSnapshot:
     """创建 pending 状态的部署快照。"""
     get_managed_agent_or_404(db, managed_agent_id)
 
+    now = datetime.now()
     row = ManagedAgentDeploymentSnapshot(
         id=str(uuid.uuid4()),
         managed_agent_id=managed_agent_id,
@@ -83,12 +85,38 @@ def create_deployment_snapshot(
         config_version=config_version,
         snapshot_json=snapshot_json,
         status="pending",
-        created_at=datetime.now(),
+        created_at=now,
+        expires_at=now + timedelta(seconds=timeout_seconds),
     )
     db.add(row)
     db.commit()
     db.refresh(row)
     return row
+
+
+def expire_stale_pending_snapshots(db: Session) -> int:
+    """将已过期的 pending 部署快照标记为 timeout。"""
+    now = datetime.now()
+    rows = (
+        db.query(ManagedAgentDeploymentSnapshot)
+        .filter(ManagedAgentDeploymentSnapshot.status == "pending")
+        .filter(ManagedAgentDeploymentSnapshot.expires_at.isnot(None))
+        .filter(ManagedAgentDeploymentSnapshot.expires_at < now)
+        .all()
+    )
+
+    for row in rows:
+        elapsed = int((now - row.created_at).total_seconds()) if row.created_at else None
+        detail = {
+            "message": f"部署脚本在 {elapsed} 秒内未回传结果，已自动标记超时",
+            "elapsed_seconds": elapsed,
+        }
+        row.status = "timeout"
+        row.failure_detail_json = json.dumps(detail, ensure_ascii=False)
+
+    if rows:
+        db.commit()
+    return len(rows)
 
 
 def confirm_deployment_snapshot(
@@ -225,6 +253,11 @@ def dismiss_snapshot_resources(
 
 def serialize_deployment_snapshot(snapshot: ManagedAgentDeploymentSnapshot) -> dict[str, Any]:
     """序列化部署快照。"""
+    is_likely_timeout = (
+        snapshot.status == "pending"
+        and snapshot.expires_at is not None
+        and datetime.now() > snapshot.expires_at
+    )
     return {
         "id": snapshot.id,
         "managed_agent_id": snapshot.managed_agent_id,
@@ -234,7 +267,9 @@ def serialize_deployment_snapshot(snapshot: ManagedAgentDeploymentSnapshot) -> d
         "status": snapshot.status,
         "failure_detail_json": snapshot.failure_detail_json,
         "created_at": snapshot.created_at,
+        "expires_at": snapshot.expires_at,
         "confirmed_at": snapshot.confirmed_at,
+        "is_likely_timeout": is_likely_timeout,
     }
 
 

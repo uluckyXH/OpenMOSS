@@ -125,6 +125,7 @@ def deploy_script(
             script_intent=body.script_intent,
             config_version=agent.config_version,
             snapshot_json=snapshot_json,
+            timeout_seconds=body.snapshot_timeout_seconds,
         )
 
         return {

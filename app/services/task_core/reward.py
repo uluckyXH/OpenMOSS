@@ -114,3 +114,27 @@ def list_reward_logs(
     if sub_task_id:
         query = query.filter(RewardLog.sub_task_id == sub_task_id)
     return query.order_by(RewardLog.created_at.desc()).all()
+
+
+def get_leaderboard(db: Session) -> list[dict]:
+    """获取积分排行榜（所有 Agent 按 total_score 降序）。"""
+    agents = db.query(Agent).order_by(Agent.total_score.desc()).all()
+    return [
+        {
+            "rank": i + 1,
+            "agent_id": a.id,
+            "agent_name": a.name,
+            "role": a.role,
+            "total_score": a.total_score,
+        }
+        for i, a in enumerate(agents)
+    ]
+
+
+def list_reward_logs_paginated(db: Session, agent_id: str, *, page: int = 1, page_size: int = 0) -> dict:
+    """查询指定 Agent 的积分记录（分页）。"""
+    from app.services.pagination import paginate
+    query = db.query(RewardLog).filter(RewardLog.agent_id == agent_id)
+    query = query.order_by(RewardLog.created_at.desc())
+    return paginate(query, page=page, page_size=page_size)
+
