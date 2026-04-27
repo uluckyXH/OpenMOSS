@@ -5,6 +5,14 @@ import type {
   ManagedAgentBootstrapTokenCreateInput,
   ManagedAgentBootstrapTokenCreateResponse,
   ManagedAgentBootstrapTokenListItem,
+  ManagedAgentDeploymentDismissInput,
+  ManagedAgentDeploymentDismissResponse,
+  ManagedAgentDeploymentSnapshot,
+  ManagedAgentDeploymentState,
+  ManagedAgentDeployPreviewResponse,
+  ManagedAgentDeployScriptInput,
+  ManagedAgentDeployScriptResponse,
+  ManagedAgentDeploySelectionInput,
   ManagedAgentOnboardingMessageParams,
   ManagedAgentOnboardingMessageResponse,
 } from './types';
@@ -40,6 +48,8 @@ function buildBootstrapParams(
 }
 
 export const managedAgentBootstrapApi = {
+  getDeploymentState: (agentId: string) =>
+    api.get<ManagedAgentDeploymentState>(`/admin/managed-agents/${agentId}/deployment-state`),
   createToken: (agentId: string, data: ManagedAgentBootstrapTokenCreateInput) =>
     api.post<ManagedAgentBootstrapTokenCreateResponse>(`/admin/managed-agents/${agentId}/bootstrap-tokens`, data),
   listTokens: (agentId: string) =>
@@ -56,4 +66,12 @@ export const managedAgentBootstrapApi = {
       params: buildBootstrapParams(params),
       paramsSerializer: (value) => value?.toString() ?? '',
     }),
+  previewDeploy: (agentId: string, data: ManagedAgentDeploySelectionInput) =>
+    api.post<ManagedAgentDeployPreviewResponse>(`/admin/managed-agents/${agentId}/deploy-preview`, data),
+  createDeployScript: (agentId: string, data: ManagedAgentDeployScriptInput) =>
+    api.post<ManagedAgentDeployScriptResponse>(`/admin/managed-agents/${agentId}/deploy-script`, data),
+  listDeploymentSnapshots: (agentId: string) =>
+    api.get<ManagedAgentDeploymentSnapshot[]>(`/admin/managed-agents/${agentId}/deployment-snapshots`),
+  dismissDeploymentSnapshot: (agentId: string, data: ManagedAgentDeploymentDismissInput) =>
+    api.post<ManagedAgentDeploymentDismissResponse>(`/admin/managed-agents/${agentId}/deployment-snapshot/dismiss`, data),
 };

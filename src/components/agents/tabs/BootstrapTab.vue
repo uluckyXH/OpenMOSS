@@ -3,31 +3,48 @@ import { onMounted, ref, watch } from 'vue';
 import { toast } from 'vue-sonner';
 import {
   managedAgentBootstrapApi,
-  type ManagedAgentBootstrapTokenListItem,
-  type ManagedAgentBootstrapTokenCreateResponse,
   type ManagedAgentBootstrapPurpose,
-  type ManagedAgentBootstrapScriptResponse,
-  type ManagedAgentOnboardingMessageResponse,
+  type ManagedAgentBootstrapTokenCreateResponse,
+  type ManagedAgentBootstrapTokenListItem,
+  type ManagedAgentDeploymentState,
+  type ManagedAgentListItem,
 } from '@/api/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import {
-  Loader2, AlertCircle, Plus, Trash2, Copy, Check, Terminal, MessageCircle, Key, Shield, Clock,
-  ChevronDown, ChevronRight,
+  Loader2, AlertCircle, Plus, Trash2, Copy, Check, Key, Clock, ChevronDown, ChevronRight, Shield,
 } from 'lucide-vue-next';
+import OnboardingWizard from './bootstrap/OnboardingWizard.vue';
+import SyncDeployPanel from './bootstrap/SyncDeployPanel.vue';
 
-const props = defineProps<{ agentId: string; disabled?: boolean }>();
+const props = defineProps<{ agentId: string; agent?: ManagedAgentListItem | null; disabled?: boolean }>();
+const emit = defineEmits<{ saved: [] }>();
 
-// ─── 脚本 / Onboarding ───
+// ─── 部署阶段状态 ───
 
-const loadingScript = ref(false);
-const scriptResult = ref<ManagedAgentBootstrapScriptResponse | null>(null);
-const loadingOnboarding = ref(false);
-const onboardingResult = ref<ManagedAgentOnboardingMessageResponse | null>(null);
+const deploymentState = ref<ManagedAgentDeploymentState | null>(null);
+const loadingDeployState = ref(true);
 
-// ─── Token 管理（高级） ───
+async function loadDeploymentState() {
+  loadingDeployState.value = true;
+  try {
+    const res = await managedAgentBootstrapApi.getDeploymentState(props.agentId);
+    deploymentState.value = res.data;
+  } catch {
+    // non-critical, keep null
+  } finally {
+    loadingDeployState.value = false;
+  }
+}
+
+function handleChildCompleted() {
+  emit('saved');
+  void loadDeploymentState();
+}
+
+// ─── Token 管理（高级，折叠） ───
 
 const showAdvanced = ref(false);
 const tokens = ref<ManagedAgentBootstrapTokenListItem[]>([]);
@@ -40,28 +57,12 @@ const newTokenTtl = ref(3600);
 const newTokenScope = ref('');
 const createdToken = ref<ManagedAgentBootstrapTokenCreateResponse | null>(null);
 const revokingId = ref<string | null>(null);
-
-// ─── 复制 ───
-
 const copiedKey = ref<string | null>(null);
-async function copyText(text: string, key: string) {
-  await navigator.clipboard.writeText(text);
-  copiedKey.value = key;
-  setTimeout(() => { copiedKey.value = null; }, 2000);
-}
-
-// ─── Purpose 选项 ───
 
 const purposeOptions: { value: ManagedAgentBootstrapPurpose; label: string }[] = [
   { value: 'download_script', label: '下载脚本' },
   { value: 'register_runtime', label: '注册运行态' },
 ];
-
-function getPurposeLabel(p: string) {
-  return purposeOptions.find(o => o.value === p)?.label ?? p;
-}
-
-// ─── 数据加载 ───
 
 async function loadTokens() {
   loadingTokens.value = true;
@@ -76,47 +77,6 @@ async function loadTokens() {
   }
 }
 
-onMounted(() => { void loadTokens(); });
-watch(() => props.agentId, () => {
-  createdToken.value = null;
-  scriptResult.value = null;
-  onboardingResult.value = null;
-  showAdvanced.value = false;
-  void loadTokens();
-});
-
-// ─── 生成部署脚本 ───
-
-async function handleGetScript() {
-  loadingScript.value = true;
-  try {
-    const res = await managedAgentBootstrapApi.getBootstrapScript(props.agentId);
-    scriptResult.value = res.data;
-  } catch (err: unknown) {
-    const msg = (err as { response?: { data?: { detail?: string } } })?.response?.data?.detail;
-    toast.error(msg ?? '生成脚本失败');
-  } finally {
-    loadingScript.value = false;
-  }
-}
-
-// ─── 生成 Onboarding 消息 ───
-
-async function handleGetOnboarding() {
-  loadingOnboarding.value = true;
-  try {
-    const res = await managedAgentBootstrapApi.getOnboardingMessage(props.agentId);
-    onboardingResult.value = res.data;
-  } catch (err: unknown) {
-    const msg = (err as { response?: { data?: { detail?: string } } })?.response?.data?.detail;
-    toast.error(msg ?? '生成消息失败');
-  } finally {
-    loadingOnboarding.value = false;
-  }
-}
-
-// ─── Token CRUD ───
-
 async function handleCreateToken() {
   creatingToken.value = true;
   try {
@@ -130,8 +90,8 @@ async function handleCreateToken() {
     toast.success('Token 已创建');
     void loadTokens();
   } catch (err: unknown) {
-    const msg = (err as { response?: { data?: { detail?: string } } })?.response?.data?.detail;
-    toast.error(msg ?? '创建失败');
+    const data = (err as { response?: { data?: { detail?: string } } })?.response?.data;
+    toast.error(data?.detail ?? '创建失败');
   } finally {
     creatingToken.value = false;
   }
@@ -150,103 +110,84 @@ async function handleRevoke(tokenId: string) {
   }
 }
 
-// ─── 辅助 ───
+async function copyText(text: string, key: string) {
+  await navigator.clipboard.writeText(text);
+  copiedKey.value = key;
+  setTimeout(() => { copiedKey.value = null; }, 2000);
+}
 
-function formatDate(value: string | null) {
-  if (!value) return '—';
-  try {
-    return new Date(value).toLocaleString('zh-CN', {
-      month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit',
-    });
-  } catch { return value; }
+function getPurposeLabel(p: string) {
+  return purposeOptions.find(o => o.value === p)?.label ?? p;
 }
 
 function isExpired(expiresAt: string) {
   return new Date(expiresAt) < new Date();
 }
+
+function formatDate(value: string | null) {
+  if (!value) return '—';
+  try {
+    return new Date(value).toLocaleString('zh-CN', { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
+  } catch { return value; }
+}
+
+// ─── 生命周期 ───
+
+onMounted(() => {
+  void loadDeploymentState();
+  void loadTokens();
+});
+
+watch(() => props.agentId, () => {
+  deploymentState.value = null;
+  createdToken.value = null;
+  showAdvanced.value = false;
+  void loadDeploymentState();
+  void loadTokens();
+});
 </script>
 
 <template>
   <div class="space-y-5 animate-slide-up">
-    <!-- ════════════════════ ① 主操作：部署脚本 ════════════════════ -->
-    <div class="rounded-xl border bg-card p-5">
-      <div class="flex items-center justify-between mb-3">
-        <div class="flex items-center gap-2">
-          <Terminal class="h-4 w-4 text-emerald-400" />
-          <span class="text-sm font-semibold">部署脚本</span>
-        </div>
-        <Button size="sm" class="h-8 gap-1.5 text-xs bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm shadow-emerald-500/20"
-          :disabled="loadingScript || disabled" @click="handleGetScript">
-          <Loader2 v-if="loadingScript" class="h-3 w-3 animate-spin" />
-          <Terminal v-else class="h-3 w-3" />
-          生成脚本
-        </Button>
-      </div>
-      <p class="text-xs text-muted-foreground/60 leading-relaxed">
-        生成一键部署脚本（内含临时 Token），在目标机器执行即可自动下载配置并注册运行态。
-      </p>
-      <template v-if="scriptResult">
-        <div class="relative mt-3">
-          <pre
-            class="rounded-lg bg-muted/30 border p-3 text-xs font-mono whitespace-pre-wrap break-all max-h-56 overflow-y-auto leading-relaxed select-all">{{ scriptResult.script }}</pre>
-          <Button variant="ghost" size="icon" class="absolute top-2 right-2 h-6 w-6 bg-background/80 backdrop-blur-sm"
-            @click="copyText(scriptResult.script, 'script')">
-            <Check v-if="copiedKey === 'script'" class="h-3 w-3 text-emerald-400" />
-            <Copy v-else class="h-3 w-3" />
-          </Button>
-        </div>
-        <p class="text-[11px] text-muted-foreground/40 mt-2">
-          注册 Token 过期：{{ formatDate(scriptResult.register_token_expires_at) }}
-        </p>
-      </template>
+
+    <!-- 加载中骨架 -->
+    <div v-if="loadingDeployState" class="rounded-xl border bg-card p-8 flex items-center justify-center gap-2">
+      <Loader2 class="h-5 w-5 animate-spin text-muted-foreground/40" />
+      <span class="text-sm text-muted-foreground/40">加载部署状态…</span>
     </div>
 
-    <!-- ════════════════════ ② 次要操作：Onboarding 消息 ════════════════════ -->
-    <div class="rounded-xl border bg-card p-4">
-      <div class="flex items-center justify-between mb-2">
-        <div class="flex items-center gap-2">
-          <MessageCircle class="h-4 w-4 text-muted-foreground/60" />
-          <span class="text-sm font-medium text-muted-foreground/80">Onboarding 消息</span>
-        </div>
-        <Button variant="outline" size="sm" class="h-7 gap-1 text-xs" :disabled="loadingOnboarding || disabled"
-          @click="handleGetOnboarding">
-          <Loader2 v-if="loadingOnboarding" class="h-3 w-3 animate-spin" />
-          生成
-        </Button>
-      </div>
-      <p class="text-xs text-muted-foreground/40">生成可发送给 Agent 的引导消息和 curl 下载命令。</p>
-      <template v-if="onboardingResult">
-        <div class="space-y-2 mt-3">
-          <div class="relative">
-            <div class="text-[11px] text-muted-foreground/50 mb-1">消息</div>
-            <pre
-              class="rounded-lg bg-muted/30 border p-3 text-xs whitespace-pre-wrap break-all max-h-32 overflow-y-auto leading-relaxed">{{ onboardingResult.message }}</pre>
-            <Button variant="ghost" size="icon"
-              class="absolute top-6 right-2 h-6 w-6 bg-background/80 backdrop-blur-sm"
-              @click="copyText(onboardingResult.message, 'msg')">
-              <Check v-if="copiedKey === 'msg'" class="h-3 w-3 text-emerald-400" />
-              <Copy v-else class="h-3 w-3" />
-            </Button>
-          </div>
-          <div class="relative">
-            <div class="text-[11px] text-muted-foreground/50 mb-1">curl 命令</div>
-            <pre
-              class="rounded-lg bg-muted/30 border p-3 text-xs font-mono whitespace-pre-wrap break-all max-h-24 overflow-y-auto leading-relaxed">{{ onboardingResult.curl_command }}</pre>
-            <Button variant="ghost" size="icon"
-              class="absolute top-6 right-2 h-6 w-6 bg-background/80 backdrop-blur-sm"
-              @click="copyText(onboardingResult.curl_command, 'curl')">
-              <Check v-if="copiedKey === 'curl'" class="h-3 w-3 text-emerald-400" />
-              <Copy v-else class="h-3 w-3" />
-            </Button>
-          </div>
-        </div>
-        <p class="text-[11px] text-muted-foreground/40 mt-2">
-          下载 Token 过期：{{ formatDate(onboardingResult.download_token_expires_at) }}
-        </p>
-      </template>
+    <!-- 加载失败 -->
+    <div v-else-if="!deploymentState" class="rounded-xl border border-rose-500/20 bg-rose-500/5 p-8 text-center space-y-2">
+      <AlertCircle class="h-6 w-6 mx-auto text-rose-400" />
+      <p class="text-sm font-medium">无法加载部署状态</p>
+      <p class="text-xs text-muted-foreground/60">请检查网络连接后重试。</p>
+      <Button variant="outline" size="sm" class="mt-2" @click="loadDeploymentState">重试</Button>
     </div>
 
-    <!-- ════════════════════ ③ 高级：Token 管理（折叠） ════════════════════ -->
+    <!-- 主内容：按阶段切换 -->
+    <template v-else>
+      <!-- 首次接入 -->
+      <OnboardingWizard
+        v-if="deploymentState.deployment_phase === 'first_onboarding'"
+        :agent-id="agentId"
+        :agent="agent"
+        :deployment-state="deploymentState"
+        :disabled="disabled"
+        @completed="handleChildCompleted"
+      />
+
+      <!-- 同步变更 / 已同步 -->
+      <SyncDeployPanel
+        v-else
+        :agent-id="agentId"
+        :agent="agent"
+        :deployment-state="deploymentState"
+        :disabled="disabled"
+        @state-changed="handleChildCompleted"
+      />
+    </template>
+
+    <!-- ════════════════════ Bootstrap Token 管理（高级，折叠） ════════════════════ -->
     <div class="rounded-xl border border-dashed border-border/70 bg-muted/5">
       <button type="button" class="flex w-full items-center justify-between px-4 py-3 text-left"
         @click="showAdvanced = !showAdvanced">
@@ -264,11 +205,9 @@ function isExpired(expiresAt: string) {
 
       <div v-if="showAdvanced" class="px-4 pb-4 space-y-3">
         <Separator />
-
-        <!-- 操作栏 -->
         <div class="flex items-center justify-between">
           <p class="text-[11px] text-muted-foreground/40">
-            手动创建 / 管理 Bootstrap Token，通常由部署脚本自动生成。
+            手动创建 / 管理 Bootstrap Token。通常优先使用部署向导自动生成。
           </p>
           <Button variant="outline" size="sm" class="h-7 gap-1 text-xs shrink-0" :disabled="disabled"
             @click="showCreateToken = true">
@@ -276,51 +215,40 @@ function isExpired(expiresAt: string) {
           </Button>
         </div>
 
-        <!-- 刚创建的 Token 高亮 -->
-        <div v-if="createdToken"
-          class="rounded-lg border-2 border-emerald-500/30 bg-emerald-500/5 p-3 animate-slide-up">
+        <div v-if="createdToken" class="rounded-lg border-2 border-emerald-500/30 bg-emerald-500/5 p-3 animate-slide-up">
           <div class="flex items-center gap-2 mb-2">
             <Shield class="h-3.5 w-3.5 text-emerald-400" />
-            <span class="text-xs font-medium text-emerald-400">Token 已创建 — 请立即复制</span>
+            <span class="text-xs font-medium text-emerald-400">Token 已创建，请立即复制</span>
           </div>
           <div class="relative">
-            <pre class="rounded-md bg-background border p-2.5 text-xs font-mono break-all leading-relaxed select-all">{{
-              createdToken.token }}</pre>
+            <pre class="rounded-md bg-background border p-2.5 text-xs font-mono break-all leading-relaxed select-all">{{ createdToken.token }}</pre>
             <Button variant="ghost" size="icon" class="absolute top-1.5 right-1.5 h-6 w-6 bg-background/80 backdrop-blur-sm"
               @click="copyText(createdToken.token, 'new-token')">
               <Check v-if="copiedKey === 'new-token'" class="h-3 w-3 text-emerald-400" />
               <Copy v-else class="h-3 w-3" />
             </Button>
           </div>
-          <p class="text-[11px] text-amber-400 mt-1.5">⚠ 此 Token 仅展示一次，关闭后将无法再次查看完整值。</p>
+          <p class="text-[11px] text-amber-400 mt-1.5">此 Token 仅展示一次，关闭后将无法再次查看完整值。</p>
           <div class="flex items-center gap-3 mt-1.5 text-[11px] text-muted-foreground/50">
             <span>用途：{{ getPurposeLabel(createdToken.purpose) }}</span>
             <span>过期：{{ formatDate(createdToken.expires_at) }}</span>
           </div>
-          <Button variant="ghost" size="sm" class="h-5 text-[11px] mt-1.5 text-muted-foreground/50 px-1"
-            @click="createdToken = null">关闭</Button>
+          <Button variant="ghost" size="sm" class="h-5 text-[11px] mt-1.5 text-muted-foreground/50 px-1" @click="createdToken = null">关闭</Button>
         </div>
 
-        <!-- 加载 -->
         <div v-if="loadingTokens" class="flex items-center justify-center py-6">
           <Loader2 class="h-5 w-5 animate-spin text-muted-foreground" />
         </div>
-
-        <!-- 错误 -->
         <div v-else-if="tokenError" class="text-center py-6">
           <AlertCircle class="h-5 w-5 mx-auto mb-2 text-rose-400" />
           <p class="text-xs text-muted-foreground">{{ tokenError }}</p>
           <Button variant="link" size="sm" class="mt-1" @click="loadTokens">重试</Button>
         </div>
-
-        <!-- 空 -->
         <div v-else-if="tokens.length === 0"
           class="rounded-lg border border-dashed bg-muted/10 p-5 text-center text-muted-foreground/40">
           <Key class="h-5 w-5 mx-auto mb-1.5" />
           <p class="text-xs">暂无 Bootstrap Token</p>
         </div>
-
-        <!-- Token 列表 -->
         <div v-else class="space-y-1.5">
           <div v-for="(token, idx) in tokens" :key="token.id"
             class="rounded-lg border bg-card px-3 py-2 flex items-center gap-3 animate-slide-up"
@@ -332,14 +260,10 @@ function isExpired(expiresAt: string) {
                 <Badge v-if="!token.is_valid" variant="outline" class="text-[10px] text-rose-400 border-rose-500/20">
                   {{ token.revoked_at ? '已撤销' : isExpired(token.expires_at) ? '已过期' : '已使用' }}
                 </Badge>
-                <Badge v-else variant="outline" class="text-[10px] text-emerald-400 border-emerald-500/20">
-                  有效
-                </Badge>
+                <Badge v-else variant="outline" class="text-[10px] text-emerald-400 border-emerald-500/20">有效</Badge>
               </div>
               <div class="flex flex-wrap gap-x-3 gap-y-0.5 text-[11px] text-muted-foreground/40">
-                <span class="flex items-center gap-1">
-                  <Clock class="h-3 w-3" /> 过期 {{ formatDate(token.expires_at) }}
-                </span>
+                <span class="flex items-center gap-1"><Clock class="h-3 w-3" /> 过期 {{ formatDate(token.expires_at) }}</span>
                 <span v-if="token.used_at">已使用 {{ formatDate(token.used_at) }}</span>
                 <span>创建 {{ formatDate(token.created_at) }}</span>
               </div>
@@ -355,13 +279,12 @@ function isExpired(expiresAt: string) {
       </div>
     </div>
 
-    <!-- ─── 创建 Token 弹窗 ─── -->
+    <!-- 创建 Token 弹窗 -->
     <Teleport to="body">
       <div v-if="showCreateToken"
         class="fixed inset-0 z-50 flex items-center justify-center p-4 animate-in fade-in duration-150">
         <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" @click="showCreateToken = false" />
-        <div
-          class="relative z-10 w-full max-w-sm rounded-xl border bg-background p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+        <div class="relative z-10 w-full max-w-sm rounded-xl border bg-background p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
           <h3 class="text-base font-semibold mb-4">新建 Bootstrap Token</h3>
           <div class="space-y-3">
             <div>
@@ -387,8 +310,7 @@ function isExpired(expiresAt: string) {
             </div>
           </div>
           <div class="flex gap-3 mt-4">
-            <Button variant="outline" class="flex-1" :disabled="creatingToken"
-              @click="showCreateToken = false">取消</Button>
+            <Button variant="outline" class="flex-1" :disabled="creatingToken" @click="showCreateToken = false">取消</Button>
             <Button class="flex-1" :disabled="creatingToken" @click="handleCreateToken">
               <Loader2 v-if="creatingToken" class="h-4 w-4 animate-spin mr-1" />
               创建

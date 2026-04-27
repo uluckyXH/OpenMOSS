@@ -9,6 +9,10 @@ export type ManagedAgentHostRenderStrategy = 'host_default' | 'openclaw_workspac
 export type ManagedAgentScheduleType = 'interval' | 'cron'
 export type ManagedAgentCommProvider = 'feishu' | 'slack' | 'telegram' | 'wechat' | 'email' | 'webhook'
 export type ManagedAgentBootstrapPurpose = 'download_script' | 'register_runtime'
+export type ManagedAgentDeployScriptIntent = 'bootstrap' | 'sync'
+export type ManagedAgentDeploymentResourceType = 'prompt' | 'schedule' | 'comm_binding'
+export type ManagedAgentDeploymentChangeType = 'add' | 'update' | 'remove'
+export type ManagedAgentDeploymentSnapshotStatus = 'pending' | 'confirmed' | 'failed' | 'timeout' | 'cancelled'
 
 export interface HostPlatformCapabilities {
   renderer: boolean
@@ -434,6 +438,109 @@ export interface ManagedAgentOnboardingMessageResponse {
   curl_command: string
   download_token_id: string
   download_token_expires_at: string
+}
+
+export interface ManagedAgentDeploySelectionInput {
+  script_intent: ManagedAgentDeployScriptIntent
+  prompt_artifact_keys?: string[]
+  schedule_ids?: string[]
+  comm_binding_ids?: string[]
+}
+
+export interface ManagedAgentDeployScriptInput extends ManagedAgentDeploySelectionInput {
+  register_ttl_seconds?: number
+  download_ttl_seconds?: number
+  /** 部署快照超时时间（秒），默认 1800，最小 60，最大 86400 */
+  snapshot_timeout_seconds?: number
+  /** 是否确认替换同 Agent + 同 script_intent 的旧 pending 快照，默认 false */
+  replace_pending_snapshot?: boolean
+}
+
+export interface ManagedAgentDeployScriptConflictSnapshot {
+  id: string
+  script_intent: ManagedAgentDeployScriptIntent
+  created_at: string
+  expires_at: string | null
+  is_likely_timeout: boolean
+}
+
+export interface ManagedAgentDeployScriptConflictDetail {
+  error_code: 'DEPLOYMENT_SNAPSHOT_CONFLICT'
+  message: string
+  conflict_snapshot: ManagedAgentDeployScriptConflictSnapshot
+}
+
+export interface ManagedAgentDeployChangesetItem {
+  resource_type: ManagedAgentDeploymentResourceType
+  change_type: ManagedAgentDeploymentChangeType
+  resource_id: string | null
+  resource_key: string | null
+  label: string
+  enabled?: boolean | null
+}
+
+export interface ManagedAgentDeployChangeset {
+  items: ManagedAgentDeployChangesetItem[]
+  validation_errors: string[]
+  is_valid: boolean
+}
+
+export interface ManagedAgentDeployPreviewResponse {
+  script_intent: ManagedAgentDeployScriptIntent
+  changeset: ManagedAgentDeployChangeset
+  has_removals: boolean
+}
+
+export interface ManagedAgentDeployScriptResponse {
+  snapshot_id: string
+  status: 'pending'
+  config_version: number
+  changeset: ManagedAgentDeployChangeset
+}
+
+export interface ManagedAgentDeploymentSnapshot {
+  id: string
+  managed_agent_id: string
+  script_intent: ManagedAgentDeployScriptIntent
+  config_version: number
+  snapshot_json: string
+  status: ManagedAgentDeploymentSnapshotStatus
+  failure_detail_json: string | null
+  created_at: string
+  /** 超时截止时间，创建快照时根据 snapshot_timeout_seconds 锁定 */
+  expires_at: string | null
+  confirmed_at: string | null
+  /** 读取时计算的虚拟字段，仅用于前端提示；不等同于已写库的 timeout 状态 */
+  is_likely_timeout: boolean
+}
+
+export interface ManagedAgentDeploymentDismissInput {
+  prompt_artifact_keys?: string[]
+  schedule_ids?: string[]
+  comm_binding_ids?: string[]
+}
+
+export interface ManagedAgentDeploymentDismissResponse {
+  message: string
+  snapshot_id?: string
+}
+
+export type ManagedAgentDeploymentPhase = 'first_onboarding' | 'sync_required' | 'up_to_date'
+
+export interface ManagedAgentDeploymentState {
+  managed_agent_id: string
+  deployment_phase: ManagedAgentDeploymentPhase
+  /** 推荐脚本意图；up_to_date 时为 null */
+  recommended_script_intent: ManagedAgentDeployScriptIntent | null
+  is_first_onboarding: boolean
+  has_confirmed_deployment: boolean
+  needs_redeploy: boolean
+  config_version: number
+  deployed_config_version: number | null
+  /** 平台配置是否满足生成脚本的前置条件 */
+  deploy_ready: boolean
+  runtime_registered: boolean
+  message: string
 }
 
 /** 角色 Prompt 模板示例 */

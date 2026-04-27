@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   ChevronLeft, Loader2, AlertCircle, Pencil, Trash2,
-  Settings, FileText, Clock, MessageSquare, Rocket, Info,
+  Settings, FileText, Clock, MessageSquare, Rocket, Info, History,
   CheckCircle2, Circle, Lock, AlertTriangle,
 } from 'lucide-vue-next';
 import {
@@ -22,6 +22,7 @@ import PromptTab from '@/components/agents/tabs/PromptTab.vue';
 import ScheduleTab from '@/components/agents/tabs/ScheduleTab.vue';
 import CommBindingTab from '@/components/agents/tabs/CommBindingTab.vue';
 import BootstrapTab from '@/components/agents/tabs/BootstrapTab.vue';
+import DeployHistoryTab from '@/components/agents/tabs/DeployHistoryTab.vue';
 import AgentEditDialog from '@/components/agents/dialogs/AgentEditDialog.vue';
 import AgentDeleteDialog from '@/components/agents/dialogs/AgentDeleteDialog.vue';
 
@@ -126,6 +127,10 @@ const tabsMeta: TabMeta[] = [
     key: 'bootstrap', label: '部署接入', icon: Rocket, readinessKey: 'bootstrap', required: false,
     isEditable: (r) => r.host, prerequisiteLabel: '平台配置'
   },
+  {
+    key: 'deploy-history', label: '部署历史', icon: History, readinessKey: 'bootstrap', required: false,
+    isEditable: () => true
+  },
 ];
 
 const requiredTabs = tabsMeta.filter(t => t.required);
@@ -146,6 +151,7 @@ function isTabVisible(tabKey: string) {
     case 'schedule': return caps.schedule !== false;
     case 'comm': return caps.comm_binding !== false;
     case 'bootstrap': return caps.bootstrap_script !== false;
+    case 'deploy-history': return caps.bootstrap_script !== false;
     default: return true;
   }
 }
@@ -387,7 +393,11 @@ function onTabSaved() {
                 @saved="onTabSaved" />
             </TabsContent>
             <TabsContent value="bootstrap" class="mt-5">
-              <BootstrapTab :agent-id="agentId" :disabled="!isTabEditable('bootstrap')" />
+              <BootstrapTab :agent-id="agentId" :agent="selectedAgent" :disabled="!isTabEditable('bootstrap')"
+                @saved="onTabSaved" />
+            </TabsContent>
+            <TabsContent value="deploy-history" class="mt-5">
+              <DeployHistoryTab :agent-id="agentId" />
             </TabsContent>
           </Tabs>
         </div>
