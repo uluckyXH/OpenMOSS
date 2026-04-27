@@ -1,6 +1,6 @@
 # 管理端配置态 Agent 接口
 
-> 最后同步：2026-04-22
+> 最后同步：2026-04-27
 > 接口前缀：`/api/admin/managed-agents`
 > 鉴权方式：`X-Admin-Token`
 > 对应代码：`app/routers/admin/managed_agents.py`
@@ -18,7 +18,7 @@
 - 定时任务管理
 - 宿主通讯渠道配置管理
 - Bootstrap Token 管理
-- 部署变更集（deploy-preview / deploy-script / deployment-snapshots / dismiss）
+- 部署状态判断与变更集（deployment-state / deploy-preview / deploy-script / deployment-snapshots / dismiss）
 
 ## 2. 请求头
 
@@ -905,7 +905,78 @@ Content-Type: application/json
 | `404` | 配置态 Agent 不存在 |
 | `422` | Query 参数格式错误 |
 
-### 5.25 部署变更预检
+### 5.25 查询部署阶段
+
+#### `GET /api/admin/managed-agents/{agent_id}/deployment-state`
+
+作用：返回当前 Agent 的部署阶段与推荐脚本意图。前端在打开“生成脚本 / 部署变更”入口时应优先调用此接口，用它判断默认展示“首次接入”还是“同步变更”，避免前端自行拼接多个字段做判断。
+
+#### Path 参数
+
+| 参数 | 类型 | 必填 | 说明 |
+|---|---|---|---|
+| `agent_id` | string | 是 | 配置态 Agent ID |
+
+#### 成功返回
+
+- 状态码：`200`
+
+响应字段：
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `managed_agent_id` | string | 配置态 Agent ID |
+| `deployment_phase` | string | 当前部署阶段：`first_onboarding / sync_required / up_to_date` |
+| `recommended_script_intent` | string/null | 推荐脚本意图：`bootstrap / sync / null` |
+| `is_first_onboarding` | bool | 是否首次接入 |
+| `has_confirmed_deployment` | bool | 是否已有确认完成的部署版本 |
+| `needs_redeploy` | bool | 当前配置版本是否需要重新部署 |
+| `config_version` | int | 当前配置版本 |
+| `deployed_config_version` | int/null | 已确认部署的配置版本；首次接入前为 `null` |
+| `deploy_ready` | bool | 平台配置是否满足生成脚本的前置条件 |
+| `runtime_registered` | bool | 是否已经关联运行态 Agent |
+| `message` | string | 给前端展示或调试使用的阶段说明 |
+
+阶段规则：
+
+| deployment_phase | 判定规则 | recommended_script_intent | 前端建议 |
+|---|---|---|---|
+| `first_onboarding` | `deployed_config_version == null` | `bootstrap` | 展示“首次接入”，默认生成首次接入脚本 |
+| `sync_required` | `deployed_config_version != null && config_version != deployed_config_version` | `sync` | 展示“同步变更”，默认生成同步脚本 |
+| `up_to_date` | `deployed_config_version != null && config_version == deployed_config_version` | `null` | 展示“已同步”，不默认引导生成脚本 |
+
+注意：
+
+- `deploy_ready` 不改变部署阶段，只表示当前平台配置是否满足生成脚本前置条件。
+- `runtime_registered` 用于前端辅助展示运行态身份状态，不等同于是否已完成部署。
+- 如果 `deployment_phase = first_onboarding` 但 `deploy_ready = false`，前端应先引导用户补齐平台配置。
+
+#### 响应示例
+
+```json
+{
+  "managed_agent_id": "6df7f65f-7d43-4f0e-bdf0-38c7f37fe84e",
+  "deployment_phase": "first_onboarding",
+  "recommended_script_intent": "bootstrap",
+  "is_first_onboarding": true,
+  "has_confirmed_deployment": false,
+  "needs_redeploy": false,
+  "config_version": 1,
+  "deployed_config_version": null,
+  "deploy_ready": true,
+  "runtime_registered": false,
+  "message": "当前 Agent 尚未确认过部署，建议走首次接入流程。"
+}
+```
+
+#### 错误码
+
+| 状态码 | 说明 |
+|---|---|
+| `403` | 管理员鉴权失败 |
+| `404` | 配置态 Agent 不存在 |
+
+### 5.26 部署变更预检
 
 #### `POST /api/admin/managed-agents/{agent_id}/deploy-preview`
 
@@ -1002,11 +1073,20 @@ Content-Type: application/json
 | `403` | 管理员鉴权失败 |
 | `404` | 配置态 Agent 不存在 |
 
-### 5.26 生成部署脚本
+### 5.27 生成部署脚本
 
 #### `POST /api/admin/managed-agents/{agent_id}/deploy-script`
 
-作用：计算变更集、校验通过后写入 pending 快照并返回变更清单。后续 Shell 脚本执行结果通过 `/api/deploy/{id}/report` 回传。
+作用：计算变更集、校验通过后写入 `pending` 部署快照并返回变更清单。后续 Shell 脚本执行结果通过 `/api/deploy/{id}/report` 回传。
+
+补充说明：
+
+- 默认情况下，同一个 Agent 同一种 `script_intent` 只允许存在一条未完成的 `pending` 部署快照。
+- 如果已存在同类 `pending` 快照，接口会返回 `409 DEPLOYMENT_SNAPSHOT_CONFLICT`，前端应提示用户确认旧脚本和旧 Token 将失效。
+- 用户确认后，前端重新请求并传 `replace_pending_snapshot=true`；后端会先撤销旧快照关联 Token，将旧快照标记为 `cancelled`，再创建新的 `pending` 快照。
+- 部署快照用于记录本次选择部署的 Prompt 资产、定时任务和通讯绑定资源。
+- `snapshot_timeout_seconds` 会在创建快照时换算为 `expires_at` 并锁定到该快照上，后续修改默认超时时间不会影响已创建快照。
+- 如果目标机器未执行脚本、脚本卡死、终端关闭或网络异常导致没有回传，后端启动时会将已过期的 `pending` 快照标记为 `timeout`。
 
 #### Path 参数
 
@@ -1024,6 +1104,17 @@ Content-Type: application/json
 | `comm_binding_ids` | string[] | 否 | 通讯绑定 ID 列表 |
 | `register_ttl_seconds` | int | 否 | 注册 token 有效期（秒），默认 `3600`，最小 `60`，仅 bootstrap |
 | `download_ttl_seconds` | int | 否 | 下载 token 有效期（秒），默认 `86400`，最小 `60`，仅 bootstrap |
+| `snapshot_timeout_seconds` | int | 否 | 部署快照超时时间（秒），默认 `1800`，最小 `60`，最大 `86400` |
+| `replace_pending_snapshot` | bool | 否 | 是否确认替换同 Agent + 同 `script_intent` 的旧 `pending` 快照，默认 `false` |
+
+字段说明：
+
+- `snapshot_timeout_seconds` 控制本次生成脚本对应的部署快照多久没有回传就视为超时。
+- 默认 `1800` 秒，即 30 分钟。
+- 该字段只影响本次新创建的部署快照，不是全局配置项。
+- 前端如用分钟输入，需要提交前转换为秒。
+- `replace_pending_snapshot=false` 时，发现同类未完成快照会返回 `409`，不会创建新快照。
+- `replace_pending_snapshot=true` 只能由用户确认替换后提交，前端不应默认静默开启。
 
 #### 成功返回
 
@@ -1047,7 +1138,9 @@ Content-Type: application/json
   "schedule_ids": ["e5a6f0b2-..."],
   "comm_binding_ids": ["c8d3a1f4-..."],
   "register_ttl_seconds": 3600,
-  "download_ttl_seconds": 86400
+  "download_ttl_seconds": 86400,
+  "snapshot_timeout_seconds": 1800,
+  "replace_pending_snapshot": false
 }
 ```
 
@@ -1079,13 +1172,47 @@ Content-Type: application/json
 |---|---|
 | `403` | 管理员鉴权失败 |
 | `404` | 配置态 Agent 不存在 |
-| `422` | 变更集校验失败（返回 `errors` 数组），或 sync 意图未选择任何资源 |
+| `409` | 已存在同 Agent + 同 `script_intent` 的未完成部署快照；确认替换后带 `replace_pending_snapshot=true` 重试 |
+| `422` | 变更集校验失败（返回 `errors` 数组）、sync 意图未选择任何资源，或 `snapshot_timeout_seconds` 不在 `60 ~ 86400` 范围内 |
 
-### 5.27 查看部署历史
+#### 409 冲突响应示例
+
+```json
+{
+  "detail": {
+    "error_code": "DEPLOYMENT_SNAPSHOT_CONFLICT",
+    "message": "当前 Agent 已存在一份未完成的同类部署脚本。确认重新生成后，旧脚本和旧 Token 将失效。",
+    "conflict_snapshot": {
+      "id": "a1b2c3d4-...",
+      "script_intent": "sync",
+      "created_at": "2026-04-27T20:00:00",
+      "expires_at": "2026-04-27T20:30:00",
+      "is_likely_timeout": false
+    }
+  }
+}
+```
+
+### 5.28 查看部署历史
 
 #### `GET /api/admin/managed-agents/{agent_id}/deployment-snapshots`
 
 作用：获取该 Agent 的全部部署快照记录，按创建时间倒序排列。
+
+状态说明：
+
+- `pending`：脚本已生成，但目标机器尚未回传执行结果。
+- `confirmed`：脚本回传成功，部署已确认。
+- `failed`：脚本回传失败，`failure_detail_json` 中包含失败详情。
+- `timeout`：快照超过 `expires_at` 后仍未回传，后端启动扫描时自动标记为超时。
+- `cancelled`：被用户确认重新生成的同类脚本替换，旧脚本和旧 Token 已失效。
+
+超时提示说明：
+
+- `expires_at` 是该快照创建时锁定的超时截止时间。
+- `is_likely_timeout` 是读取时计算的虚拟字段，仅用于前端提示。
+- 当 `status = pending` 且当前时间已超过 `expires_at`，但服务还没经过启动扫描时，`is_likely_timeout = true`。
+- 前端可将 `pending + is_likely_timeout = true` 展示为“疑似超时”，将 `status = timeout` 展示为“超时未回传”。
 
 #### Path 参数
 
@@ -1106,10 +1233,32 @@ Content-Type: application/json
 | `script_intent` | string | `bootstrap / sync` |
 | `config_version` | int | 对应配置版本号 |
 | `snapshot_json` | string | 本次部署的资源 ID 清单（JSON 文本） |
-| `status` | string | `pending / confirmed / failed` |
+| `status` | string | `pending / confirmed / failed / timeout / cancelled` |
 | `failure_detail_json` | string/null | 失败时的错误详情（JSON 文本） |
 | `created_at` | datetime | 创建时间 |
+| `expires_at` | datetime/null | 超时截止时间，创建快照时根据 `snapshot_timeout_seconds` 锁定 |
 | `confirmed_at` | datetime/null | 确认完成时间 |
+| `is_likely_timeout` | bool | 是否读取时判断为疑似超时；仅作前端提示，不等同于已写库的 `timeout` 状态 |
+
+#### 响应示例
+
+```json
+[
+  {
+    "id": "a1b2c3d4-...",
+    "managed_agent_id": "6df7f65f-7d43-4f0e-bdf0-38c7f37fe84e",
+    "script_intent": "bootstrap",
+    "config_version": 3,
+    "snapshot_json": "{\"prompt_artifact_keys\":[\"system_prompt\"],\"schedules\":[],\"comm_bindings\":[]}",
+    "status": "pending",
+    "failure_detail_json": null,
+    "created_at": "2026-04-27T10:00:00",
+    "expires_at": "2026-04-27T10:30:00",
+    "confirmed_at": null,
+    "is_likely_timeout": false
+  }
+]
+```
 
 #### 错误码
 
@@ -1118,7 +1267,7 @@ Content-Type: application/json
 | `403` | 管理员鉴权失败 |
 | `404` | 配置态 Agent 不存在 |
 
-### 5.28 忽略已删除资源的清理提醒
+### 5.29 忽略已删除资源的清理提醒
 
 #### `POST /api/admin/managed-agents/{agent_id}/deployment-snapshot/dismiss`
 
@@ -1165,4 +1314,3 @@ Content-Type: application/json
 |---|---|
 | `403` | 管理员鉴权失败 |
 | `404` | 配置态 Agent 不存在 |
-

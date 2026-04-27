@@ -42,6 +42,7 @@ def _serialize_created_bootstrap_token(
     return {
         "id": row.id,
         "managed_agent_id": row.managed_agent_id,
+        "deployment_snapshot_id": row.deployment_snapshot_id,
         "token": token,
         "purpose": row.purpose,
         "expires_at": row.expires_at,
@@ -71,6 +72,7 @@ def create_bootstrap_token(
     purpose: str,
     ttl_seconds: int,
     scope: Optional[dict[str, Any]] = None,
+    deployment_snapshot_id: Optional[str] = None,
 ) -> dict[str, Any]:
     """创建 bootstrap token，并返回一次性明文 token。"""
     get_managed_agent_or_404(db, managed_agent_id)
@@ -85,6 +87,7 @@ def create_bootstrap_token(
     row = ManagedAgentBootstrapToken(
         id=str(uuid.uuid4()),
         managed_agent_id=managed_agent_id,
+        deployment_snapshot_id=deployment_snapshot_id,
         token_hash=hash_bootstrap_token(token),
         purpose=purpose,
         scope_json=_serialize_scope(scope),
@@ -105,6 +108,7 @@ def create_or_reissue_bootstrap_token(
     ttl_seconds: int,
     scope: Optional[dict[str, Any]] = None,
     min_remaining_seconds: int = 0,
+    deployment_snapshot_id: Optional[str] = None,
 ) -> dict[str, Any]:
     """优先复用同 scope 的有效 token 记录，避免重复创建。
 
@@ -130,6 +134,11 @@ def create_or_reissue_bootstrap_token(
         .filter(ManagedAgentBootstrapToken.revoked_at.is_(None))
         .filter(ManagedAgentBootstrapToken.expires_at > now)
     )
+    if deployment_snapshot_id is None:
+        query = query.filter(ManagedAgentBootstrapToken.deployment_snapshot_id.is_(None))
+    else:
+        query = query.filter(ManagedAgentBootstrapToken.deployment_snapshot_id == deployment_snapshot_id)
+
     if purpose == "register_runtime":
         query = query.filter(ManagedAgentBootstrapToken.used_at.is_(None))
 
@@ -162,6 +171,7 @@ def create_or_reissue_bootstrap_token(
         purpose=purpose,
         ttl_seconds=ttl_seconds,
         scope=scope,
+        deployment_snapshot_id=deployment_snapshot_id,
     )
 
 
@@ -247,6 +257,7 @@ def serialize_bootstrap_token(bootstrap_token: ManagedAgentBootstrapToken) -> di
     return {
         "id": bootstrap_token.id,
         "managed_agent_id": bootstrap_token.managed_agent_id,
+        "deployment_snapshot_id": bootstrap_token.deployment_snapshot_id,
         "token_masked": "仅创建时可见",
         "purpose": bootstrap_token.purpose,
         "scope_json": bootstrap_token.scope_json,

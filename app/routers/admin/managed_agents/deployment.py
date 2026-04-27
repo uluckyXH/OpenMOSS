@@ -11,6 +11,7 @@ from app.schemas.managed_agent import (
     DeployPreviewResponse,
     DeployScriptRequest,
     DeploySnapshotDismissRequest,
+    DeploymentStateResponse,
 )
 from app.services import managed_agent as svc
 
@@ -25,6 +26,39 @@ def _get_renderer_prompt_keys(host_platform: str) -> list[str]:
     if host_platform == "openclaw":
         return _OPENCLAW_PROMPT_KEYS
     return []
+
+
+def _build_deployment_snapshot_conflict_detail(snapshot) -> dict:
+    """构造同类 pending 快照冲突响应。"""
+    data = svc.serialize_deployment_snapshot(snapshot)
+    created_at = data["created_at"]
+    expires_at = data["expires_at"]
+    return {
+        "error_code": "DEPLOYMENT_SNAPSHOT_CONFLICT",
+        "message": "当前 Agent 已存在一份未完成的同类部署脚本。确认重新生成后，旧脚本和旧 Token 将失效。",
+        "conflict_snapshot": {
+            "id": data["id"],
+            "script_intent": data["script_intent"],
+            "created_at": created_at.isoformat() if created_at else None,
+            "expires_at": expires_at.isoformat() if expires_at else None,
+            "is_likely_timeout": data["is_likely_timeout"],
+        },
+    }
+
+
+@router.get("/{agent_id}/deployment-state", response_model=DeploymentStateResponse)
+def get_agent_deployment_state(
+    agent_id: str,
+    _: bool = Depends(verify_admin),
+    db: Session = Depends(get_db),
+):
+    """获取脚本生成入口需要的部署阶段与推荐意图。"""
+    try:
+        return DeploymentStateResponse.model_validate(
+            svc.compute_deployment_state(db, agent_id)
+        )
+    except BusinessError as exc:
+        raise HTTPException(status_code=exc.status_code, detail=str(exc))
 
 
 @router.post("/{agent_id}/deploy-preview", response_model=DeployPreviewResponse)
@@ -95,6 +129,23 @@ def deploy_script(
             body.prompt_artifact_keys or body.schedule_ids or body.comm_binding_ids
         ):
             raise HTTPException(status_code=422, detail="sync 意图必须选择至少一类资源")
+
+        conflict_snapshot = svc.get_pending_deployment_snapshot_conflict(
+            db,
+            agent_id,
+            body.script_intent,
+        )
+        if conflict_snapshot is not None and not body.replace_pending_snapshot:
+            raise HTTPException(
+                status_code=409,
+                detail=_build_deployment_snapshot_conflict_detail(conflict_snapshot),
+            )
+        if conflict_snapshot is not None:
+            svc.cancel_pending_deployment_snapshots(
+                db,
+                agent_id,
+                body.script_intent,
+            )
 
         schedules = svc.list_schedules(db, agent_id)
         schedule_map = {item.id: item for item in schedules}

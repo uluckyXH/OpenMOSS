@@ -129,7 +129,7 @@ When editing bootstrap/onboarding behavior, expect changes across schemas, admin
 
 ## Development conventions
 
-All Python code under `app/` must follow these conventions. See `dev-docs/开发规范.md` for full details, `dev-docs/全项目模块拆分规划.md` for the refactoring plan.
+All Python code under `app/` must follow these conventions. The rules below are the authoritative source; `dev-docs/规范/` contains supplementary details.
 
 ### Functional domains
 
@@ -137,12 +137,12 @@ The project is organized into 6 functional domains. Each domain is an independen
 
 | Domain | Purpose | Router | Service | Schema | Test |
 |---|---|---|---|---|---|
-| **agent-config** | Admin manages config-state Agents | `routers/admin/managed_agents/` | `services/managed_agent/` | `schemas/managed_agent/` | `test_managed_agents_api`, `test_deployment_service`, `test_host_renderers`, `test_migration_service` |
+| **agent-config** | Admin manages config-state Agents | `routers/admin/managed_agents/` | `services/managed_agent/` | `schemas/managed_agent/` | `test_managed_agents_api`, `test_managed_agents_comm_api`, `test_managed_agents_schedule_api`, `test_managed_agents_config_api`, `test_managed_agents_bootstrap_api`, `test_deployment_service`, `test_deployment_snapshot`, `test_host_renderers`, `test_migration_service` |
 | **bootstrap-deploy** | Token, script rendering, registration | `routers/bootstrap_deploy/` | `services/bootstrap/` | (shared with agent-config) | `test_bootstrap`, `test_deploy_api`, `tests/services/bootstrap/*`, `test_skill_bundle_service` |
 | **task-core** | Task assignment, sub-task state machine, review | `routers/task_core/` | `services/task_core/` | — | `test_tasks_api`, `test_sub_tasks_api`, `test_sub_task_service` |
 | **admin-query** | Dashboard, stats, audit logs (read-only) | `routers/admin/dashboard.py`, `routers/admin/tasks.py`, etc. | `services/admin_query/` | `schemas/admin/` | `test_admin_query_exceptions`, `test_admin_query_task`, `test_admin_query_dashboard`, `test_admin_query_score` |
-| **agent-runtime** | Agent-side: heartbeat, skill download, CLI | `routers/agent_runtime/` | `services/agent_service.py` | — | ✅ Good coverage |
-| **infra** | Config, DB, auth, middleware, startup | `config/`, `database.py`, `auth/` | `services/pagination.py`, etc. | — | ✅ Basic coverage |
+| **agent-runtime** | Agent-side: heartbeat, skill download, CLI | `routers/agent_runtime/` | `services/agent_runtime/` | — | `test_agents_heartbeat_api`, `test_agents_skill_bundle_api`, `test_heartbeat`, `test_task_cli_*`, `test_pack_skills` |
+| **infra** | Config, DB, auth, middleware, startup | `config/`, `database.py`, `auth/` | `services/pagination.py`, etc. | — | `test_health`, `test_database_init`, `test_schema_compat` |
 
 Cross-domain imports must go through the target domain's `__init__.py`. `infra` is a shared dependency for all domains.
 
@@ -150,7 +150,7 @@ Cross-domain imports must go through the target domain's `__init__.py`. `infra` 
 
 ```bash
 # agent-config
-pytest tests/api/test_managed_agents_api.py tests/services/test_deployment_service.py tests/services/test_host_renderers.py tests/services/test_migration_service.py -q
+pytest tests/api/test_managed_agents_api.py tests/api/test_managed_agents_comm_api.py tests/api/test_managed_agents_schedule_api.py tests/api/test_managed_agents_config_api.py tests/api/test_managed_agents_bootstrap_api.py tests/services/test_deployment_service.py tests/services/test_deployment_snapshot.py tests/services/test_host_renderers.py tests/services/test_migration_service.py -q
 
 # bootstrap-deploy
 pytest tests/api/test_bootstrap.py tests/api/test_deploy_api.py tests/services/bootstrap tests/services/test_skill_bundle_service.py -q
@@ -162,7 +162,7 @@ pytest tests/api/test_tasks_api.py tests/api/test_sub_tasks_api.py tests/service
 pytest tests/api/test_admin_query_exceptions.py tests/services/test_admin_query_*.py -q
 
 # agent-runtime
-pytest tests/api/test_agents_heartbeat_api.py tests/api/test_agents_skill_bundle_api.py tests/services/test_heartbeat.py tests/services/test_task_cli_*.py tests/services/test_pack_skills.py -q
+pytest tests/api/test_agents_heartbeat_api.py tests/api/test_agents_skill_bundle_api.py tests/api/test_feed_api.py tests/services/test_heartbeat.py tests/services/test_task_cli_*.py tests/services/test_pack_skills.py -q
 
 # infra
 pytest tests/test_health.py tests/test_database_init.py tests/services/test_schema_compat.py -q
@@ -170,7 +170,7 @@ pytest tests/test_health.py tests/test_database_init.py tests/services/test_sche
 
 ### Files exceeding standards (need refactoring)
 
-These files still exceed size limits. See `dev-docs/全项目模块拆分规划.md` for planned action:
+These files still exceed size limits. See `dev-docs/规范/全项目模块拆分规划.md` for planned action:
 
 | File | Lines | Limit | Domain | Planned action |
 |---|---|---|---|---|
@@ -181,7 +181,7 @@ These files still exceed size limits. See `dev-docs/全项目模块拆分规划.
 
 Router / Service / Schema must be organized by functional domain subpackages. If a domain has 2+ files in a layer, those files must be in a domain subpackage. Model files stay as single files (organized by aggregate root).
 
-Remaining layers not yet grouped into domain subpackages (planned in `dev-docs/全项目模块拆分规划.md`):
+Remaining layers not yet grouped into domain subpackages (planned in `dev-docs/规范/全项目模块拆分规划.md`):
 
 None at the moment. New scattered Router / Service / Schema files must be grouped into a domain subpackage before they grow further.
 

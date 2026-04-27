@@ -8,6 +8,7 @@ from pydantic import BaseModel, ConfigDict, Field
 
 DeployScriptIntent = Literal["bootstrap", "sync"]
 DeployChangeType = Literal["add", "update", "remove"]
+DeploymentPhase = Literal["first_onboarding", "sync_required", "up_to_date"]
 
 
 class DeployScriptRequest(BaseModel):
@@ -24,6 +25,10 @@ class DeployScriptRequest(BaseModel):
         ge=60,
         le=86400,
         description="部署快照超时时间（秒），默认 30 分钟",
+    )
+    replace_pending_snapshot: bool = Field(
+        default=False,
+        description="存在同 Agent + 同 script_intent 的待完成快照时，是否确认替换旧快照",
     )
 
 
@@ -81,7 +86,7 @@ class DeploySnapshotDismissRequest(BaseModel):
     prompt_artifact_keys: List[str] = Field(default_factory=list)
 
 
-DeploymentSnapshotStatus = Literal["pending", "confirmed", "failed", "timeout"]
+DeploymentSnapshotStatus = Literal["pending", "confirmed", "failed", "timeout", "cancelled"]
 
 
 class DeploymentSnapshotListItem(BaseModel):
@@ -100,3 +105,19 @@ class DeploymentSnapshotListItem(BaseModel):
     expires_at: Optional[datetime] = None
     confirmed_at: Optional[datetime] = None
     is_likely_timeout: bool = False
+
+
+class DeploymentStateResponse(BaseModel):
+    """部署阶段判断响应。"""
+
+    managed_agent_id: str
+    deployment_phase: DeploymentPhase
+    recommended_script_intent: Optional[DeployScriptIntent] = None
+    is_first_onboarding: bool
+    has_confirmed_deployment: bool
+    needs_redeploy: bool
+    config_version: int
+    deployed_config_version: Optional[int] = None
+    deploy_ready: bool = False
+    runtime_registered: bool = False
+    message: str

@@ -15,7 +15,10 @@ from typing import Any, Optional
 from sqlalchemy.orm import Session
 
 from app.exceptions import NotFoundError, ValidationError
-from app.models.managed_agent import ManagedAgentDeploymentSnapshot
+from app.models.managed_agent import (
+    ManagedAgentBootstrapToken,
+    ManagedAgentDeploymentSnapshot,
+)
 
 from .core import get_managed_agent_or_404
 
@@ -92,6 +95,74 @@ def create_deployment_snapshot(
     db.commit()
     db.refresh(row)
     return row
+
+
+def get_pending_deployment_snapshot_conflict(
+    db: Session,
+    managed_agent_id: str,
+    script_intent: str,
+) -> Optional[ManagedAgentDeploymentSnapshot]:
+    """获取同 Agent + 同 script_intent 下仍处于 pending 的最新快照。"""
+    get_managed_agent_or_404(db, managed_agent_id)
+    return (
+        db.query(ManagedAgentDeploymentSnapshot)
+        .filter(ManagedAgentDeploymentSnapshot.managed_agent_id == managed_agent_id)
+        .filter(ManagedAgentDeploymentSnapshot.script_intent == script_intent)
+        .filter(ManagedAgentDeploymentSnapshot.status == "pending")
+        .order_by(ManagedAgentDeploymentSnapshot.created_at.desc())
+        .first()
+    )
+
+
+def cancel_pending_deployment_snapshots(
+    db: Session,
+    managed_agent_id: str,
+    script_intent: str,
+    *,
+    reason: str = "replaced_by_new_snapshot",
+) -> list[ManagedAgentDeploymentSnapshot]:
+    """取消同 Agent + 同 script_intent 下的 pending 快照，并撤销关联 Token。"""
+    get_managed_agent_or_404(db, managed_agent_id)
+    rows = (
+        db.query(ManagedAgentDeploymentSnapshot)
+        .filter(ManagedAgentDeploymentSnapshot.managed_agent_id == managed_agent_id)
+        .filter(ManagedAgentDeploymentSnapshot.script_intent == script_intent)
+        .filter(ManagedAgentDeploymentSnapshot.status == "pending")
+        .order_by(ManagedAgentDeploymentSnapshot.created_at.asc())
+        .all()
+    )
+    if not rows:
+        return []
+
+    now = datetime.now()
+    snapshot_ids = [row.id for row in rows]
+    tokens = (
+        db.query(ManagedAgentBootstrapToken)
+        .filter(ManagedAgentBootstrapToken.managed_agent_id == managed_agent_id)
+        .filter(ManagedAgentBootstrapToken.deployment_snapshot_id.in_(snapshot_ids))
+        .filter(ManagedAgentBootstrapToken.revoked_at.is_(None))
+        .all()
+    )
+
+    for token in tokens:
+        token.revoked_at = now
+
+    detail = json.dumps(
+        {
+            "message": "部署快照已被新的同类脚本替换",
+            "reason": reason,
+            "cancelled_at": now.isoformat(),
+        },
+        ensure_ascii=False,
+    )
+    for row in rows:
+        row.status = "cancelled"
+        row.failure_detail_json = detail
+
+    db.commit()
+    for row in rows:
+        db.refresh(row)
+    return rows
 
 
 def expire_stale_pending_snapshots(db: Session) -> int:
@@ -198,6 +269,47 @@ def list_deployment_snapshots(
         .order_by(ManagedAgentDeploymentSnapshot.created_at.desc())
         .all()
     )
+
+
+def compute_deployment_state(db: Session, managed_agent_id: str) -> dict[str, Any]:
+    """计算前端脚本生成入口需要的部署阶段。"""
+    from .readiness import compute_readiness_for_agent
+    from .runtime_identity import compute_runtime_identity_for_agent
+
+    agent = get_managed_agent_or_404(db, managed_agent_id)
+    readiness = compute_readiness_for_agent(db, agent)
+    runtime_identity = compute_runtime_identity_for_agent(db, agent)
+    config_version = agent.config_version or 1
+    deployed_config_version = agent.deployed_config_version
+    has_confirmed_deployment = deployed_config_version is not None
+    needs_redeploy = has_confirmed_deployment and config_version != deployed_config_version
+
+    if not has_confirmed_deployment:
+        deployment_phase = "first_onboarding"
+        recommended_script_intent = "bootstrap"
+        message = "当前 Agent 尚未确认过部署，建议走首次接入流程。"
+    elif needs_redeploy:
+        deployment_phase = "sync_required"
+        recommended_script_intent = "sync"
+        message = "当前配置版本与已部署版本不一致，建议生成同步变更脚本。"
+    else:
+        deployment_phase = "up_to_date"
+        recommended_script_intent = None
+        message = "当前配置版本已完成部署，暂无必须同步的变更。"
+
+    return {
+        "managed_agent_id": agent.id,
+        "deployment_phase": deployment_phase,
+        "recommended_script_intent": recommended_script_intent,
+        "is_first_onboarding": not has_confirmed_deployment,
+        "has_confirmed_deployment": has_confirmed_deployment,
+        "needs_redeploy": needs_redeploy,
+        "config_version": config_version,
+        "deployed_config_version": deployed_config_version,
+        "deploy_ready": bool(readiness.get("deploy_ready", False)),
+        "runtime_registered": bool(runtime_identity.get("registered", False)),
+        "message": message,
+    }
 
 
 def dismiss_snapshot_resources(

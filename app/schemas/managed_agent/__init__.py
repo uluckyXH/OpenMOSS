@@ -49,8 +49,10 @@ from .deployment import (
     DeployChangeset,
     DeployChangesetItem,
     DeployChangeType,
+    DeploymentPhase,
     DeploymentSnapshotListItem,
     DeploymentSnapshotStatus,
+    DeploymentStateResponse,
     DeployPreviewRequest,
     DeployPreviewResponse,
     DeployReportRequest,
@@ -76,8 +78,10 @@ __all__ = [
     "DeployChangeset",
     "DeployChangesetItem",
     "DeployChangeType",
+    "DeploymentPhase",
     "DeploymentSnapshotListItem",
     "DeploymentSnapshotStatus",
+    "DeploymentStateResponse",
     "DeployPreviewRequest",
     "DeployPreviewResponse",
     "DeployReportRequest",
@@ -133,4 +137,3 @@ __all__ = [
     "ManagedAgentStatus",
     "ManagedAgentUpdateRequest",
 ]
-

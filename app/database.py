@@ -82,6 +82,9 @@ def init_db():
     # 静默迁移旧状态值（available/busy → active，offline → disabled）
     _migrate_agent_statuses()
 
+    # 静默补列：给已有表追加新增字段（create_all 不会 ALTER 已有表）
+    _migrate_add_missing_columns()
+
     # 首次启动时，自动导入全局规则模板
     _load_default_rules()
 
@@ -137,5 +140,31 @@ def _load_default_rules():
         db.add(rule)
         db.commit()
         logger.info("已导入全局规则模板 → rules/global-rule-example.md")
+    finally:
+        db.close()
+
+
+def _migrate_add_missing_columns():
+    """静默补列：给已有表追加后续版本新增的字段。
+
+    create_all() 只创建不存在的表，不会给已有表加列。
+    每个 ALTER 单独 try/except，列已存在时静默跳过。
+    """
+    from sqlalchemy import text
+
+    _columns = [
+        ("managed_agent_deployment_snapshot", "expires_at", "DATETIME"),
+        ("managed_agent_bootstrap_token", "deployment_snapshot_id", "VARCHAR(36)"),
+    ]
+
+    db = SessionLocal()
+    try:
+        for table, column, col_type in _columns:
+            try:
+                db.execute(text(f"ALTER TABLE {table} ADD COLUMN {column} {col_type}"))
+                db.commit()
+                logger.info("已补列 %s.%s", table, column)
+            except Exception:
+                db.rollback()  # 列已存在，静默跳过
     finally:
         db.close()

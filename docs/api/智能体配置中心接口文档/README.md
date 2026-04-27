@@ -47,6 +47,7 @@
 - `DELETE /api/admin/managed-agents/{agent_id}/bootstrap-tokens/{token_id}`
 - `GET /api/admin/managed-agents/{agent_id}/bootstrap-script`
 - `GET /api/admin/managed-agents/{agent_id}/onboarding-message`
+- `GET /api/admin/managed-agents/{agent_id}/deployment-state`
 - `POST /api/admin/managed-agents/{agent_id}/deploy-preview`
 - `POST /api/admin/managed-agents/{agent_id}/deploy-script`
 - `GET /api/admin/managed-agents/{agent_id}/deployment-snapshots`

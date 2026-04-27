@@ -126,6 +126,7 @@ class ManagedAgentBootstrapToken(Base):
 
     id = Column(String(36), primary_key=True, default=_uuid)
     managed_agent_id = Column(String(36), nullable=False, index=True, comment="关联 managed_agent.id")
+    deployment_snapshot_id = Column(String(36), nullable=True, index=True, comment="关联部署快照 ID")
     token_hash = Column(String(128), nullable=False, comment="token 的哈希值")
     purpose = Column(String(30), nullable=False, comment="download_script / register_runtime")
     scope_json = Column(Text, nullable=True, comment="附加范围信息 JSON")
@@ -144,7 +145,7 @@ class ManagedAgentDeploymentSnapshot(Base):
     script_intent = Column(String(20), nullable=False, comment="bootstrap / sync")
     config_version = Column(Integer, nullable=False, comment="对应的配置版本号")
     snapshot_json = Column(Text, nullable=False, comment="本次部署的资源 ID 清单（JSON 文本）")
-    status = Column(String(20), nullable=False, default="pending", comment="pending / confirmed / failed / timeout")
+    status = Column(String(20), nullable=False, default="pending", comment="pending / confirmed / failed / timeout / cancelled")
     failure_detail_json = Column(Text, nullable=True, comment="失败时的错误详情（JSON 文本）")
     created_at = Column(DateTime, default=datetime.now, comment="创建时间")
     expires_at = Column(DateTime, nullable=True, comment="超时截止时间，创建时锁定")
