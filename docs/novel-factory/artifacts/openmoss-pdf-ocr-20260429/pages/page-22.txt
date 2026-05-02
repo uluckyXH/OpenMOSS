@@ -1,0 +1,36 @@
+2026/4/5 16:58                                                    【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+reviewer BEBE, MEARE.
+Al_reviewer 的实际状态。
+创建好了.
+当前状态
+我这边确认囊:
++ Agent Bait
++ Mm: ai_reviewer (AI_reviewer)
++ workspace: ~/.openclaw/workspace~
+Al_reviewer
+«agentOir: ~/.openclaw/agents/ai_reviewer/
+agent
++ GH reviewer RBERH
++Feishu reviewer: enabled, configured,
+Tunning, works
+"已经撞定到这个 agent
+"fewviewer 这箱飞书提道已经挂到 AT_reviewer /
+ai_reviewer 这个 agent 上了
+一个你名要知道的小姻节
+你输入的名字是:
+|                                                1
+但 OpenCiaw 实际世地后的 agent id 显示成了:
+PR      |
+HERE T MMR,                                      :      |
+ADERARRENG. HE. RHWMSS, WA              SA ify
+@ sz
+©    OpenClaw: access not configured.
+ou_50e9001624b4d708d28368cccc31ee04
+Pairing code: 3TDZR35F
+Ask the bot owner to approve with:
+openclaw pairing approve feishu 3TDZR35F
+                        加
+楼主
+等级
+https:Wlinux.do/ttopic/1794669                                                                                               22/62
+

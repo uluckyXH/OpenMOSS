@@ -1,0 +1,19 @@
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+为了方便后续工作协同，建议目录名与项目名一致，可以在很大程度上防止 OpenClaw
+的大模型操作幻觉。
+欢迎使用OpenMOSS
+多 Al Agent 自组织协作平台 一 初始化设置
+8      @       3        4        5
+配置项目名称和工作目录
+项目名称
+OpenMOSS                                     重点
+工作目录
+1TaskWork
+BB OpenClaw BHM LMR ARM, MA Agent 都会在此目录下读写产出
+物。请确保该路径在服务器上已存在县 Agent 进程有读写权限。
+第三步: 配置 Agent 注册令牌
+这个令牌很关键，是必须的，当你的 Agent 还没注册 OpenMOSS 时，它是没有权限访
+问的，没办法直接和 OpenMOSS 进行交互，你需要让 Agent 通过令牌注册后获得 API
+Key 并存储下来，才能真正交互上 (下面会说怎么让它们对接，请继续往下看)
+https://linux.do/t/topic/1794669                                                                                                 9/62
+

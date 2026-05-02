@@ -1,0 +1,65 @@
+{
+  "purpose": "方案 A 真实主链验证器（P0/P1 分层）的 agent 映射。支持最小主链与增强挂件层。",
+  "live_runtime": {
+    "base_url": "http://127.0.0.1:6565",
+    "health": "ok",
+    "database_path": "/home/joviji/.openclaw/workspace/openmoss/data/tasks.db"
+  },
+  "openmoss_assigned_agents": {
+    "planner": "0f74b7e1-5629-455b-9652-f26cc9f2cd38",
+    "plot-architect": "a1ccfbff-3326-4861-a02a-c10c962d5ac7",
+    "scene-architect": "c0c0c5ef-51fe-45e0-a3da-84ba869299f9",
+    "writer": "b204a2a4-c27a-40ec-95c8-e69bccde7343",
+    "dialogue-expert": "2767ee3b-fde7-489f-a860-5ce6fe7ee104",
+    "emotion-curve-designer": "520654a1-3215-468f-8dfc-e757a6626302",
+    "character-growth": "7084c5e6-adf0-4721-aaf7-d66346d5bc9f",
+    "psychological-portrayal-expert": "62b27050-521d-4da9-956a-b3ca4cfc5fd9",
+    "opening-ending-designer": "f2208e3a-9125-4739-883d-98e78ad8f2ca",
+    "hook-designer": "67c7c86a-5229-445b-a444-76342d2a812b",
+    "reviewer": "29ee9f53-663c-4d75-b448-f3352b67cd34",
+    "revision-polish-expert": "a4d5a988-6ec0-445c-8341-2b796e7e230c",
+    "style-consistency-checker": "8508ab10-3081-4cd2-bcfb-a8a7f30a4c13",
+    "final-assembler": "d25cf6c8-9ac5-4da9-a1c0-b3e5d95de8f7"
+  },
+  "openmoss_agent_names": {
+    "planner": "hermes-official-online-20260418-061024-01-小说任务规划师",
+    "plot-architect": "hermes-official-online-20260418-061024-02-情节架构师",
+    "scene-architect": "hermes-official-online-20260418-061024-03-场景架构师",
+    "writer": "hermes-official-online-20260418-061024-04-正文起草者",
+    "dialogue-expert": "hermes-official-online-20260418-061024-05-对话专家",
+    "emotion-curve-designer": "hermes-official-online-20260418-061024-06-情感曲线设计师",
+    "character-growth": "hermes-official-online-20260418-061024-07-成长弧设计师",
+    "psychological-portrayal-expert": "hermes-official-online-20260418-061024-08-心理描写专家",
+    "opening-ending-designer": "hermes-official-online-20260418-061024-09-开篇收尾设计师",
+    "hook-designer": "hermes-official-online-20260418-061024-10-钩子设计师",
+    "reviewer": "hermes-official-online-20260418-061024-13-小说综合审查员",
+    "revision-polish-expert": "hermes-official-online-20260418-061024-11-修订润色师",
+    "style-consistency-checker": "hermes-official-online-20260418-061024-14-风格一致性检查器",
+    "final-assembler": "hermes-official-online-20260418-061024-12-最终组装师"
+  },
+  "openclaw_session_mapping_observation": {
+    "current_config_semantic_role_map": {
+      "planner": "tg-jiran",
+      "reviewer": "tg-siheng",
+      "writer": "tg-wenqu"
+    },
+    "current_config_system_role_map": {
+      "executor": "tg-wenqu",
+      "planner": "tg-jiran",
+      "reviewer": "tg-siheng"
+    },
+    "effect_for_scheme_a": {
+      "plot-architect": "falls back to system_role executor -> tg-wenqu unless overridden",
+      "scene-architect": "falls back to system_role executor -> tg-wenqu unless overridden",
+      "writer": "semantic_role writer -> tg-wenqu",
+      "reviewer": "semantic_role reviewer -> tg-siheng",
+      "final-assembler": "falls back to system_role executor -> tg-wenqu unless overridden"
+    }
+  },
+  "decision": {
+    "change_openmoss_agent_schema": false,
+    "register_new_openmoss_agents_required": false,
+    "recommended_for_verifier": "Use the openmoss_assigned_agents map above. Do not mutate existing agents for the first validation run.",
+    "optional_later": "If the goal changes from 'nodes truly execute' to 'each semantic role uses a different OpenClaw account', add explicit dispatch.openclaw.semantic_role_map entries or assigned_agent_map overrides in a separate config patch."
+  }
+}

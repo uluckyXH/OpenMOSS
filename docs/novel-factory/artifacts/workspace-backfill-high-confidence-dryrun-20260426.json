@@ -1,0 +1,1013 @@
+{
+  "mode": "dry_run",
+  "db_path": "data/tasks.db",
+  "mapping_path": "docs/novel-factory/artifacts/workspace-backfill-high-confidence-map-20260426.json",
+  "task_ids_filter": [],
+  "candidate_count": 0,
+  "skipped_count": 200,
+  "workspace_context_source": "high_confidence_mapping_backfill",
+  "workspace_context_backfill_batch": "workspace-backfill-high-confidence-map-20260426",
+  "candidates": [],
+  "skipped": [
+    {
+      "sub_task_id": "6e125933-e5a3-41c4-a2b3-6cfba75e5dde",
+      "task_id": "94747eed-f0a5-4be4-9d60-403f965b95a9",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "66e29880-c3f5-42c3-a9fb-373f65b6680c",
+      "task_id": "94747eed-f0a5-4be4-9d60-403f965b95a9",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "7594fbd9-a361-4821-933d-71ea90bd9826",
+      "task_id": "17b348b2-6fa6-4343-a376-0f590556ca1d",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "4058b189-b6f4-4792-af60-e719d0c3a8fc",
+      "task_id": "17b348b2-6fa6-4343-a376-0f590556ca1d",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "220fff40-67b4-43e3-bedf-bb04e3500ce0",
+      "task_id": "d202ad66-5b60-4deb-bc26-2b06cad72249",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "f63ed661-8039-4dbf-a7d3-2385431e178b",
+      "task_id": "d5f20f19-6a64-4635-899d-e87463e3eb56",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "bea8e409-26ff-492d-8f8f-442dfd73c6a9",
+      "task_id": "d5f20f19-6a64-4635-899d-e87463e3eb56",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "b9301d1f-914a-4f36-af17-3e0126153bc9",
+      "task_id": "d5f20f19-6a64-4635-899d-e87463e3eb56",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "ad143e8a-b528-40af-8d30-605e3e8dcf1e",
+      "task_id": "d5f20f19-6a64-4635-899d-e87463e3eb56",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "960a4a5c-c8f5-4390-9b2b-43ac7e7654f9",
+      "task_id": "d5f20f19-6a64-4635-899d-e87463e3eb56",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "94bff37f-8941-412d-871c-6664650b9c11",
+      "task_id": "d5f20f19-6a64-4635-899d-e87463e3eb56",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "7f5c7a51-2814-4ffc-8170-d8f754948bab",
+      "task_id": "d5f20f19-6a64-4635-899d-e87463e3eb56",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "71d415b2-62e8-4e9e-a647-9061fc434dcf",
+      "task_id": "d5f20f19-6a64-4635-899d-e87463e3eb56",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "5e376d5c-19ac-4c9e-b68e-42685178e43f",
+      "task_id": "d5f20f19-6a64-4635-899d-e87463e3eb56",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "4b25a885-eef3-4b21-bb7d-4fba85035ea8",
+      "task_id": "d5f20f19-6a64-4635-899d-e87463e3eb56",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "479c370b-12b7-4853-af61-c969205bc46c",
+      "task_id": "d5f20f19-6a64-4635-899d-e87463e3eb56",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "2c078090-5df9-4827-9fc1-3f16091ae6e7",
+      "task_id": "d5f20f19-6a64-4635-899d-e87463e3eb56",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "11beb901-4b4b-45bc-ab56-8a4a6b28173f",
+      "task_id": "d5f20f19-6a64-4635-899d-e87463e3eb56",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "f88f201e-3eaf-4296-9c8f-5c7a9a1fa560",
+      "task_id": "fc539811-d3a1-44ec-b097-ea827bd78907",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "f5025787-e3ef-4547-a9ee-cdc5402e580c",
+      "task_id": "fc539811-d3a1-44ec-b097-ea827bd78907",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "f4ec185d-27f2-4bbc-b57f-2f5a456b0ed9",
+      "task_id": "fc539811-d3a1-44ec-b097-ea827bd78907",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "f414d7d2-8750-4496-a38c-1523d8375635",
+      "task_id": "fc539811-d3a1-44ec-b097-ea827bd78907",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "d0f1e166-5881-4298-9c58-2478b2d07f0a",
+      "task_id": "fc539811-d3a1-44ec-b097-ea827bd78907",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "9389bd5e-cfd0-47c9-ae10-1d69136a852b",
+      "task_id": "fc539811-d3a1-44ec-b097-ea827bd78907",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "842736e2-1e9a-4d51-b0a0-44fb90602202",
+      "task_id": "fc539811-d3a1-44ec-b097-ea827bd78907",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "837c2a2f-7755-4382-ba98-c007fb09094a",
+      "task_id": "fc539811-d3a1-44ec-b097-ea827bd78907",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "51bdf35d-61ce-4f27-bf60-f07e294b9c9d",
+      "task_id": "fc539811-d3a1-44ec-b097-ea827bd78907",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "469f4fad-e5bd-4026-a0ba-594865884226",
+      "task_id": "fc539811-d3a1-44ec-b097-ea827bd78907",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "3ae1d8d0-0fb7-4ec5-a823-ed39bbc8bcc3",
+      "task_id": "fc539811-d3a1-44ec-b097-ea827bd78907",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "061bcb13-63fc-46d2-92e8-fcdbb54e3413",
+      "task_id": "fc539811-d3a1-44ec-b097-ea827bd78907",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "0310b050-92c0-4b10-bc43-f955c2147edc",
+      "task_id": "fc539811-d3a1-44ec-b097-ea827bd78907",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "fa16c1f3-9848-4a02-bb06-e8749da6bfb9",
+      "task_id": "493f4e04-1b18-484c-b0ba-6ca18d05dc36",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "f51d8c22-f1f5-47de-9f7e-05faf2027029",
+      "task_id": "493f4e04-1b18-484c-b0ba-6ca18d05dc36",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "e813ed61-54a0-4c4c-b02d-7a7d5a4d7390",
+      "task_id": "493f4e04-1b18-484c-b0ba-6ca18d05dc36",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "e37be04f-755a-4096-8525-c613b3b0a278",
+      "task_id": "493f4e04-1b18-484c-b0ba-6ca18d05dc36",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "da564161-9c96-492d-b7d2-e831c35281f4",
+      "task_id": "493f4e04-1b18-484c-b0ba-6ca18d05dc36",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "c59fab69-e18f-41cb-99f5-d6b21b15a14f",
+      "task_id": "493f4e04-1b18-484c-b0ba-6ca18d05dc36",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "bb041734-e29c-43ef-8c4f-6bb40ea4612d",
+      "task_id": "493f4e04-1b18-484c-b0ba-6ca18d05dc36",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "9c15b56e-dd50-4bdb-947e-1711d7f1b19e",
+      "task_id": "493f4e04-1b18-484c-b0ba-6ca18d05dc36",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "9baf29f8-7c7e-432c-b60a-2549a128eade",
+      "task_id": "493f4e04-1b18-484c-b0ba-6ca18d05dc36",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "9a7cf164-d40a-4643-b991-dace25052dea",
+      "task_id": "493f4e04-1b18-484c-b0ba-6ca18d05dc36",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "8e84702d-344d-456d-b81a-812e3be4a149",
+      "task_id": "493f4e04-1b18-484c-b0ba-6ca18d05dc36",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "667e5247-4135-439c-adee-b0bc497fe5b9",
+      "task_id": "493f4e04-1b18-484c-b0ba-6ca18d05dc36",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "4f9ca996-2938-450b-a31f-8b2aefffc6f2",
+      "task_id": "493f4e04-1b18-484c-b0ba-6ca18d05dc36",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "fc9a18af-3929-40de-b75d-897c079523b2",
+      "task_id": "19d848d3-9acc-406e-b545-6bb450d39e50",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "f87afd58-dea6-45f7-9b4f-4cdd6bea98e2",
+      "task_id": "19d848d3-9acc-406e-b545-6bb450d39e50",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "e0eeae4e-f26a-410e-8f6e-17e3985faff4",
+      "task_id": "19d848d3-9acc-406e-b545-6bb450d39e50",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "d8ee427d-2ff3-461c-ae39-45f359703f31",
+      "task_id": "19d848d3-9acc-406e-b545-6bb450d39e50",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "a50c5e63-f39b-4286-9e58-5d84c22c018c",
+      "task_id": "19d848d3-9acc-406e-b545-6bb450d39e50",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "90204cd0-7531-465f-9604-b231dd2669e1",
+      "task_id": "19d848d3-9acc-406e-b545-6bb450d39e50",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "797ee2c0-cb49-4d16-9731-94345869d738",
+      "task_id": "19d848d3-9acc-406e-b545-6bb450d39e50",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "774be8dd-0006-4654-82da-2222ff2393c5",
+      "task_id": "19d848d3-9acc-406e-b545-6bb450d39e50",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "55fa2645-3324-4a97-b7c8-a10a65d445f4",
+      "task_id": "19d848d3-9acc-406e-b545-6bb450d39e50",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "4e0d34d3-0ad6-4f77-bce9-b09c4e2ee09d",
+      "task_id": "19d848d3-9acc-406e-b545-6bb450d39e50",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "42115dc6-c70c-4588-aa07-0c40907a08a0",
+      "task_id": "19d848d3-9acc-406e-b545-6bb450d39e50",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "2ee58a70-7170-4b55-93fb-cf97770e13a8",
+      "task_id": "19d848d3-9acc-406e-b545-6bb450d39e50",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "26448507-f4b6-4ad8-b309-5b278711bd71",
+      "task_id": "19d848d3-9acc-406e-b545-6bb450d39e50",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "dfc78e69-e67a-411b-b2fd-ea8ac8eb007b",
+      "task_id": "a7ab496f-ee4f-43a7-a0ee-dc7c583eb346",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "daf25af8-a7cc-4f67-ae77-bc15df9178de",
+      "task_id": "a7ab496f-ee4f-43a7-a0ee-dc7c583eb346",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "d004ff74-0451-49c0-a2af-18873db9bc5b",
+      "task_id": "a7ab496f-ee4f-43a7-a0ee-dc7c583eb346",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "cd08964f-0894-4d1a-acd9-0a0f3e6a882f",
+      "task_id": "a7ab496f-ee4f-43a7-a0ee-dc7c583eb346",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "c1c53c0a-d8f7-4066-b50c-45104d516f88",
+      "task_id": "a7ab496f-ee4f-43a7-a0ee-dc7c583eb346",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "92ec9b1a-9983-4f72-81fc-41bb8fc76377",
+      "task_id": "a7ab496f-ee4f-43a7-a0ee-dc7c583eb346",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "87a5f9b2-4b5e-4ce9-9bab-60b32ef27fe2",
+      "task_id": "a7ab496f-ee4f-43a7-a0ee-dc7c583eb346",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "42b3fb54-7887-4d6e-83cf-fba16e69be38",
+      "task_id": "a7ab496f-ee4f-43a7-a0ee-dc7c583eb346",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "33dfabe2-3345-4b6a-a81e-1996c79c3e74",
+      "task_id": "a7ab496f-ee4f-43a7-a0ee-dc7c583eb346",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "3202e386-deaa-45a4-824b-d8e6e22d9671",
+      "task_id": "a7ab496f-ee4f-43a7-a0ee-dc7c583eb346",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "22ed83e1-1731-4171-8075-f7e52fdc9b70",
+      "task_id": "a7ab496f-ee4f-43a7-a0ee-dc7c583eb346",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "1a71ee78-424a-4b14-9e57-df5a2b1ca3f1",
+      "task_id": "a7ab496f-ee4f-43a7-a0ee-dc7c583eb346",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "19dbc51b-5a64-4f40-b88f-85e6c6347ea6",
+      "task_id": "a7ab496f-ee4f-43a7-a0ee-dc7c583eb346",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "e9f08e55-e29e-4e45-8bae-a644b321ead1",
+      "task_id": "4456fd32-ecf4-4451-a307-5fd013a9ab9d",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "dded2636-1cac-48b0-86e0-28f195eb735e",
+      "task_id": "4456fd32-ecf4-4451-a307-5fd013a9ab9d",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "d902533b-caff-4ad4-b7d0-edeb136c63f0",
+      "task_id": "4456fd32-ecf4-4451-a307-5fd013a9ab9d",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "c59a72d1-9642-4322-895a-522f7ccfe482",
+      "task_id": "4456fd32-ecf4-4451-a307-5fd013a9ab9d",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "c0c75fff-33b0-4131-b8e1-be29e8a91f62",
+      "task_id": "4456fd32-ecf4-4451-a307-5fd013a9ab9d",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "ae33c789-4dae-460b-ab45-0da10a54dba0",
+      "task_id": "4456fd32-ecf4-4451-a307-5fd013a9ab9d",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "a6bf0355-6c0a-4ca6-8c5f-eae08fe6afa8",
+      "task_id": "4456fd32-ecf4-4451-a307-5fd013a9ab9d",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "8d3196cb-387b-4cd6-8c13-ccd6c1ad2c17",
+      "task_id": "4456fd32-ecf4-4451-a307-5fd013a9ab9d",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "630831c8-d859-4ae7-9039-a233912d6235",
+      "task_id": "4456fd32-ecf4-4451-a307-5fd013a9ab9d",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "58b489b8-c8c1-4100-9c9a-87dd3923b873",
+      "task_id": "4456fd32-ecf4-4451-a307-5fd013a9ab9d",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "1f167e05-2d59-4812-9aba-23d46254d307",
+      "task_id": "4456fd32-ecf4-4451-a307-5fd013a9ab9d",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "1c1288b4-6763-4c8c-b55a-147f0db5d422",
+      "task_id": "4456fd32-ecf4-4451-a307-5fd013a9ab9d",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "09537b22-e7fb-4df9-881b-e7203973765c",
+      "task_id": "4456fd32-ecf4-4451-a307-5fd013a9ab9d",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "fcef832b-c3e2-45ac-9ed2-1fd7584cbce1",
+      "task_id": "72968da8-b338-4c24-8b5d-93c1cc4d450a",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "fa5b6124-d3fe-4cae-a13b-bcdfbb1ab391",
+      "task_id": "72968da8-b338-4c24-8b5d-93c1cc4d450a",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "a342e4bb-293f-4705-bf38-5da36d0bfcd0",
+      "task_id": "72968da8-b338-4c24-8b5d-93c1cc4d450a",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "a0b18fce-0a5f-47b9-9006-37c0a7815c8b",
+      "task_id": "72968da8-b338-4c24-8b5d-93c1cc4d450a",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "6a255cb5-84c2-4180-ad9e-76cef7157c4b",
+      "task_id": "72968da8-b338-4c24-8b5d-93c1cc4d450a",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "658ce748-cf65-4dd4-9ac2-6ebe79b6556f",
+      "task_id": "72968da8-b338-4c24-8b5d-93c1cc4d450a",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "4d6a94cb-18d4-402a-9755-48dbe3124ee2",
+      "task_id": "72968da8-b338-4c24-8b5d-93c1cc4d450a",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "2dfb73bd-0426-44b9-b2fd-959831581207",
+      "task_id": "72968da8-b338-4c24-8b5d-93c1cc4d450a",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "272873e5-c4e8-4686-8750-4e25ba476b06",
+      "task_id": "72968da8-b338-4c24-8b5d-93c1cc4d450a",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "24de529e-7fa5-4091-99f7-c1de633e79a4",
+      "task_id": "72968da8-b338-4c24-8b5d-93c1cc4d450a",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "1fd4a697-8671-4c63-8eca-2a9abc623021",
+      "task_id": "72968da8-b338-4c24-8b5d-93c1cc4d450a",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "18c626db-2a4b-4418-b493-1bfa160ef7a6",
+      "task_id": "72968da8-b338-4c24-8b5d-93c1cc4d450a",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "09983561-c36b-4512-8fbd-ffaa92ad6cee",
+      "task_id": "72968da8-b338-4c24-8b5d-93c1cc4d450a",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "f85d4a3d-e8dc-4f32-b324-89400fa86738",
+      "task_id": "426e8beb-f637-4e47-bf96-d8d5a9ddab67",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "e01ca2a5-dbdd-4999-a703-4dfadb5bbb56",
+      "task_id": "426e8beb-f637-4e47-bf96-d8d5a9ddab67",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "b904ef24-3cf3-4ca3-bffe-36b12a08dc03",
+      "task_id": "426e8beb-f637-4e47-bf96-d8d5a9ddab67",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "b6c9b7f8-f7c9-453a-b76d-a73fc9a567dd",
+      "task_id": "426e8beb-f637-4e47-bf96-d8d5a9ddab67",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "ab41192c-ea20-49bf-8ccb-f043bf8aea32",
+      "task_id": "426e8beb-f637-4e47-bf96-d8d5a9ddab67",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "939aa8fb-318d-4c44-9dae-f71555f07e10",
+      "task_id": "426e8beb-f637-4e47-bf96-d8d5a9ddab67",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "9301cfd8-e672-4083-9fe3-47f94778bb7a",
+      "task_id": "426e8beb-f637-4e47-bf96-d8d5a9ddab67",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "4d249c15-fa1d-4f7e-9cee-57c6e9f533d5",
+      "task_id": "426e8beb-f637-4e47-bf96-d8d5a9ddab67",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "3dc82538-c7ff-4f5b-8059-fba4de6df2a5",
+      "task_id": "426e8beb-f637-4e47-bf96-d8d5a9ddab67",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "27da7d73-1fdf-47dc-8f10-658d9532a4db",
+      "task_id": "426e8beb-f637-4e47-bf96-d8d5a9ddab67",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "16ec958c-e419-4252-94c2-3783e7c1a177",
+      "task_id": "426e8beb-f637-4e47-bf96-d8d5a9ddab67",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "14c9af44-51b3-4739-b97f-d1f4269332ff",
+      "task_id": "426e8beb-f637-4e47-bf96-d8d5a9ddab67",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "0f8d9b6e-03e4-4399-928c-48fef84865b8",
+      "task_id": "426e8beb-f637-4e47-bf96-d8d5a9ddab67",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "eb39e473-f8ec-4fe5-ad2b-af5efbf09b57",
+      "task_id": "c5620072-5f06-4edb-a811-d0bf1bb56965",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "e23f5721-51c5-4a1a-bcb3-403318f45ab7",
+      "task_id": "c5620072-5f06-4edb-a811-d0bf1bb56965",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "d6a002c7-785e-46c5-a85d-0b1345de2e34",
+      "task_id": "c5620072-5f06-4edb-a811-d0bf1bb56965",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "9fc6b525-b935-4d5c-9695-15db1a281d6e",
+      "task_id": "c5620072-5f06-4edb-a811-d0bf1bb56965",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "7aa54726-23f4-40df-81e4-75ea355a39e5",
+      "task_id": "c5620072-5f06-4edb-a811-d0bf1bb56965",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "77c724a6-72a9-4742-893c-325528e004b1",
+      "task_id": "c5620072-5f06-4edb-a811-d0bf1bb56965",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "fdea0e4e-7569-41fc-a317-38e04d91763b",
+      "task_id": "c5620072-5f06-4edb-a811-d0bf1bb56965",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "e51024fb-f572-462e-be18-ed40b9a5a696",
+      "task_id": "c5620072-5f06-4edb-a811-d0bf1bb56965",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "d7203712-d33a-4060-b9f3-497065f77269",
+      "task_id": "c5620072-5f06-4edb-a811-d0bf1bb56965",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "ac6cb6f8-c726-40af-b7a4-555a416e4619",
+      "task_id": "c5620072-5f06-4edb-a811-d0bf1bb56965",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "ab0e3778-18b3-47e8-b004-8ccb7e20fb15",
+      "task_id": "c5620072-5f06-4edb-a811-d0bf1bb56965",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "7acd4553-849e-46c5-af53-0c864c190be2",
+      "task_id": "c5620072-5f06-4edb-a811-d0bf1bb56965",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "0edcd380-1201-43b0-837c-c0014d4ec05e",
+      "task_id": "c5620072-5f06-4edb-a811-d0bf1bb56965",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "f5bc33fe-b582-4092-86f3-c3302cdd99aa",
+      "task_id": "aa418f43-4178-4678-88d2-8360ee8f5803",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "bd3d6618-d1b7-4766-b0ab-53ad2c015a18",
+      "task_id": "aa418f43-4178-4678-88d2-8360ee8f5803",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "b82f2ee0-0d43-40ef-ae4c-0c3e8ef461ce",
+      "task_id": "aa418f43-4178-4678-88d2-8360ee8f5803",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "a82bd570-9cc4-45db-90ac-04750deaa032",
+      "task_id": "aa418f43-4178-4678-88d2-8360ee8f5803",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "9eab55e0-fe9e-420b-915e-07caf44a8f94",
+      "task_id": "aa418f43-4178-4678-88d2-8360ee8f5803",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "821c4fff-494d-417f-8572-9189c051692a",
+      "task_id": "aa418f43-4178-4678-88d2-8360ee8f5803",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "6ee40108-be30-47a3-a021-fe6478b1ec20",
+      "task_id": "aa418f43-4178-4678-88d2-8360ee8f5803",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "5a77878a-0741-4065-b839-e9de5da85b8a",
+      "task_id": "aa418f43-4178-4678-88d2-8360ee8f5803",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "4b4f8a54-1b4b-4f0e-aade-3c99e2a442b9",
+      "task_id": "aa418f43-4178-4678-88d2-8360ee8f5803",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "1ab1347b-71cc-4bbe-8401-ab4eaf75df17",
+      "task_id": "aa418f43-4178-4678-88d2-8360ee8f5803",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "065721ce-9d6d-4b2d-b890-024b0605acd3",
+      "task_id": "aa418f43-4178-4678-88d2-8360ee8f5803",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "0562271e-8af1-4f94-bcea-e9658797f018",
+      "task_id": "aa418f43-4178-4678-88d2-8360ee8f5803",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "040d037a-be7b-4424-bc49-4e608886ec64",
+      "task_id": "aa418f43-4178-4678-88d2-8360ee8f5803",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "edcaa3b5-5ff1-4bfb-b184-4c7ef893067c",
+      "task_id": "8c580657-1dc7-42af-8b5e-d5ecd9fb8569",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "cb4e92b9-568a-4730-936e-c4657f6aa4ff",
+      "task_id": "8c580657-1dc7-42af-8b5e-d5ecd9fb8569",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "c22d0dfd-c238-497c-97dc-874e7d13e231",
+      "task_id": "8c580657-1dc7-42af-8b5e-d5ecd9fb8569",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "af2be7af-19ea-4e40-bca3-6b7e591cffa8",
+      "task_id": "8c580657-1dc7-42af-8b5e-d5ecd9fb8569",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "a0bb9d44-637c-4900-a380-85966a49afe4",
+      "task_id": "8c580657-1dc7-42af-8b5e-d5ecd9fb8569",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "5548af20-06fb-4b1e-835e-90eecc5c2d10",
+      "task_id": "8c580657-1dc7-42af-8b5e-d5ecd9fb8569",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "50512c2e-a2be-4d8f-9429-0f3207db1f30",
+      "task_id": "8c580657-1dc7-42af-8b5e-d5ecd9fb8569",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "3f5ea2fe-9d36-4f78-ae74-2ef518f88dd5",
+      "task_id": "8c580657-1dc7-42af-8b5e-d5ecd9fb8569",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "0d624973-db83-4cd5-b9e8-50b2b877b901",
+      "task_id": "8c580657-1dc7-42af-8b5e-d5ecd9fb8569",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "f5d5a8e5-7413-4b40-aec7-f8cfce7d8c59",
+      "task_id": "8c580657-1dc7-42af-8b5e-d5ecd9fb8569",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "f38a685d-b46f-4e55-8807-ab5669290384",
+      "task_id": "8c580657-1dc7-42af-8b5e-d5ecd9fb8569",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "42680f12-f075-4ea7-8682-267a2c4e7957",
+      "task_id": "8c580657-1dc7-42af-8b5e-d5ecd9fb8569",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "274685f6-a5eb-4afe-9510-1f3ad8eef992",
+      "task_id": "8c580657-1dc7-42af-8b5e-d5ecd9fb8569",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "4c250eb2-c71f-4c21-9bc2-a6c232396b96",
+      "task_id": "6c5a83a7-cbfc-4025-8cbf-5a6fa6547b17",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "e9fb892c-5866-4dc5-b218-4ccbba8b9b9d",
+      "task_id": "ccf04f52-d7c1-4896-85d9-e52e5d934174",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "e4d22063-5c4b-46a4-a2ee-84b5febb553a",
+      "task_id": "ccf04f52-d7c1-4896-85d9-e52e5d934174",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "e33225aa-0bae-40df-8062-8500046a22c6",
+      "task_id": "ccf04f52-d7c1-4896-85d9-e52e5d934174",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "d10def54-00c6-4995-bbdc-f9f3c70c5f03",
+      "task_id": "ccf04f52-d7c1-4896-85d9-e52e5d934174",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "c65eefe8-2691-43af-a991-611866c4fc3e",
+      "task_id": "ccf04f52-d7c1-4896-85d9-e52e5d934174",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "a9190592-103b-447d-bbb3-7ea70e9f315b",
+      "task_id": "ccf04f52-d7c1-4896-85d9-e52e5d934174",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "a022d90e-1f7e-477b-aaf8-515096021261",
+      "task_id": "ccf04f52-d7c1-4896-85d9-e52e5d934174",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "93d6e601-4794-4407-ba13-3babfc068678",
+      "task_id": "ccf04f52-d7c1-4896-85d9-e52e5d934174",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "5f4a141c-0c89-41d3-ab06-327168601381",
+      "task_id": "ccf04f52-d7c1-4896-85d9-e52e5d934174",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "5f38ee13-edae-4054-a414-6887a8356bf2",
+      "task_id": "ccf04f52-d7c1-4896-85d9-e52e5d934174",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "3aa904cb-a176-4d4c-b696-2a0f03f61be8",
+      "task_id": "ccf04f52-d7c1-4896-85d9-e52e5d934174",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "234ce935-e584-406d-bb20-e7fb535e7e42",
+      "task_id": "ccf04f52-d7c1-4896-85d9-e52e5d934174",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "21c00845-8e2b-410e-836b-b1b673275ef6",
+      "task_id": "ccf04f52-d7c1-4896-85d9-e52e5d934174",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "fda11209-98b5-4883-b3ee-0b21820bea2d",
+      "task_id": "a44757e8-ad94-465e-9673-9776646a3516",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "f64ff910-7bd5-4fad-a047-f9e21bc238bd",
+      "task_id": "a44757e8-ad94-465e-9673-9776646a3516",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "eddb0bbb-b26a-4c40-a8de-6ca7b787512d",
+      "task_id": "a44757e8-ad94-465e-9673-9776646a3516",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "dabf3e5a-98b5-4fb0-8924-3db217d737fd",
+      "task_id": "a44757e8-ad94-465e-9673-9776646a3516",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "d1b88f6c-b2b0-468c-9b80-ecdf4c5cf36f",
+      "task_id": "a44757e8-ad94-465e-9673-9776646a3516",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "d0d1bef0-f053-4028-b9f9-4796fa53722d",
+      "task_id": "a44757e8-ad94-465e-9673-9776646a3516",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "c0bf072f-7ed4-4be4-8274-f3336136d1c3",
+      "task_id": "a44757e8-ad94-465e-9673-9776646a3516",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "9b5c7d4b-e7bd-43c1-9dc2-d1ecef77a9a9",
+      "task_id": "a44757e8-ad94-465e-9673-9776646a3516",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "799b9cc2-78c3-410c-93d6-bef9c96614cd",
+      "task_id": "a44757e8-ad94-465e-9673-9776646a3516",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "71f37d80-9433-4040-9e20-78ccd3c366a6",
+      "task_id": "a44757e8-ad94-465e-9673-9776646a3516",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "53d311ee-0d2a-4369-b4c0-8cdf3d17ebab",
+      "task_id": "a44757e8-ad94-465e-9673-9776646a3516",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "3b10ca14-1a29-443a-850b-2a164587c4a0",
+      "task_id": "a44757e8-ad94-465e-9673-9776646a3516",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "27425c79-43fb-4f50-a772-d868d3020205",
+      "task_id": "a44757e8-ad94-465e-9673-9776646a3516",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "17e52cf6-2eb8-44d4-b6e2-fdc755ccb0f2",
+      "task_id": "e33e31d5-c071-487b-a2d3-c6a411bec9ca",
+      "reason": "missing_artifact_path"
+    },
+    {
+      "sub_task_id": "fba04845-e1ca-4934-b6b3-221213b7f977",
+      "task_id": "e33e31d5-c071-487b-a2d3-c6a411bec9ca",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "ce183337-6694-4d81-b827-7c3306202cb3",
+      "task_id": "e33e31d5-c071-487b-a2d3-c6a411bec9ca",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "85597a03-302a-4475-836b-5b2c9f9c930b",
+      "task_id": "e33e31d5-c071-487b-a2d3-c6a411bec9ca",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "7c30a5b8-f9d6-4268-901f-ad6acdf84d86",
+      "task_id": "e33e31d5-c071-487b-a2d3-c6a411bec9ca",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "50eb683e-5f35-44a7-ba7b-7b935898fbc6",
+      "task_id": "e33e31d5-c071-487b-a2d3-c6a411bec9ca",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "2e04cc91-688a-4cf3-b90b-ebe9c0a4cb45",
+      "task_id": "e33e31d5-c071-487b-a2d3-c6a411bec9ca",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "e4abbd3d-e6b0-4158-9522-bba038e22e1f",
+      "task_id": "e33e31d5-c071-487b-a2d3-c6a411bec9ca",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "b23821f1-2937-455e-b274-43edca5750a6",
+      "task_id": "e33e31d5-c071-487b-a2d3-c6a411bec9ca",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "71ed3e9e-42f5-4082-b64d-59c7bebfcde4",
+      "task_id": "e33e31d5-c071-487b-a2d3-c6a411bec9ca",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "71c80c96-c9ae-44b4-bc65-7c0f3ad111b8",
+      "task_id": "e33e31d5-c071-487b-a2d3-c6a411bec9ca",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "5e478a96-bce4-45ec-906e-0a5df27f9da0",
+      "task_id": "e33e31d5-c071-487b-a2d3-c6a411bec9ca",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "e0350f5c-31cd-4e8f-bd3c-33af75d0fc2c",
+      "task_id": "d83d94a7-0402-4cab-9ad5-248252535eb7",
+      "reason": "missing_artifact_path"
+    },
+    {
+      "sub_task_id": "ea70cdcb-a909-4cad-9c3a-1ee09801b632",
+      "task_id": "d83d94a7-0402-4cab-9ad5-248252535eb7",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "92a3aa55-4e29-4035-b53a-2c9c1cddc0aa",
+      "task_id": "d83d94a7-0402-4cab-9ad5-248252535eb7",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "86e0ddd6-c245-4421-b10c-49a164bdc0cf",
+      "task_id": "d83d94a7-0402-4cab-9ad5-248252535eb7",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "731804a7-8557-4015-b034-1aaa886924db",
+      "task_id": "d83d94a7-0402-4cab-9ad5-248252535eb7",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "60c07644-be0c-4d0e-9c4b-76bcc70fdd4a",
+      "task_id": "d83d94a7-0402-4cab-9ad5-248252535eb7",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "5d760e06-54ba-49b7-8a18-c12cbd58f9c8",
+      "task_id": "d83d94a7-0402-4cab-9ad5-248252535eb7",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "3acf9df8-51b8-4f2f-910e-e930001ef3ef",
+      "task_id": "d83d94a7-0402-4cab-9ad5-248252535eb7",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "32180122-0cb3-4e05-bdf5-8095bfcf9d89",
+      "task_id": "d83d94a7-0402-4cab-9ad5-248252535eb7",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "281cb77b-94cc-47ae-8437-ff4c24fd8c05",
+      "task_id": "d83d94a7-0402-4cab-9ad5-248252535eb7",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "bff20997-900b-4d13-9fd4-ad5c2b0351ca",
+      "task_id": "b39fa423-8455-4a3e-906c-406440a0d371",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "a3491150-b95f-4b15-9c58-e721683ba39a",
+      "task_id": "c9c1cc3d-0406-469f-855d-73bc834ca718",
+      "reason": "already_populated"
+    },
+    {
+      "sub_task_id": "33b12e01-252c-48f0-96be-22fb3c3bc8cf",
+      "task_id": "f7d61d5d-d019-4d02-a379-b4733b4e26c6",
+      "reason": "already_populated"
+    }
+  ]
+}

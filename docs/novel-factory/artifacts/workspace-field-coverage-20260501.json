@@ -1,0 +1,272 @@
+{
+  "db_path": "data/tasks.db",
+  "total_sub_tasks": 315,
+  "fully_populated": 294,
+  "missing_any": 21,
+  "missing_workspace_root": 21,
+  "missing_task_workspace_dir": 21,
+  "missing_artifact_absolute_path": 21,
+  "missing_all_three": 21,
+  "samples_missing_any": [
+    {
+      "id": "8cd07d16-7f3f-4aef-93ed-be14ffaac6ba",
+      "task_id": "a7f37ff6-89dc-4e1e-ab44-74e13483d9ba",
+      "name": "写出第一章正文（start 自动补路径）",
+      "status": "in_progress",
+      "artifact_path": "chapter_01.md",
+      "created_at": "2026-04-29 06:26:33.441606",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ]
+    },
+    {
+      "id": "24ef5e22-ecd9-4e66-bd89-d1cfc542b493",
+      "task_id": "204d421e-92d5-4772-a813-e13468b65571",
+      "name": "写出第一章正文（路径复验）",
+      "status": "in_progress",
+      "artifact_path": "chapter_01.md",
+      "created_at": "2026-04-29 04:01:07.422611",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ]
+    },
+    {
+      "id": "7ab2e977-9e8c-4a68-8ddf-aaba144bfb94",
+      "task_id": "5e26561a-402c-4d6a-ba88-5ddc420c087d",
+      "name": "missing-artifact-review",
+      "status": "done",
+      "artifact_path": "03_writer/03_draft.md",
+      "created_at": "2026-04-26 07:00:59.574687",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ]
+    },
+    {
+      "id": "b5905e0f-f51f-41d2-8e37-9bd8ec041d80",
+      "task_id": "c971f4fb-9e7c-4453-9adb-3687b547d0e9",
+      "name": "missing-artifact-writer",
+      "status": "review",
+      "artifact_path": "03_writer/03_draft.md",
+      "created_at": "2026-04-26 06:42:33.813990",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ]
+    },
+    {
+      "id": "64aa0a38-7d76-4f32-b219-affa0fff68dd",
+      "task_id": "4375fc01-cac8-481e-beed-6f50ebd71701",
+      "name": "live notification sample after rebuild",
+      "status": "done",
+      "artifact_path": "notification-proof.md",
+      "created_at": "2026-04-21 04:20:02.253352",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ]
+    },
+    {
+      "id": "3ef6d921-a615-4f77-bf14-f96dcff7d682",
+      "task_id": "031bc1f1-a418-4986-8c99-a5cd631cd40a",
+      "name": "live notification sample",
+      "status": "done",
+      "artifact_path": "notification-proof.md",
+      "created_at": "2026-04-21 04:16:27.059966",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ]
+    },
+    {
+      "id": "91e86cac-f353-4d10-9506-84c380c9c0f4",
+      "task_id": "ea79132e-8627-466f-92f5-e9de782ef55d",
+      "name": "chapter-contract-subtask",
+      "status": "done",
+      "artifact_path": "",
+      "created_at": "2026-04-18 11:46:48.825343",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ]
+    },
+    {
+      "id": "17e52cf6-2eb8-44d4-b6e2-fdc755ccb0f2",
+      "task_id": "e33e31d5-c071-487b-a2d3-c6a411bec9ca",
+      "name": "14-patrol-probe-orphan",
+      "status": "blocked",
+      "artifact_path": "",
+      "created_at": "2026-04-18 06:00:24",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ]
+    },
+    {
+      "id": "e0350f5c-31cd-4e8f-bd3c-33af75d0fc2c",
+      "task_id": "d83d94a7-0402-4cab-9ad5-248252535eb7",
+      "name": "10-小说综合审查员",
+      "status": "blocked",
+      "artifact_path": "",
+      "created_at": "2026-04-17 22:03:42.022153",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ]
+    },
+    {
+      "id": "ad0b3dc4-acee-4a2d-b5f5-2a19c0d540b5",
+      "task_id": "0bd9e42d-256c-4701-9a80-9858fc6532ef",
+      "name": "reassign-target-20260416-152534",
+      "status": "blocked",
+      "artifact_path": "",
+      "created_at": "2026-04-16 06:00:00",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ]
+    },
+    {
+      "id": "607bbecc-a070-4053-a7bf-8e65647f0e7c",
+      "task_id": "3577b33d-d0dc-4f2a-834b-5e34c2cec622",
+      "name": "orphan-assigned-20260416-151708",
+      "status": "blocked",
+      "artifact_path": "",
+      "created_at": "2026-04-16 06:00:00",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ]
+    },
+    {
+      "id": "58735734-2ded-4036-b5c7-77de5330649a",
+      "task_id": "08fa17db-bf82-436c-bb58-03bdebb3442b",
+      "name": "notification-patrol-test-2",
+      "status": "blocked",
+      "artifact_path": "",
+      "created_at": "2026-04-14T20:57:40",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ]
+    },
+    {
+      "id": "cdc65b44-d420-4892-9202-d14060ae84fd",
+      "task_id": "08fa17db-bf82-436c-bb58-03bdebb3442b",
+      "name": "notification-patrol-test",
+      "status": "blocked",
+      "artifact_path": "",
+      "created_at": "2026-04-14T19:28:47",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ]
+    },
+    {
+      "id": "cfcd2f54-aa1c-4d2e-af5a-6d0555022ba4",
+      "task_id": "92d5c320-cf9d-430d-b53c-adc25fbdb5d0",
+      "name": "planner_reassign_probe_20260414_b",
+      "status": "blocked",
+      "artifact_path": "",
+      "created_at": "2026-04-14 14:12:20.960639",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ]
+    },
+    {
+      "id": "5ad45daf-3523-4dd6-98fb-52386ac130b8",
+      "task_id": "92d5c320-cf9d-430d-b53c-adc25fbdb5d0",
+      "name": "planner_reassign_probe_20260414",
+      "status": "blocked",
+      "artifact_path": "",
+      "created_at": "2026-04-14 14:10:31.949253",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ]
+    },
+    {
+      "id": "dd288737-1107-40bf-b7d5-c6d126bc093f",
+      "task_id": "08fa17db-bf82-436c-bb58-03bdebb3442b",
+      "name": "patrol_auto_probe_20260414",
+      "status": "blocked",
+      "artifact_path": "",
+      "created_at": "2026-04-14 12:10:24.853054",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ]
+    },
+    {
+      "id": "4392b71b-1375-47c7-aa41-3c077ea265d8",
+      "task_id": "eae5963c-9446-4fdd-a1bf-b89e4ba74915",
+      "name": "xuanji_patrol_probe_20260412_231x_subtask",
+      "status": "blocked",
+      "artifact_path": "",
+      "created_at": "2026-04-12 23:16:12.818068",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ]
+    },
+    {
+      "id": "fb0d30cc-aaf1-4c2d-943e-676ac7dc9a27",
+      "task_id": "08fa17db-bf82-436c-bb58-03bdebb3442b",
+      "name": "最小卡单回归-20260410235307",
+      "status": "blocked",
+      "artifact_path": "",
+      "created_at": "2026-04-10 23:43:07.223931",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ]
+    },
+    {
+      "id": "5ee4755b-8098-4a55-896b-71a892cde095",
+      "task_id": "6699a798-debf-4ea1-a710-5f48ca900d8e",
+      "name": "网上搜索并交叉验证 OpenClaw 进阶设置-20260410203818",
+      "status": "review",
+      "artifact_path": "",
+      "created_at": "2026-04-10 12:38:18.163944",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ]
+    },
+    {
+      "id": "c8885829-b63e-40eb-b244-953ecad47d48",
+      "task_id": "ca25a7f1-f16e-4a17-a03b-2f64d4a69907",
+      "name": "最小子任务-20260410160539",
+      "status": "done",
+      "artifact_path": "",
+      "created_at": "2026-04-10 08:05:39.913799",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ]
+    }
+  ]
+}

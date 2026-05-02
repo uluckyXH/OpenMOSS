@@ -1,0 +1,74 @@
+2026/4/5 16:58                                                    【开源】OpenMOSS部署配置指南 - 开发调优- LINUX DO
+PR nant SEH CO),                           O 20mm 6)                             Saeww
+fants =n
+Pe ee ee er
+一                                                 se
+点击可以快速创建提示词
+WIE Agent ATW. nover MEH REIT RE.
+OpenClaw FI
+LAS RAMS, HRSA REO
+2 MBM Agent, ERMINE: WR AGENTS. ma + BR SOUL ma + 53h + FR Ske
+3 BATAAN Agert, UA) ‘Agent AMG, #1} MS i + Sele 其引
+ROre—0TK Ue, RA. ARM,
+© ATM EXECUTOR
+A
+“                                     ™                                     ”
+¢                                     %                                     多
+Asie                                 Ab去                                 Av加
+BMINM, QRANAR, MRA. COTA        dndes TIM, AMOK, ROKER. Hae        Amine, ARMOUR. REAM. mH
+ETE Cxecvtor                             AR Eavcstor                             RIT Comeutor
+—
+机                                     mm
+多                                     4
+AVR                                 Aus
+AARROMAROTR REASON, RAI        CAmAIRR, AiO. ROME. AUT
+twit tsecuer                             ism teste
+—Fhe §              to
+第一种: 通过官方命令的形式创建
+、                、                               、            vv Asm是                 目一人一               、                        wy
+我们以创建规划者为例，首先我们先定义一个规划角色的提示词，你可以根据自己的需求
+——
+修改提示词
+《新建提示词                                                                                       =
+seme:
+mso                  mso                  mae orc                  © meer
+‘seen                                 ene anes ©                            =                                 :
+At                                  op                                ERR                             }
+TE ETT RT                                 So                                          Sam
+(# MB: EBM (Task Planner)                                 1
+one                                                                    “Z
+角色: 任务规划师 (Task Planner)
+个全和，人于硬化纪检-
+ee noun                                                  身份
+1, sRRMNes - RAMNMPRENNN, RRRSRR, TIBI               一个和关机-
+2, AMMIee  EREAMELIOM, AALMAAMEAMR CO 8
+*
+2. aiRRes - AUCMNIARANTER, OTTERR—* gent Ho | OR
+站
+wy9nY 开-。- 闪失 kgent 列表给       本 有 IME
+a eee en gg rset                    2 RANG —ROMEAEEEKON, ARAKENaRMAMR (OR 3-87)
+和nn         2 EARS —aeMRKORANTED, wrTEMN—T mean |
+Agent eno                                             moran
+ene - GREAHRATRLIONS, SAGKA (EHBE)_OF         A Agent BE — RETR RSE BH Agee HE, REMNANT. HER
+8, wARENes - TRARACHUNEN, ORFERRARR. RBA              ERREN tore RORADRNR ARS
+3, cagRitien — SEB TENTERED coe 1. LARRAEBEA RA        人区着，人有天天
+a                                                        6       -         EBNF                           a
+We panties - aaane, nenrnanne. neexanen              sna TER naRFanememENASA, RAR ete
+1. Tiaace = Qari, BMPAUALRERISAR GEM ROR, B              :
+|                                                         工人四时工人四于人为) mr
+和 - RAR Kw Ha “ees FO, REMESIEGR 6 agus NNceNNE, REFGRARNR, Ree                                                                        回复
+th, sennies — 0M Slocked FEATRRENSE, BenONANAD,自。。。 天 下有人二ene 村，开车
+站内 Agent OR, RRMAPRCANOSMELER io, MER MURINE ROMCHANAS. OORKEHER
+2. SAURRNS - AERNERRAREAS, ARESHRIO ROME, gi. em, AMPRUARERNA (EM. RAT, NN
+ea
+os ram                                                                      19, RRM — OE Noe 的 eeaea FN, IMR
+weeny eee as                19, MOMs oLcted FERARAMERR, RESPKRMAD, CORA
+和人二 仙人和            2 和和                                                                            楼主
+NT                           有全攻关，多
+和 天汪汪世人，用、task tst
+“et Uist Tog aunes 和有由
+和 和入，天和
+等级
+创建子Agent
+https:Wlinux.do/ttopic/1794669                                                                                                                                                      14/62
+

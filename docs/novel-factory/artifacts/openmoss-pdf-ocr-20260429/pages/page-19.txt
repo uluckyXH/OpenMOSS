@@ -1,0 +1,53 @@
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+Oe EE a ST
+i OpenClaw 2026.3.13 (61d171a)
+Say "stop" and I   stop-say "ship" and we   ioth learn  Seip
+i
+"enabled": true,
+"domain": “feishu",
+"connectionMode": "websocket",
+“requireMention"™: true,
+“dmPolicy": “allowlist",
+"allowFroms: [
+Per th tet er sto wens tebe ated ve
+1,
+"groupAllowFrom": [
+外   ran |   5
+ip
+"groupPolicy": “allowlist",
+"groups": {
+sare §
+“enabled": true
+}
+oF
+“"defaultAccount": "main",
+Dre Tis oe
+De beee
+SCRE a erat. Vie
+bak J+) ¢b-1 103 9 al a Se | oS |b ad
+和
+|
+人
+"appSecret": 上-__PPE 与 _ FEBACTSES
+a
+》
+》
+重启网关，检查网关状态
+# AIX
+openclaw gateway restart
+# eM RKKE
+openclaw gateway status
+第八步: 配置白名单 (这一步不做飞书 bot 默认不会回复任何信息)
+>      ch              ap    ch
+先来看看自己的飞书是不是审批机制，如果不是就改成审批机制
+openclaw config get channels.feishu.dmPolicy
+我这是白名单机制，那么接下来就改
+root@vultr:~# openclaw config get channels.feishu.dmPolicy
+iy OpenClaw 2026.3.13 (61d171¢   No $999 stand required
+allowlist
+# MERAH蔷
+openclaw config set channels.feishu.dmPoLlicy pairing
+# MEU FIIIR
+openclaw gateway restart
+https://linux.do/t/topic/1794669                                                              19/62
+

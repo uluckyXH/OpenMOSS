@@ -1,0 +1,27 @@
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+# MEER CHAAR AMI峙
+openclaw config get channels.feishu.dmPoLlicy
+pairing
+这时再去对 bot 发信息，就会收到审批命令，拿到 OpenClaw 机器上执行就行
+@ ws
+15:00
+©    OpenClaw: access not configured.
+ou_9Yabe7c390f1048f1601d9f7017a238a6
+Pairing code: TLESWC6S
+openclaw pairing approve feishu TLESWC6S
+翻译
+J        sender                                  5
+root@vultr:~# fj
+@   你好!
+81408
+©    回复 动动枪 (雪鸡) : 你好!
+你好。我刚上线，还在认识自己。
+先认识一下吧: 你希望我叫什么? 我又该怎么称呼你?如果你愿意，也可以顺手给我定个气质
+一温柔、利落、毒舌、神秘，都行。
+恭喜你! 成功创建好了一个子 Agentl
+第二种: 交给 Main Agent 来帮有我们对接 (推荐)
+如果你觉得手动配置的方式非常的麻烦，那么这个方法简直就是懒人福音!
+就是通过对话的方式让主 agent 帮有我们创建，我们只管提供飞书机器人的 App ID 和 App
+Secret 就行。
+https://linux.do/t/topic/1794669                                                                                        20/62
+

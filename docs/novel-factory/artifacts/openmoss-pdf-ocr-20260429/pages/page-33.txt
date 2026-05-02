@@ -1,0 +1,14 @@
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+openclaw cron List
+# 查看调度器状态
+openclaw cron status
+=
+PADRE
+nana                                              '
+定时任务机制补充
+1. OpenClaw 定时任务有最大执行限制，默认配置似乎是 2，这意味着一次只能执行
+两个定时任务，怎么改?
+# DA
+openclaw config get cron.maxConcurrentRuns
+https://linux.do/t/topic/1794669                                                       33/62
+

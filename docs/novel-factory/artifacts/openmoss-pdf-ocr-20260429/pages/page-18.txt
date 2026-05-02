@@ -1,0 +1,28 @@
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+应用敏捷开发，服务高效入驻。飞书开放平台致力于以先进的协同办公理念和产品
+助力企业成长，帮助企业打造愉悦高效的专属办公平台。
+官方插件说明: “OpenClaw 飞书官方插件使用指南 〈公开版)
+opencLaw config set channeLs .feishu.accounts.xiaogui.appId '<你新建的小规Bo
+SCF          »
+作用
+创建第二个账号:
+e channels.feishu.accounts.xiaogui
+opencLaw config set channeLs .feishu.accounts.xiaogui.appSecret '<你新建的小
+了 |                »
+作用
+。补全 xiaogui 账号凭据。
+第四步: 删除顶部层的 App ID 和 App Secret
+openclaw config unset channels.feishu.applId
+openclaw config unset channels.feishu.appSecret
+第五步: 绑定主飞书 bot 到 main
+openclaw agents bind --agent main --bind feishu:main
+作用
+。把 feishu:main 路由给 main
+第六步: 绑定 Al 小规飞书 bot 到 ai_xiaogui
+openclaw agents bind --agent ai_xiaogui --bind feishu:xiaogui
+回复
+第七步: 检查配置是不是已经真的变成多账号
+openclaw config get channels.feishu                               楼主
+等级
+https:Wlinux.do/ttopic/1794669                                                     18/62
+

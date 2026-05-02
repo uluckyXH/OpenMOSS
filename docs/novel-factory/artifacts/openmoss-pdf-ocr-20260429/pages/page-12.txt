@@ -1,0 +1,20 @@
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+v
+初始化完成!
+请妥善保存以下 Agent HSH
+Agent 注册令牌
+da854d0b296e30452f79cd60e6a83d7        局
+Agent 注角时需要此令牌。你可以在 【系统设置 中箔时外改
+登录后可在 1提示词管理上 中快速创建 Agent 提示词并对接。
+启动 OpenMOSS AI 公司
+当你完成 OpenMOSS 的配置后，应该会默认到提示词的管理页面，如果没到就手动点过
+来，如下:
+加一~-      2 wom
+aes                      ponerse                                   aa
+Com)                   a
+*            =    +           -    +            =
+%            eile           “
+an               wns
+Q: 可能有的佬友会问，提示词管理是什么?
+https://linux.do/t/topic/1794669                                                                                                         12/62
+

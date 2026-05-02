@@ -1,0 +1,91 @@
+{
+  "mode": "dry_run",
+  "db_path": "data/tasks.db",
+  "mapping_path": "docs/novel-factory/artifacts/workspace-backfill-high-confidence-map-20260426.json",
+  "task_ids_filter": [
+    "17b348b2-6fa6-4343-a376-0f590556ca1d",
+    "6c5a83a7-cbfc-4025-8cbf-5a6fa6547b17",
+    "d202ad66-5b60-4deb-bc26-2b06cad72249"
+  ],
+  "candidate_count": 4,
+  "skipped_count": 0,
+  "candidates": [
+    {
+      "sub_task_id": "7594fbd9-a361-4821-933d-71ea90bd9826",
+      "task_id": "17b348b2-6fa6-4343-a376-0f590556ca1d",
+      "task_name": "Real Chapter Chain Probe",
+      "sub_task_name": "最终组装 / final-assembler real chain",
+      "artifact_path": "13_final-assembler/13_final_chapter.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/tmp/openmoss-real-chain-probe",
+      "task_workspace_dir": "/tmp/openmoss-real-chain-probe/17b348b2",
+      "artifact_absolute_path": "/tmp/openmoss-real-chain-probe/17b348b2/13_final-assembler/13_final_chapter.md",
+      "host_workspace_dir": "/tmp/openmoss-real-chain-probe/17b348b2",
+      "host_artifact_path": "/tmp/openmoss-real-chain-probe/17b348b2/13_final-assembler/13_final_chapter.md",
+      "source": "sqlite:data/tasks.db review_record.comment",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "4058b189-b6f4-4792-af60-e719d0c3a8fc",
+      "task_id": "17b348b2-6fa6-4343-a376-0f590556ca1d",
+      "task_name": "Real Chapter Chain Probe",
+      "sub_task_name": "正文初稿 / writer real chain",
+      "artifact_path": "03_writer/03_draft.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/tmp/openmoss-real-chain-probe",
+      "task_workspace_dir": "/tmp/openmoss-real-chain-probe/17b348b2",
+      "artifact_absolute_path": "/tmp/openmoss-real-chain-probe/17b348b2/03_writer/03_draft.md",
+      "host_workspace_dir": "/tmp/openmoss-real-chain-probe/17b348b2",
+      "host_artifact_path": "/tmp/openmoss-real-chain-probe/17b348b2/03_writer/03_draft.md",
+      "source": "sqlite:data/tasks.db review_record.comment",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "220fff40-67b4-43e3-bedf-bb04e3500ce0",
+      "task_id": "d202ad66-5b60-4deb-bc26-2b06cad72249",
+      "task_name": "Real Content Probe",
+      "sub_task_name": "正文初稿 / writer real probe",
+      "artifact_path": "03_writer/03_draft.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/tmp/openmoss-real-content-probe",
+      "task_workspace_dir": "/tmp/openmoss-real-content-probe/d202ad66_220fff40",
+      "artifact_absolute_path": "/tmp/openmoss-real-content-probe/d202ad66_220fff40/03_writer/03_draft.md",
+      "host_workspace_dir": "/tmp/openmoss-real-content-probe/d202ad66_220fff40",
+      "host_artifact_path": "/tmp/openmoss-real-content-probe/d202ad66_220fff40/03_writer/03_draft.md",
+      "source": "sqlite:data/tasks.db review_record.comment",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "4c250eb2-c71f-4c21-9bc2-a6c232396b96",
+      "task_id": "6c5a83a7-cbfc-4025-8cbf-5a6fa6547b17",
+      "task_name": "workspace-align-20260421-123941-task",
+      "sub_task_name": "workspace-align-20260421-123941-proof",
+      "artifact_path": "/workspace/tasks/workspace-align-20260421-123941-task_6c5a83a7/workspace-align-20260421-123941-proof/proof.txt",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/workspace/tasks",
+      "task_workspace_dir": "/workspace/tasks/workspace-align-20260421-123941-task_6c5a83a7",
+      "artifact_absolute_path": "/workspace/tasks/workspace-align-20260421-123941-task_6c5a83a7/workspace-align-20260421-123941-proof/proof.txt",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/workspace-align-20260421-123941-task_6c5a83a7",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/workspace-align-20260421-123941-task_6c5a83a7/workspace-align-20260421-123941-proof/proof.txt",
+      "source": "docs/novel-factory/openmoss-workspace-runtime-closeout-20260421.md",
+      "confidence": "high"
+    }
+  ],
+  "skipped": []
+}

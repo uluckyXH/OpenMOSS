@@ -1,0 +1,72 @@
+{
+  "mode": "dry_run",
+  "db_path": "data/tasks.db",
+  "mapping_path": "docs/novel-factory/artifacts/workspace-backfill-high-confidence-map-20260426.json",
+  "task_ids_filter": [
+    "b39fa423-8455-4a3e-906c-406440a0d371",
+    "c9c1cc3d-0406-469f-855d-73bc834ca718",
+    "f7d61d5d-d019-4d02-a379-b4733b4e26c6"
+  ],
+  "candidate_count": 3,
+  "skipped_count": 0,
+  "candidates": [
+    {
+      "sub_task_id": "bff20997-900b-4d13-9fd4-ad5c2b0351ca",
+      "task_id": "b39fa423-8455-4a3e-906c-406440a0d371",
+      "task_name": "hermes-livecase-20260418-054800-task",
+      "sub_task_name": "hermes-livecase-20260418-054800-delivery-proof",
+      "artifact_path": "proof.txt",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/home/joviji/.openclaw/workspace/openmoss-workspace",
+      "task_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-livecase-20260418-054800-task_b39fa423",
+      "artifact_absolute_path": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-livecase-20260418-054800-task_b39fa423/proof.txt",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-livecase-20260418-054800-task_b39fa423",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-livecase-20260418-054800-task_b39fa423/proof.txt",
+      "source": "docs/novel-factory/openmoss-case-closeout-checklist-audit-20260419.md; workspace proof.txt",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "a3491150-b95f-4b15-9c58-e721683ba39a",
+      "task_id": "c9c1cc3d-0406-469f-855d-73bc834ca718",
+      "task_name": "closeout-online-case-20260416-151001",
+      "sub_task_name": "delivery-proof-20260416-151001",
+      "artifact_path": "delivery-proof-20260416-151001_a3491150/proof.txt",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/home/joviji/.openclaw/workspace/openmoss-workspace",
+      "task_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/closeout-online-case-20260416-151001_c9c1cc3d",
+      "artifact_absolute_path": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/closeout-online-case-20260416-151001_c9c1cc3d/delivery-proof-20260416-151001_a3491150/proof.txt",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/closeout-online-case-20260416-151001_c9c1cc3d",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/closeout-online-case-20260416-151001_c9c1cc3d/delivery-proof-20260416-151001_a3491150/proof.txt",
+      "source": "docs/novel-factory/openmoss-case-closeout-checklist-audit-20260416.md; workspace proof.txt",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "33b12e01-252c-48f0-96be-22fb3c3bc8cf",
+      "task_id": "f7d61d5d-d019-4d02-a379-b4733b4e26c6",
+      "task_name": "workspace-verify-20260416-061107",
+      "sub_task_name": "write-proof",
+      "artifact_path": "write-proof_33b12e01/proof.txt",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/home/joviji/.openclaw/workspace/openmoss-workspace",
+      "task_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/workspace-verify-20260416-061107_f7d61d5d",
+      "artifact_absolute_path": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/workspace-verify-20260416-061107_f7d61d5d/write-proof_33b12e01/proof.txt",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/workspace-verify-20260416-061107_f7d61d5d",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/workspace-verify-20260416-061107_f7d61d5d/write-proof_33b12e01/proof.txt",
+      "source": "workspace proof.txt",
+      "confidence": "high"
+    }
+  ],
+  "skipped": []
+}

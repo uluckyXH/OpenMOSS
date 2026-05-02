@@ -1,0 +1,394 @@
+[
+  {
+    "task_id": "94747eed-f0a5-4be4-9d60-403f965b95a9",
+    "task_name": "Artifact Guard Live Probe 9a244336",
+    "workspace_root": "/tmp",
+    "task_workspace_dir": "/tmp/missing-artifact-9a244336",
+    "host_workspace_dir": "/tmp/missing-artifact-9a244336",
+    "sub_task_overrides": {
+      "6e125933-e5a3-41c4-a2b3-6cfba75e5dde": {
+        "workspace_root": "/tmp",
+        "task_workspace_dir": "/tmp/missing-artifact-9a244336",
+        "host_workspace_dir": "/tmp/missing-artifact-9a244336",
+        "artifact_absolute_path": "/tmp/missing-artifact-9a244336/03_writer/03_draft.md",
+        "host_artifact_path": "/tmp/missing-artifact-9a244336/03_writer/03_draft.md",
+        "allow_missing_host_artifact": true
+      },
+      "66e29880-c3f5-42c3-a9fb-373f65b6680c": {
+        "workspace_root": "/tmp",
+        "task_workspace_dir": "/tmp/missing-review-artifact-9a244336",
+        "host_workspace_dir": "/tmp/missing-review-artifact-9a244336",
+        "artifact_absolute_path": "/tmp/missing-review-artifact-9a244336/03_writer/03_draft.md",
+        "host_artifact_path": "/tmp/missing-review-artifact-9a244336/03_writer/03_draft.md",
+        "allow_missing_host_artifact": true
+      }
+    },
+    "source": "request_log explicit workspace fields on submit/review 400 guard probes",
+    "confidence": "high",
+    "note": "请求体显式携带 workspace_root/task_workspace_dir/artifact_absolute_path；服务端因文件缺失返回 400。这里回填的是被校验时的目标路径，不代表文件存在。",
+    "host_workspace_exists": false,
+    "sample_artifacts": {
+      "03_writer/03_draft.md": false
+    },
+    "allow_missing_host_artifact": true
+  },
+  {
+    "task_id": "d5f20f19-6a64-4635-899d-e87463e3eb56",
+    "task_name": "Live Notify Novel Flow",
+    "workspace_root": "/tmp/openmoss-live-notify-1yhwSS/out/closeout-workspace",
+    "task_workspace_dir": "/tmp/openmoss-live-notify-1yhwSS/out/closeout-workspace/live-notify-001_d5f20f19",
+    "host_workspace_dir": "/tmp/openmoss-live-notify-1yhwSS/out/closeout-workspace/live-notify-001_d5f20f19",
+    "source": "sqlite:data/tasks.db review_record.comment; docs/novel-factory/standard-flow-workspace-path-audit-20260426.md",
+    "confidence": "high",
+    "note": "review_record.comment 显式记录了 closeout 绝对路径；临时 closeout 目录当前仍在盘上。",
+    "host_workspace_exists": true,
+    "sample_artifacts": {
+      "03_writer/03_draft.md": true,
+      "13_final-assembler/13_final_chapter.md": true
+    }
+  },
+  {
+    "task_id": "fc539811-d3a1-44ec-b097-ea827bd78907",
+    "task_name": "Live Sanity Novel Flow",
+    "workspace_root": "/tmp/openmoss-live-flow-CNfLNR/out/closeout-workspace",
+    "task_workspace_dir": "/tmp/openmoss-live-flow-CNfLNR/out/closeout-workspace/live-sanity-001_fc539811",
+    "host_workspace_dir": "/tmp/openmoss-live-flow-CNfLNR/out/closeout-workspace/live-sanity-001_fc539811",
+    "source": "sqlite:data/tasks.db review_record.comment",
+    "confidence": "high",
+    "note": "review_record.comment 对 13 条子任务都记录了同一 closeout 根；样本工件仍在盘上。",
+    "host_workspace_exists": true,
+    "sample_artifacts": {
+      "03_writer/03_draft.md": true,
+      "13_final-assembler/13_final_chapter.md": true
+    }
+  },
+  {
+    "task_id": "17b348b2-6fa6-4343-a376-0f590556ca1d",
+    "task_name": "Real Chapter Chain Probe",
+    "workspace_root": "/tmp/openmoss-real-chain-probe",
+    "task_workspace_dir": "/tmp/openmoss-real-chain-probe/17b348b2",
+    "host_workspace_dir": "/tmp/openmoss-real-chain-probe/17b348b2",
+    "source": "sqlite:data/tasks.db review_record.comment",
+    "confidence": "high",
+    "note": "review_record.comment 直接记录了 writer / final chain 的绝对工件路径。",
+    "host_workspace_exists": true,
+    "sample_artifacts": {
+      "03_writer/03_draft.md": true,
+      "13_final-assembler/13_final_chapter.md": true
+    }
+  },
+  {
+    "task_id": "d202ad66-5b60-4deb-bc26-2b06cad72249",
+    "task_name": "Real Content Probe",
+    "workspace_root": "/tmp/openmoss-real-content-probe",
+    "task_workspace_dir": "/tmp/openmoss-real-content-probe/d202ad66_220fff40",
+    "host_workspace_dir": "/tmp/openmoss-real-content-probe/d202ad66_220fff40",
+    "source": "sqlite:data/tasks.db review_record.comment",
+    "confidence": "high",
+    "note": "review_record.comment 直接记录了 real content probe 的绝对工件路径。",
+    "host_workspace_exists": true,
+    "sample_artifacts": {
+      "03_writer/03_draft.md": true,
+      "13_final-assembler/13_final_chapter.md": false
+    }
+  },
+  {
+    "task_id": "c9c1cc3d-0406-469f-855d-73bc834ca718",
+    "task_name": "closeout-online-case-20260416-151001",
+    "workspace_root": "/home/joviji/.openclaw/workspace/openmoss-workspace",
+    "task_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/closeout-online-case-20260416-151001_c9c1cc3d",
+    "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/closeout-online-case-20260416-151001_c9c1cc3d",
+    "artifact_path_overrides_by_sub_task_id": {
+      "a3491150-b95f-4b15-9c58-e721683ba39a": "delivery-proof-20260416-151001_a3491150/proof.txt"
+    },
+    "source": "docs/novel-factory/openmoss-case-closeout-checklist-audit-20260416.md; workspace proof.txt",
+    "confidence": "high",
+    "note": "审计文档显式给出 proof 绝对路径，现存 proof.txt 内容回指 task/subtask id。",
+    "host_workspace_exists": true,
+    "sample_artifacts": {
+      "delivery-proof-20260416-151001_a3491150/proof.txt": true
+    }
+  },
+  {
+    "task_id": "ccf04f52-d7c1-4896-85d9-e52e5d934174",
+    "task_name": "hermes-live-runtime-reverify-20260421-113612",
+    "workspace_root": "/home/joviji/.openclaw/workspace/openmoss/tmp/live_runtime_reverify_20260421-113612",
+    "task_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/tmp/live_runtime_reverify_20260421-113612/单章节小说骨架试跑_novel-case-live-runtime-20260421-113612",
+    "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/tmp/live_runtime_reverify_20260421-113612/单章节小说骨架试跑_novel-case-live-runtime-20260421-113612",
+    "source": "docs/novel-factory/openmoss-case-closeout-checklist-audit-20260421.md",
+    "confidence": "high",
+    "note": "最小在线 case 复验文档显式记录了 case_dir。",
+    "host_workspace_exists": true,
+    "sample_artifacts": {
+      "03_writer/03_draft.md": true,
+      "13_final-assembler/13_final_chapter.md": true
+    }
+  },
+  {
+    "task_id": "b39fa423-8455-4a3e-906c-406440a0d371",
+    "task_name": "hermes-livecase-20260418-054800-task",
+    "workspace_root": "/home/joviji/.openclaw/workspace/openmoss-workspace",
+    "task_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-livecase-20260418-054800-task_b39fa423",
+    "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-livecase-20260418-054800-task_b39fa423",
+    "artifact_path_overrides_by_sub_task_id": {
+      "bff20997-900b-4d13-9fd4-ad5c2b0351ca": "proof.txt"
+    },
+    "source": "docs/novel-factory/openmoss-case-closeout-checklist-audit-20260419.md; workspace proof.txt",
+    "confidence": "high",
+    "note": "审计文档与现存 proof.txt 同时记录 task/subtask/session 绑定。",
+    "host_workspace_exists": true,
+    "sample_artifacts": {
+      "proof.txt": true
+    }
+  },
+  {
+    "task_id": "d83d94a7-0402-4cab-9ad5-248252535eb7",
+    "task_name": "hermes-official-20260418-060340-冻结正式小说case-replay-01",
+    "workspace_root": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks",
+    "task_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-20260418-060340-case-replay-01_d83d94a7",
+    "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-20260418-060340-case-replay-01_d83d94a7",
+    "artifact_path_overrides_by_sub_task_id": {
+      "731804a7-8557-4015-b034-1aaa886924db": "01_plot_blueprint.md",
+      "32180122-0cb3-4e05-bdf5-8095bfcf9d89": "02_scene_plan.md",
+      "92a3aa55-4e29-4035-b53a-2c9c1cddc0aa": "03_draft.md",
+      "60c07644-be0c-4d0e-9c4b-76bcc70fdd4a": "04_dialogue_pass.md",
+      "5d760e06-54ba-49b7-8a18-c12cbd58f9c8": "05_emotion_curve.md",
+      "281cb77b-94cc-47ae-8437-ff4c24fd8c05": "06_character_growth.md",
+      "86e0ddd6-c245-4421-b10c-49a164bdc0cf": "07_psychology_pass.md",
+      "3acf9df8-51b8-4f2f-910e-e930001ef3ef": "08_opening_ending.md",
+      "ea70cdcb-a909-4cad-9c3a-1ee09801b632": "09_hook_design.md"
+    },
+    "source": "sqlite:data/tasks.db delivery_summary; docs/novel-factory/openmoss-case-closeout-checklist-audit-20260419.md",
+    "confidence": "high",
+    "note": "历史冻结正式小说 case：delivery_summary 已显式记录宿主机写盘绝对路径；blocked reviewer 不做 override。",
+    "host_workspace_exists": true,
+    "sample_artifacts": {
+      "03_draft.md": true,
+      "09_hook_design.md": true
+    }
+  },
+  {
+    "task_id": "e33e31d5-c071-487b-a2d3-c6a411bec9ca",
+    "task_name": "hermes-official-online-20260418-061024-replay01-online-case",
+    "workspace_root": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks",
+    "task_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-online-20260418-061024-replay01-online-case_e33e31d5",
+    "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-online-20260418-061024-replay01-online-case_e33e31d5",
+    "artifact_path_overrides_by_sub_task_id": {
+      "b23821f1-2937-455e-b274-43edca5750a6": "01_plot_blueprint.md",
+      "5e478a96-bce4-45ec-906e-0a5df27f9da0": "02_scene_plan.md",
+      "71ed3e9e-42f5-4082-b64d-59c7bebfcde4": "03_draft.md",
+      "71c80c96-c9ae-44b4-bc65-7c0f3ad111b8": "04_dialogue_pass.md",
+      "e4abbd3d-e6b0-4158-9522-bba038e22e1f": "05_emotion_curve.md",
+      "fba04845-e1ca-4934-b6b3-221213b7f977": "06_character_growth.md",
+      "7c30a5b8-f9d6-4268-901f-ad6acdf84d86": "07_psychology_pass.md",
+      "50eb683e-5f35-44a7-ba7b-7b935898fbc6": "08_opening_ending.md",
+      "ce183337-6694-4d81-b827-7c3306202cb3": "09_hook_design.md",
+      "85597a03-302a-4475-836b-5b2c9f9c930b": "11_revision_pass.md",
+      "2e04cc91-688a-4cf3-b90b-ebe9c0a4cb45": "13_final-assembler/13_final_chapter.md"
+    },
+    "source": "sqlite:data/tasks.db delivery_summary; docs/novel-factory/openmoss-case-closeout-checklist-audit-20260419.md",
+    "confidence": "high",
+    "note": "历史官方在线 case：delivery_summary 已显式记录宿主机写盘绝对路径；blocked patrol orphan 不做 override。",
+    "host_workspace_exists": true,
+    "sample_artifacts": {
+      "03_draft.md": true,
+      "13_final-assembler/13_final_chapter.md": true
+    }
+  },
+  {
+    "task_id": "6c5a83a7-cbfc-4025-8cbf-5a6fa6547b17",
+    "task_name": "workspace-align-20260421-123941-task",
+    "workspace_root": "/workspace/tasks",
+    "task_workspace_dir": "/workspace/tasks/workspace-align-20260421-123941-task_6c5a83a7",
+    "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/workspace-align-20260421-123941-task_6c5a83a7",
+    "source": "docs/novel-factory/openmoss-workspace-runtime-closeout-20260421.md",
+    "confidence": "high",
+    "note": "文档与 delivery_summary 同时记录了 runtime / host 双路径，artifact_path 为绝对路径。",
+    "host_workspace_exists": true,
+    "sample_artifacts": {
+      "/workspace/tasks/workspace-align-20260421-123941-task_6c5a83a7/workspace-align-20260421-123941-proof/proof.txt": true
+    }
+  },
+  {
+    "task_id": "f7d61d5d-d019-4d02-a379-b4733b4e26c6",
+    "task_name": "workspace-verify-20260416-061107",
+    "workspace_root": "/home/joviji/.openclaw/workspace/openmoss-workspace",
+    "task_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/workspace-verify-20260416-061107_f7d61d5d",
+    "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/workspace-verify-20260416-061107_f7d61d5d",
+    "artifact_path_overrides_by_sub_task_id": {
+      "33b12e01-252c-48f0-96be-22fb3c3bc8cf": "write-proof_33b12e01/proof.txt"
+    },
+    "source": "workspace proof.txt",
+    "confidence": "high",
+    "note": "现存 proof.txt 直接记录 workspace_root / proof_path / task_id / sub_task_id。",
+    "host_workspace_exists": true,
+    "sample_artifacts": {
+      "write-proof_33b12e01/proof.txt": true
+    }
+  },
+  {
+    "task_id": "19d848d3-9acc-406e-b545-6bb450d39e50",
+    "task_name": "单章节小说骨架试跑",
+    "workspace_root": "/home/joviji/.openclaw/workspace/openmoss/tmp/live-delivery-log-1777125024/closeout-workspace",
+    "task_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/tmp/live-delivery-log-1777125024/closeout-workspace/live-delivery-log-1777125024_19d848d3",
+    "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/tmp/live-delivery-log-1777125024/closeout-workspace/live-delivery-log-1777125024_19d848d3",
+    "source": "tmp/live-delivery-log-1777125024/standard-task-flow.live-delivery-log-1777125024.json",
+    "confidence": "high",
+    "note": "tmp 运行产物与 closeout 工件 frontmatter 对应 task_id，可直接锚定 closeout workspace。",
+    "host_workspace_exists": true,
+    "sample_artifacts": {
+      "03_writer/03_draft.md": true,
+      "13_final-assembler/13_final_chapter.md": true
+    }
+  },
+  {
+    "task_id": "493f4e04-1b18-484c-b0ba-6ca18d05dc36",
+    "task_name": "单章节小说骨架试跑",
+    "workspace_root": "/tmp/openmoss-silent-flow.vzGSLb/closeout-workspace",
+    "task_workspace_dir": "/tmp/openmoss-silent-flow.vzGSLb/closeout-workspace/novel-standard-silent-20260425-231617_493f4e04",
+    "host_workspace_dir": "/tmp/openmoss-silent-flow.vzGSLb/closeout-workspace/novel-standard-silent-20260425-231617_493f4e04",
+    "source": "docs/novel-factory/live-standard-flow-silent-verify-20260425-231617.md",
+    "confidence": "high",
+    "note": "静默标准流 closeout 根目录已在文档里显式给出。",
+    "host_workspace_exists": true,
+    "sample_artifacts": {
+      "03_writer/03_draft.md": true,
+      "13_final-assembler/13_final_chapter.md": true
+    }
+  },
+  {
+    "task_id": "a7ab496f-ee4f-43a7-a0ee-dc7c583eb346",
+    "task_name": "单章节小说骨架试跑 / live-standard 20260425-195221",
+    "workspace_root": "/tmp/openmoss-standard-flow-20260425-195221/closeout-workspace",
+    "task_workspace_dir": "/tmp/openmoss-standard-flow-20260425-195221/closeout-workspace/novel-standard-live-20260425-195221_a7ab496f",
+    "host_workspace_dir": "/tmp/openmoss-standard-flow-20260425-195221/closeout-workspace/novel-standard-live-20260425-195221_a7ab496f",
+    "source": "docs/novel-factory/live-standard-flow-verify-20260425-195221.md",
+    "confidence": "high",
+    "note": "标准流 live closeout 根目录已在文档里显式给出。",
+    "host_workspace_exists": true,
+    "sample_artifacts": {
+      "03_writer/03_draft.md": true,
+      "13_final-assembler/13_final_chapter.md": true
+    }
+  },
+  {
+    "task_id": "72968da8-b338-4c24-8b5d-93c1cc4d450a",
+    "task_name": "单章节小说骨架试跑 / live-verify 20260425-181926",
+    "workspace_root": "/workspace/tasks",
+    "task_workspace_dir": "/workspace/tasks/novel-standard-live-verify-20260425-181926_72968da8",
+    "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-standard-live-verify-20260425-181926_72968da8",
+    "source": "docs/novel-factory/standard-flow-workspace-path-audit-20260426.md",
+    "confidence": "high",
+    "note": "共享 workspace 目录与 case input frontmatter 都能对上 task_id。",
+    "host_workspace_exists": true,
+    "sample_artifacts": {
+      "03_writer/03_draft.md": true,
+      "13_final-assembler/13_final_chapter.md": true
+    }
+  },
+  {
+    "task_id": "4456fd32-ecf4-4451-a307-5fd013a9ab9d",
+    "task_name": "单章节小说骨架试跑 / live-verify 20260425-182331",
+    "workspace_root": "/workspace/tasks",
+    "task_workspace_dir": "/workspace/tasks/novel-standard-live-verify-20260425-182331_4456fd32",
+    "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-standard-live-verify-20260425-182331_4456fd32",
+    "source": "docs/novel-factory/standard-flow-workspace-path-audit-20260426.md",
+    "confidence": "high",
+    "note": "共享 workspace 目录与 case input frontmatter 都能对上 task_id。",
+    "host_workspace_exists": true,
+    "sample_artifacts": {
+      "03_writer/03_draft.md": true,
+      "13_final-assembler/13_final_chapter.md": true
+    }
+  },
+  {
+    "task_id": "aa418f43-4178-4678-88d2-8360ee8f5803",
+    "task_name": "在线桥接回填 novel-case-replay-01 20260421-153534",
+    "workspace_root": "/workspace/tasks",
+    "task_workspace_dir": "/workspace/tasks/novel-case-replay-01-20260421-153534_aa418f43",
+    "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-case-replay-01-20260421-153534_aa418f43",
+    "source": "docs/novel-factory/replay-online-bridge-20260421-153534/replay-01_closeout_result.json",
+    "confidence": "high",
+    "note": "closeout_result 显式给出 runtime workspace_task_dir 与 host_workspace_dir。",
+    "host_workspace_exists": true,
+    "sample_artifacts": {
+      "03_writer/03_draft.md": true,
+      "13_final-assembler/13_final_chapter.md": true
+    }
+  },
+  {
+    "task_id": "8c580657-1dc7-42af-8b5e-d5ecd9fb8569",
+    "task_name": "在线桥接回填 novel-case-replay-02 20260421-141349",
+    "workspace_root": "/workspace/tasks",
+    "task_workspace_dir": "/workspace/tasks/novel-case-replay-02-20260421-141349_8c580657",
+    "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-case-replay-02-20260421-141349_8c580657",
+    "source": "docs/novel-factory/replay-online-bridge-20260421-141349/replay-02_closeout_result.json",
+    "confidence": "high",
+    "note": "closeout_result 显式给出 runtime workspace_task_dir 与 host_workspace_dir。",
+    "host_workspace_exists": true,
+    "sample_artifacts": {
+      "03_writer/03_draft.md": true,
+      "13_final-assembler/13_final_chapter.md": true
+    }
+  },
+  {
+    "task_id": "c5620072-5f06-4edb-a811-d0bf1bb56965",
+    "task_name": "在线桥接回填 novel-case-replay-03 20260425-114848",
+    "workspace_root": "/workspace/tasks",
+    "task_workspace_dir": "/workspace/tasks/novel-case-replay-03-20260425-114848_c5620072",
+    "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-case-replay-03-20260425-114848_c5620072",
+    "source": "docs/novel-factory/replay-online-bridge-20260425-114848/replay-03_closeout_result.json",
+    "confidence": "high",
+    "note": "closeout_result 显式给出 runtime workspace_task_dir 与 host_workspace_dir。",
+    "host_workspace_exists": true,
+    "sample_artifacts": {
+      "03_writer/03_draft.md": true,
+      "13_final-assembler/13_final_chapter.md": true
+    }
+  },
+  {
+    "task_id": "a44757e8-ad94-465e-9673-9776646a3516",
+    "task_name": "在线桥接验证 novel-case-online-verify-20260419-110701",
+    "workspace_root": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/online-bridge-live-verify-20260419-110701",
+    "task_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/online-bridge-live-verify-20260419-110701/单章节小说骨架试跑_novel-case-online-verify-20260419-110701",
+    "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/online-bridge-live-verify-20260419-110701/单章节小说骨架试跑_novel-case-online-verify-20260419-110701",
+    "source": "docs/novel-factory/online-bridge-live-verify-20260419-110701/create_result.json",
+    "confidence": "high",
+    "note": "bridge/create_result 里有 artifact_root 与 case_dir。",
+    "host_workspace_exists": true,
+    "sample_artifacts": {
+      "03_writer/03_draft.md": true,
+      "13_final-assembler/13_final_chapter.md": true
+    },
+    "artifact_path_overrides_by_sub_task_id": {
+      "fda11209-98b5-4883-b3ee-0b21820bea2d": "01_plot-architect/01_plot_blueprint.md",
+      "eddb0bbb-b26a-4c40-a8de-6ca7b787512d": "02_scene-architect/02_scene_plan.md",
+      "3b10ca14-1a29-443a-850b-2a164587c4a0": "03_writer/03_draft.md",
+      "f64ff910-7bd5-4fad-a047-f9e21bc238bd": "04_dialogue-expert/04_dialogue_pass.md",
+      "53d311ee-0d2a-4369-b4c0-8cdf3d17ebab": "05_emotion-curve-designer/05_emotion_curve.md",
+      "dabf3e5a-98b5-4fb0-8924-3db217d737fd": "06_character-growth/06_character_growth.md",
+      "c0bf072f-7ed4-4be4-8274-f3336136d1c3": "07_psychological-portrayal-expert/07_psychology_pass.md",
+      "799b9cc2-78c3-410c-93d6-bef9c96614cd": "08_opening-ending-designer/08_opening_ending.md",
+      "9b5c7d4b-e7bd-43c1-9dc2-d1ecef77a9a9": "09_hook-designer/09_hook_design.md",
+      "d1b88f6c-b2b0-468c-9b80-ecdf4c5cf36f": "10_reviewer/10_review_report.md",
+      "d0d1bef0-f053-4028-b9f9-4796fa53722d": "11_revision-polish-expert/11_revision_pass.md",
+      "71f37d80-9433-4040-9e20-78ccd3c366a6": "12_style-consistency-checker/12_style_report.md",
+      "27425c79-43fb-4f50-a772-d868d3020205": "13_final-assembler/13_final_chapter.md"
+    }
+  },
+  {
+    "task_id": "426e8beb-f637-4e47-bf96-d8d5a9ddab67",
+    "task_name": "标准任务入口 live 接线复验 20260425-131240",
+    "workspace_root": "/workspace/tasks",
+    "task_workspace_dir": "/workspace/tasks/novel-live-bridge-20260425-131240_426e8beb",
+    "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-live-bridge-20260425-131240_426e8beb",
+    "source": "docs/novel-factory/live-closeout-20260425-131240.md",
+    "confidence": "high",
+    "note": "live closeout 文档与实际共享树工件共同锚定该任务目录。",
+    "host_workspace_exists": true,
+    "sample_artifacts": {
+      "03_writer/03_draft.md": true,
+      "13_final-assembler/13_final_chapter.md": true
+    }
+  }
+]

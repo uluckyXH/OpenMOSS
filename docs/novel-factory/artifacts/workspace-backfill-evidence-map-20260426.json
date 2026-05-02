@@ -1,0 +1,470 @@
+{
+  "Live Notify Novel Flow": [
+    {
+      "path": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/subtask-workspace-context-codepath-audit-20260426.md",
+      "snippets": [
+        [
+          {
+            "line": 271,
+            "text": "- `Live Notify Novel Flow`（13）"
+          }
+        ]
+      ]
+    },
+    {
+      "path": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/artifacts/workspace-backfill-dryrun-20260426.json",
+      "snippets": [
+        [
+          {
+            "line": 154,
+            "text": "      \"task_name\": \"Live Notify Novel Flow\","
+          }
+        ],
+        [
+          {
+            "line": 174,
+            "text": "      \"task_name\": \"Live Notify Novel Flow\","
+          }
+        ],
+        [
+          {
+            "line": 194,
+            "text": "      \"task_name\": \"Live Notify Novel Flow\","
+          }
+        ]
+      ]
+    },
+    {
+      "path": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/artifacts/workspace-field-coverage-breakdown-20260426.json",
+      "snippets": [
+        [
+          {
+            "line": 38,
+            "text": "      \"task_name\": \"Live Notify Novel Flow\","
+          }
+        ],
+        [
+          {
+            "line": 246,
+            "text": "      \"task_name\": \"Live Notify Novel Flow\","
+          }
+        ],
+        [
+          {
+            "line": 262,
+            "text": "      \"task_name\": \"Live Notify Novel Flow\","
+          }
+        ]
+      ]
+    }
+  ],
+  "Live Sanity Novel Flow": [
+    {
+      "path": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/subtask-workspace-context-codepath-audit-20260426.md",
+      "snippets": [
+        [
+          {
+            "line": 272,
+            "text": "- `Live Sanity Novel Flow`（13）"
+          }
+        ]
+      ]
+    },
+    {
+      "path": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/artifacts/workspace-backfill-dryrun-20260426.json",
+      "snippets": [
+        [
+          {
+            "line": 414,
+            "text": "      \"task_name\": \"Live Sanity Novel Flow\","
+          }
+        ],
+        [
+          {
+            "line": 434,
+            "text": "      \"task_name\": \"Live Sanity Novel Flow\","
+          }
+        ],
+        [
+          {
+            "line": 454,
+            "text": "      \"task_name\": \"Live Sanity Novel Flow\","
+          }
+        ]
+      ]
+    },
+    {
+      "path": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/artifacts/workspace-field-coverage-breakdown-20260426.json",
+      "snippets": [
+        [
+          {
+            "line": 42,
+            "text": "      \"task_name\": \"Live Sanity Novel Flow\","
+          }
+        ],
+        [
+          {
+            "line": 454,
+            "text": "      \"task_name\": \"Live Sanity Novel Flow\","
+          }
+        ],
+        [
+          {
+            "line": 470,
+            "text": "      \"task_name\": \"Live Sanity Novel Flow\","
+          }
+        ]
+      ]
+    }
+  ],
+  "单章节小说骨架试跑": [
+    {
+      "path": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/openmoss-novel-mainline-mapping.md",
+      "snippets": [
+        [
+          {
+            "line": 144,
+            "text": "- `name`: `单章节小说骨架试跑`"
+          }
+        ],
+        [
+          {
+            "line": 198,
+            "text": "task_name: 单章节小说骨架试跑"
+          }
+        ]
+      ]
+    },
+    {
+      "path": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/openmoss-single-case-checklist.md",
+      "snippets": [
+        [
+          {
+            "line": 172,
+            "text": "由 planner 创建父任务：`单章节小说骨架试跑`。"
+          }
+        ]
+      ]
+    },
+    {
+      "path": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/p0-online-runbook.md",
+      "snippets": [
+        [
+          {
+            "line": 86,
+            "text": "CASE_DIR=\"$RUN_ROOT/单章节小说骨架试跑_${CASE_ID}\""
+          }
+        ],
+        [
+          {
+            "line": 112,
+            "text": "  --task-name \"单章节小说骨架试跑 / minimal-online\" \\"
+          }
+        ]
+      ]
+    },
+    {
+      "path": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/live-standard-flow-verify-20260425-195221.md",
+      "snippets": [
+        [
+          {
+            "line": 27,
+            "text": "- task_name: `单章节小说骨架试跑 / live-standard 20260425-195221`"
+          }
+        ],
+        [
+          {
+            "line": 51,
+            "text": "  --task-name '单章节小说骨架试跑 / live-standard 20260425-195221' \\"
+          }
+        ],
+        [
+          {
+            "line": 107,
+            "text": "- `[OpenMOSS] 任务已全部完成：单章节小说骨架试跑 / live-standard 20260425-195221`"
+          }
+        ]
+      ]
+    },
+    {
+      "path": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/live-standard-flow-silent-verify-20260425-231617.md",
+      "snippets": [
+        [
+          {
+            "line": 29,
+            "text": "- task_name: `单章节小说骨架试跑`"
+          }
+        ]
+      ]
+    },
+    {
+      "path": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/subtask-workspace-context-codepath-audit-20260426.md",
+      "snippets": [
+        [
+          {
+            "line": 270,
+            "text": "- `单章节小说骨架试跑`（26）"
+          }
+        ]
+      ]
+    },
+    {
+      "path": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/openmoss-three-replays-live-gap-audit-20260421.md",
+      "snippets": [
+        [
+          {
+            "line": 181,
+            "text": "当前只在 `tmp/novel_factory_replays_20260417/单章节小说骨架试跑_novel-case-replay-01/` 留有 artifact；"
+          }
+        ]
+      ]
+    },
+    {
+      "path": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/openmoss-case-closeout-checklist-audit-20260417.md",
+      "snippets": [
+        [
+          {
+            "line": 136,
+            "text": "- `tmp/novel_factory_replays_20260417/单章节小说骨架试跑_novel-case-replay-01`"
+          }
+        ],
+        [
+          {
+            "line": 137,
+            "text": "- `tmp/novel_factory_replays_20260417/单章节小说骨架试跑_novel-case-replay-02`"
+          }
+        ],
+        [
+          {
+            "line": 138,
+            "text": "- `tmp/novel_factory_replays_20260417/单章节小说骨架试跑_novel-case-replay-03`"
+          }
+        ]
+      ]
+    }
+  ],
+  "Real Chapter Chain Probe": [
+    {
+      "path": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/artifacts/workspace-backfill-dryrun-20260426.json",
+      "snippets": [
+        [
+          {
+            "line": 94,
+            "text": "      \"task_name\": \"Real Chapter Chain Probe\","
+          }
+        ],
+        [
+          {
+            "line": 114,
+            "text": "      \"task_name\": \"Real Chapter Chain Probe\","
+          }
+        ]
+      ]
+    },
+    {
+      "path": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/artifacts/workspace-field-coverage-breakdown-20260426.json",
+      "snippets": [
+        [
+          {
+            "line": 102,
+            "text": "      \"task_name\": \"Real Chapter Chain Probe\","
+          }
+        ],
+        [
+          {
+            "line": 198,
+            "text": "      \"task_name\": \"Real Chapter Chain Probe\","
+          }
+        ],
+        [
+          {
+            "line": 214,
+            "text": "      \"task_name\": \"Real Chapter Chain Probe\","
+          }
+        ]
+      ]
+    }
+  ],
+  "Missing Artifact Review Probe": [
+    {
+      "path": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/delivery-artifact-audit-gap-20260426.md",
+      "snippets": [
+        [
+          {
+            "line": 220,
+            "text": "- 现场探针已实证：`Missing Artifact Review Probe` 在无文件情况下仍可 `approved=200`"
+          }
+        ],
+        [
+          {
+            "line": 233,
+            "text": "- 现场探针已实证：`Missing Artifact Review Probe` 在无文件情况下仍产生："
+          }
+        ],
+        [
+          {
+            "line": 244,
+            "text": "- 现场探针已实证：同一条 `Missing Artifact Review Probe` 在无文件 approved 后仍产生："
+          }
+        ]
+      ]
+    },
+    {
+      "path": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/review-correction-notes.md",
+      "snippets": [
+        [
+          {
+            "line": 1286,
+            "text": "  1. 新建任务：`Missing Artifact Review Probe`"
+          }
+        ],
+        [
+          {
+            "line": 1323,
+            "text": "  - runtime probe=`Missing Artifact Review Probe` 在无文件情况下仍 `approved=200`；"
+          }
+        ],
+        [
+          {
+            "line": 1340,
+            "text": "- 现场结果：`Missing Artifact Review Probe` 这条**没有真实文件**的任务，仍然产生了："
+          }
+        ]
+      ]
+    },
+    {
+      "path": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/artifacts/workspace-backfill-dryrun-20260426.json",
+      "snippets": [
+        [
+          {
+            "line": 54,
+            "text": "      \"task_name\": \"Missing Artifact Review Probe\","
+          }
+        ]
+      ]
+    },
+    {
+      "path": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/artifacts/workspace-field-coverage-breakdown-20260426.json",
+      "snippets": [
+        [
+          {
+            "line": 106,
+            "text": "      \"task_name\": \"Missing Artifact Review Probe\","
+          }
+        ],
+        [
+          {
+            "line": 166,
+            "text": "      \"task_name\": \"Missing Artifact Review Probe\","
+          }
+        ]
+      ]
+    }
+  ],
+  "Missing Artifact Submit Probe": [
+    {
+      "path": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/delivery-artifact-audit-gap-20260426.md",
+      "snippets": [
+        [
+          {
+            "line": 373,
+            "text": "- probe task: `Missing Artifact Submit Probe`"
+          }
+        ]
+      ]
+    },
+    {
+      "path": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/review-correction-notes.md",
+      "snippets": [
+        [
+          {
+            "line": 1219,
+            "text": "  1. 新建任务：`Missing Artifact Submit Probe`"
+          }
+        ],
+        [
+          {
+            "line": 1264,
+            "text": "  - runtime probe=`Missing Artifact Submit Probe` / sub_task=`missing-artifact-writer` 在无文件情况下 `submit=200`，DB 状态已进入 `review`。"
+          }
+        ],
+        [
+          {
+            "line": 1344,
+            "text": "- 对照也成立：`Missing Artifact Submit Probe` 只到 `review`，尚未触发通知；说明**真正触发假通知的关键门槛是 reviewer 的无文件 approved。**"
+          }
+        ]
+      ]
+    },
+    {
+      "path": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/artifacts/workspace-backfill-dryrun-20260426.json",
+      "snippets": [
+        [
+          {
+            "line": 74,
+            "text": "      \"task_name\": \"Missing Artifact Submit Probe\","
+          }
+        ]
+      ]
+    },
+    {
+      "path": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/artifacts/workspace-field-coverage-breakdown-20260426.json",
+      "snippets": [
+        [
+          {
+            "line": 110,
+            "text": "      \"task_name\": \"Missing Artifact Submit Probe\","
+          }
+        ],
+        [
+          {
+            "line": 182,
+            "text": "      \"task_name\": \"Missing Artifact Submit Probe\","
+          }
+        ]
+      ]
+    }
+  ],
+  "Artifact Guard Live Probe": [
+    {
+      "path": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/artifacts/workspace-backfill-dryrun-20260426.json",
+      "snippets": [
+        [
+          {
+            "line": 14,
+            "text": "      \"task_name\": \"Artifact Guard Live Probe 9a244336\","
+          }
+        ],
+        [
+          {
+            "line": 34,
+            "text": "      \"task_name\": \"Artifact Guard Live Probe 9a244336\","
+          }
+        ]
+      ]
+    },
+    {
+      "path": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/artifacts/workspace-field-coverage-breakdown-20260426.json",
+      "snippets": [
+        [
+          {
+            "line": 98,
+            "text": "      \"task_name\": \"Artifact Guard Live Probe 9a244336\","
+          }
+        ],
+        [
+          {
+            "line": 134,
+            "text": "      \"task_name\": \"Artifact Guard Live Probe 9a244336\","
+          }
+        ],
+        [
+          {
+            "line": 150,
+            "text": "      \"task_name\": \"Artifact Guard Live Probe 9a244336\","
+          }
+        ]
+      ]
+    }
+  ]
+}

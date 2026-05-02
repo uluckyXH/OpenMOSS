@@ -1,0 +1,18 @@
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+接着来到 OpenMOSS 后台进行配置
+oO openMoss      OD Reon
+仪表盘             通知设置
+本            ER Apert BINA
+sot         sw              @@ =
+       aaa 生
+——            一            + Bem       ©
+SO RRR  0       nase   :    -         加
+加 子任务完成                        GO taxa
+O es2nne             O sneer
+a9
+这样我们就配置好通知渠道了，也就是说完成任务后会往群里发通知信息
+配置 OpenClaw 定时任务
+第一种方法: 目前在 OpenClaw 中，我推荐唤醒的方式还是定时任务，至于多少分钟一
+次，这个可以根据自己的需求来定，怎么配置?其实也很简单，直接要求它自己建就行。
+https://linux.do/t/topic/1794669                                                                                        30/62
+

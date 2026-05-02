@@ -1,0 +1,441 @@
+{
+  "pdf": "/home/joviji/share/openmoss.pdf",
+  "page_count": 62,
+  "generated_at": "2026-04-29T19:19:01.785132",
+  "pages": [
+    {
+      "page": 1,
+      "chars": 1417,
+      "non_ws_chars": 1110,
+      "image": "page-01.png",
+      "txt_file": "page-01.txt"
+    },
+    {
+      "page": 2,
+      "chars": 1390,
+      "non_ws_chars": 1088,
+      "image": "page-02.png",
+      "txt_file": "page-02.txt"
+    },
+    {
+      "page": 3,
+      "chars": 1052,
+      "non_ws_chars": 829,
+      "image": "page-03.png",
+      "txt_file": "page-03.txt"
+    },
+    {
+      "page": 4,
+      "chars": 926,
+      "non_ws_chars": 755,
+      "image": "page-04.png",
+      "txt_file": "page-04.txt"
+    },
+    {
+      "page": 5,
+      "chars": 1475,
+      "non_ws_chars": 801,
+      "image": "page-05.png",
+      "txt_file": "page-05.txt"
+    },
+    {
+      "page": 6,
+      "chars": 1726,
+      "non_ws_chars": 1392,
+      "image": "page-06.png",
+      "txt_file": "page-06.txt"
+    },
+    {
+      "page": 7,
+      "chars": 1314,
+      "non_ws_chars": 1020,
+      "image": "page-07.png",
+      "txt_file": "page-07.txt"
+    },
+    {
+      "page": 8,
+      "chars": 871,
+      "non_ws_chars": 619,
+      "image": "page-08.png",
+      "txt_file": "page-08.txt"
+    },
+    {
+      "page": 9,
+      "chars": 675,
+      "non_ws_chars": 410,
+      "image": "page-09.png",
+      "txt_file": "page-09.txt"
+    },
+    {
+      "page": 10,
+      "chars": 667,
+      "non_ws_chars": 431,
+      "image": "page-10.png",
+      "txt_file": "page-10.txt"
+    },
+    {
+      "page": 11,
+      "chars": 697,
+      "non_ws_chars": 474,
+      "image": "page-11.png",
+      "txt_file": "page-11.txt"
+    },
+    {
+      "page": 12,
+      "chars": 690,
+      "non_ws_chars": 323,
+      "image": "page-12.png",
+      "txt_file": "page-12.txt"
+    },
+    {
+      "page": 13,
+      "chars": 851,
+      "non_ws_chars": 663,
+      "image": "page-13.png",
+      "txt_file": "page-13.txt"
+    },
+    {
+      "page": 14,
+      "chars": 3932,
+      "non_ws_chars": 1606,
+      "image": "page-14.png",
+      "txt_file": "page-14.txt"
+    },
+    {
+      "page": 15,
+      "chars": 527,
+      "non_ws_chars": 379,
+      "image": "page-15.png",
+      "txt_file": "page-15.txt"
+    },
+    {
+      "page": 16,
+      "chars": 1052,
+      "non_ws_chars": 706,
+      "image": "page-16.png",
+      "txt_file": "page-16.txt"
+    },
+    {
+      "page": 17,
+      "chars": 908,
+      "non_ws_chars": 696,
+      "image": "page-17.png",
+      "txt_file": "page-17.txt"
+    },
+    {
+      "page": 18,
+      "chars": 953,
+      "non_ws_chars": 703,
+      "image": "page-18.png",
+      "txt_file": "page-18.txt"
+    },
+    {
+      "page": 19,
+      "chars": 1191,
+      "non_ws_chars": 893,
+      "image": "page-19.png",
+      "txt_file": "page-19.txt"
+    },
+    {
+      "page": 20,
+      "chars": 826,
+      "non_ws_chars": 563,
+      "image": "page-20.png",
+      "txt_file": "page-20.txt"
+    },
+    {
+      "page": 21,
+      "chars": 1272,
+      "non_ws_chars": 693,
+      "image": "page-21.png",
+      "txt_file": "page-21.txt"
+    },
+    {
+      "page": 22,
+      "chars": 1016,
+      "non_ws_chars": 635,
+      "image": "page-22.png",
+      "txt_file": "page-22.txt"
+    },
+    {
+      "page": 23,
+      "chars": 926,
+      "non_ws_chars": 697,
+      "image": "page-23.png",
+      "txt_file": "page-23.txt"
+    },
+    {
+      "page": 24,
+      "chars": 1701,
+      "non_ws_chars": 1028,
+      "image": "page-24.png",
+      "txt_file": "page-24.txt"
+    },
+    {
+      "page": 25,
+      "chars": 1472,
+      "non_ws_chars": 988,
+      "image": "page-25.png",
+      "txt_file": "page-25.txt"
+    },
+    {
+      "page": 26,
+      "chars": 1674,
+      "non_ws_chars": 1190,
+      "image": "page-26.png",
+      "txt_file": "page-26.txt"
+    },
+    {
+      "page": 27,
+      "chars": 900,
+      "non_ws_chars": 552,
+      "image": "page-27.png",
+      "txt_file": "page-27.txt"
+    },
+    {
+      "page": 28,
+      "chars": 713,
+      "non_ws_chars": 560,
+      "image": "page-28.png",
+      "txt_file": "page-28.txt"
+    },
+    {
+      "page": 29,
+      "chars": 841,
+      "non_ws_chars": 563,
+      "image": "page-29.png",
+      "txt_file": "page-29.txt"
+    },
+    {
+      "page": 30,
+      "chars": 653,
+      "non_ws_chars": 320,
+      "image": "page-30.png",
+      "txt_file": "page-30.txt"
+    },
+    {
+      "page": 31,
+      "chars": 491,
+      "non_ws_chars": 216,
+      "image": "page-31.png",
+      "txt_file": "page-31.txt"
+    },
+    {
+      "page": 32,
+      "chars": 1400,
+      "non_ws_chars": 899,
+      "image": "page-32.png",
+      "txt_file": "page-32.txt"
+    },
+    {
+      "page": 33,
+      "chars": 417,
+      "non_ws_chars": 236,
+      "image": "page-33.png",
+      "txt_file": "page-33.txt"
+    },
+    {
+      "page": 34,
+      "chars": 1089,
+      "non_ws_chars": 864,
+      "image": "page-34.png",
+      "txt_file": "page-34.txt"
+    },
+    {
+      "page": 35,
+      "chars": 591,
+      "non_ws_chars": 447,
+      "image": "page-35.png",
+      "txt_file": "page-35.txt"
+    },
+    {
+      "page": 36,
+      "chars": 269,
+      "non_ws_chars": 81,
+      "image": "page-36.png",
+      "txt_file": "page-36.txt"
+    },
+    {
+      "page": 37,
+      "chars": 269,
+      "non_ws_chars": 81,
+      "image": "page-37.png",
+      "txt_file": "page-37.txt"
+    },
+    {
+      "page": 38,
+      "chars": 269,
+      "non_ws_chars": 81,
+      "image": "page-38.png",
+      "txt_file": "page-38.txt"
+    },
+    {
+      "page": 39,
+      "chars": 269,
+      "non_ws_chars": 81,
+      "image": "page-39.png",
+      "txt_file": "page-39.txt"
+    },
+    {
+      "page": 40,
+      "chars": 269,
+      "non_ws_chars": 81,
+      "image": "page-40.png",
+      "txt_file": "page-40.txt"
+    },
+    {
+      "page": 41,
+      "chars": 269,
+      "non_ws_chars": 81,
+      "image": "page-41.png",
+      "txt_file": "page-41.txt"
+    },
+    {
+      "page": 42,
+      "chars": 269,
+      "non_ws_chars": 81,
+      "image": "page-42.png",
+      "txt_file": "page-42.txt"
+    },
+    {
+      "page": 43,
+      "chars": 269,
+      "non_ws_chars": 81,
+      "image": "page-43.png",
+      "txt_file": "page-43.txt"
+    },
+    {
+      "page": 44,
+      "chars": 269,
+      "non_ws_chars": 81,
+      "image": "page-44.png",
+      "txt_file": "page-44.txt"
+    },
+    {
+      "page": 45,
+      "chars": 269,
+      "non_ws_chars": 81,
+      "image": "page-45.png",
+      "txt_file": "page-45.txt"
+    },
+    {
+      "page": 46,
+      "chars": 269,
+      "non_ws_chars": 81,
+      "image": "page-46.png",
+      "txt_file": "page-46.txt"
+    },
+    {
+      "page": 47,
+      "chars": 269,
+      "non_ws_chars": 81,
+      "image": "page-47.png",
+      "txt_file": "page-47.txt"
+    },
+    {
+      "page": 48,
+      "chars": 269,
+      "non_ws_chars": 81,
+      "image": "page-48.png",
+      "txt_file": "page-48.txt"
+    },
+    {
+      "page": 49,
+      "chars": 269,
+      "non_ws_chars": 81,
+      "image": "page-49.png",
+      "txt_file": "page-49.txt"
+    },
+    {
+      "page": 50,
+      "chars": 269,
+      "non_ws_chars": 81,
+      "image": "page-50.png",
+      "txt_file": "page-50.txt"
+    },
+    {
+      "page": 51,
+      "chars": 269,
+      "non_ws_chars": 81,
+      "image": "page-51.png",
+      "txt_file": "page-51.txt"
+    },
+    {
+      "page": 52,
+      "chars": 269,
+      "non_ws_chars": 81,
+      "image": "page-52.png",
+      "txt_file": "page-52.txt"
+    },
+    {
+      "page": 53,
+      "chars": 269,
+      "non_ws_chars": 81,
+      "image": "page-53.png",
+      "txt_file": "page-53.txt"
+    },
+    {
+      "page": 54,
+      "chars": 269,
+      "non_ws_chars": 81,
+      "image": "page-54.png",
+      "txt_file": "page-54.txt"
+    },
+    {
+      "page": 55,
+      "chars": 269,
+      "non_ws_chars": 81,
+      "image": "page-55.png",
+      "txt_file": "page-55.txt"
+    },
+    {
+      "page": 56,
+      "chars": 269,
+      "non_ws_chars": 81,
+      "image": "page-56.png",
+      "txt_file": "page-56.txt"
+    },
+    {
+      "page": 57,
+      "chars": 269,
+      "non_ws_chars": 81,
+      "image": "page-57.png",
+      "txt_file": "page-57.txt"
+    },
+    {
+      "page": 58,
+      "chars": 269,
+      "non_ws_chars": 81,
+      "image": "page-58.png",
+      "txt_file": "page-58.txt"
+    },
+    {
+      "page": 59,
+      "chars": 269,
+      "non_ws_chars": 81,
+      "image": "page-59.png",
+      "txt_file": "page-59.txt"
+    },
+    {
+      "page": 60,
+      "chars": 269,
+      "non_ws_chars": 81,
+      "image": "page-60.png",
+      "txt_file": "page-60.txt"
+    },
+    {
+      "page": 61,
+      "chars": 269,
+      "non_ws_chars": 81,
+      "image": "page-61.png",
+      "txt_file": "page-61.txt"
+    },
+    {
+      "page": 62,
+      "chars": 269,
+      "non_ws_chars": 81,
+      "image": "page-62.png",
+      "txt_file": "page-62.txt"
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+欢迎使用OpenMOSS
+多 Al Agent 自娟织协作平台 一 初挫化设置
+中置 Agent 对撑的区务访问地址
+了 服务访问地址
+Nttp://127.0.0.1:6568,
+这是什么
+Ge A Agorn maT Tate
++ FOTATA (taskelipy
++ SITAR (SKILL. md
++ SESRRAR. MOM REM
+ASA
+AAGERAUT ARRAS. MECN 6565
+https: //eoss.example.com © (MSLICE (NyuyCadey
+Nttp://123.45.67.89:6565 © HU +m
+Nttps//127.0,0,1:6565 «+ Sem
+OPSNeH) Sued, Mee KRM ORR
+第五步: 完成配置
+启用通知推送我们可以后续对接好 agent 来再来配置!
+欢迎使用OpenMOSS
+多 Al Agent 自组织协作平台 一 初始化设置
+瑟置消息通知 (可跳过
+启用通知推送
+Agent 完成任务、市查琢回和事件时发送送知
+=
+https://linux.do/t/topic/1794669                                                                                                11/62
+

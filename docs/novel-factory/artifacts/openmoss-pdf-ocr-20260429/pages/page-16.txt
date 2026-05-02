@@ -1,0 +1,51 @@
+2026/4/5 16:58                                              【开源】OpenMOSS部署配置指南 - 开发调优- LINUX DO
+
+多      ure ch     channel     Nig
+
+|                No
+
+Hates:                     E
+
+接下来通过命令查看 agent 的配置状态
+
+openclaw models status --agent ai_xiaogui
+
+yea             Ss      m7      、
+可以看到 agent 配置是直接继承了我的全局配置
+rootevultrs-# openiclaw models status --agent ai xiaogui
+A    bs    tA ae Te  ts/ai_xiaogui/agent/auth-profiles.jsoi
+if.      feishu_drive: Registered feishu_drive_file, feishu_doc_comments, feishu_doc_media
+
+rootewitr:~#
+
+root@vultr:-M openclaw agents list
+
+eee
+
+- main (default)
+
+ieee eye terre ed
+
+emer ery ar rinstny eran Ut tas
+
+Model: my-custom/gpt-5.4({xhigh)
+
+Routing ruless 2
+
+Urn Cmte st tests)
+
+Workspace: ~/.openclaw/workspace-ai_xiaogui
+
+eerie etree rmree Terr Ts
+
+Model: my-custom/gpt-S.6(xhigh)
+
+Routing rules: 2
+
+Rte ec RE oe ee era oberon
+
+CTU ate ee etl hee Pee ete ee eee Pere emu Pete td eee sae
+erred
+
+https://linux.do/t/topic/1794669                                                                                 16/62
+

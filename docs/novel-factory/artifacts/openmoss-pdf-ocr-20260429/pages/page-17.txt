@@ -1,0 +1,30 @@
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+以飞书为例，配置多账号渠道
+该流程比较废时间，每个“书机器人的配对需要最少 5 分钟。
+我这里是用的飞书官方的插件: OpenClaw 飞书官方插件使用指南 (公开版)
+第一步: 将单账号变为多账号配置
+# RARUK SE
+openclaw config set channels.feishu.defaultAccount main
+作用:
+。 当消息 / 出站没显式写 accountld 时，默认使用 main 这个飞书账号
+为什么要做?多账号模式里必须有一个“默认账号" 概念，不然以后路由会变得模糊。做
+完后你应该理解成
+以后:
+。 feishu 默认指向 feishu:main
+第二步: 把现有主 bot 的 App ID 写进 accounts.main
+opencLaw config set channeLs .feishu.accounts.main.appId '<你现在主飞书Bot的/
+《SS
+作用:
+创建多账号结构里的:
+e channels.feishu.accounts.main.appld
+FEMA = bot BY App Secret S3# accounts.main
+openclaw config set channeLs .feishu.accounts.main.appSecret '<你现在主飞书B
+1 CR
+作用
+创建:
+e channels.feishu.accounts.main.appSecret
+第三步: 对接新 Agent
+至此，你需要在飞书开放平台申请一个新的 bot，获得 App ID 和 App Secret
+飞书开放平台
+https:Wlinux.do/ttopic/1794669                                                                      17/62
+

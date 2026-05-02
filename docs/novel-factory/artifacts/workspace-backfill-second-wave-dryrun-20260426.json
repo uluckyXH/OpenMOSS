@@ -1,0 +1,1500 @@
+{
+  "mode": "dry_run",
+  "db_path": "data/tasks.db",
+  "mapping_path": "docs/novel-factory/artifacts/workspace-backfill-high-confidence-map-20260426.json",
+  "task_ids_filter": [
+    "19d848d3-9acc-406e-b545-6bb450d39e50",
+    "426e8beb-f637-4e47-bf96-d8d5a9ddab67",
+    "4456fd32-ecf4-4451-a307-5fd013a9ab9d",
+    "72968da8-b338-4c24-8b5d-93c1cc4d450a",
+    "d5f20f19-6a64-4635-899d-e87463e3eb56",
+    "fc539811-d3a1-44ec-b097-ea827bd78907"
+  ],
+  "candidate_count": 78,
+  "skipped_count": 0,
+  "candidates": [
+    {
+      "sub_task_id": "f63ed661-8039-4dbf-a7d3-2385431e178b",
+      "task_id": "d5f20f19-6a64-4635-899d-e87463e3eb56",
+      "task_name": "Live Notify Novel Flow",
+      "sub_task_name": "钩子设计 / hook-designer",
+      "artifact_path": "09_hook-designer/09_hook_design.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/tmp/openmoss-live-notify-1yhwSS/out/closeout-workspace",
+      "task_workspace_dir": "/tmp/openmoss-live-notify-1yhwSS/out/closeout-workspace/live-notify-001_d5f20f19",
+      "artifact_absolute_path": "/tmp/openmoss-live-notify-1yhwSS/out/closeout-workspace/live-notify-001_d5f20f19/09_hook-designer/09_hook_design.md",
+      "host_workspace_dir": "/tmp/openmoss-live-notify-1yhwSS/out/closeout-workspace/live-notify-001_d5f20f19",
+      "host_artifact_path": "/tmp/openmoss-live-notify-1yhwSS/out/closeout-workspace/live-notify-001_d5f20f19/09_hook-designer/09_hook_design.md",
+      "source": "sqlite:data/tasks.db review_record.comment; docs/novel-factory/standard-flow-workspace-path-audit-20260426.md",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "bea8e409-26ff-492d-8f8f-442dfd73c6a9",
+      "task_id": "d5f20f19-6a64-4635-899d-e87463e3eb56",
+      "task_name": "Live Notify Novel Flow",
+      "sub_task_name": "开篇结尾 / opening-ending-designer",
+      "artifact_path": "08_opening-ending-designer/08_opening_ending.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/tmp/openmoss-live-notify-1yhwSS/out/closeout-workspace",
+      "task_workspace_dir": "/tmp/openmoss-live-notify-1yhwSS/out/closeout-workspace/live-notify-001_d5f20f19",
+      "artifact_absolute_path": "/tmp/openmoss-live-notify-1yhwSS/out/closeout-workspace/live-notify-001_d5f20f19/08_opening-ending-designer/08_opening_ending.md",
+      "host_workspace_dir": "/tmp/openmoss-live-notify-1yhwSS/out/closeout-workspace/live-notify-001_d5f20f19",
+      "host_artifact_path": "/tmp/openmoss-live-notify-1yhwSS/out/closeout-workspace/live-notify-001_d5f20f19/08_opening-ending-designer/08_opening_ending.md",
+      "source": "sqlite:data/tasks.db review_record.comment; docs/novel-factory/standard-flow-workspace-path-audit-20260426.md",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "b9301d1f-914a-4f36-af17-3e0126153bc9",
+      "task_id": "d5f20f19-6a64-4635-899d-e87463e3eb56",
+      "task_name": "Live Notify Novel Flow",
+      "sub_task_name": "心理描写 / psychological-portrayal-expert",
+      "artifact_path": "07_psychological-portrayal-expert/07_psychology_pass.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/tmp/openmoss-live-notify-1yhwSS/out/closeout-workspace",
+      "task_workspace_dir": "/tmp/openmoss-live-notify-1yhwSS/out/closeout-workspace/live-notify-001_d5f20f19",
+      "artifact_absolute_path": "/tmp/openmoss-live-notify-1yhwSS/out/closeout-workspace/live-notify-001_d5f20f19/07_psychological-portrayal-expert/07_psychology_pass.md",
+      "host_workspace_dir": "/tmp/openmoss-live-notify-1yhwSS/out/closeout-workspace/live-notify-001_d5f20f19",
+      "host_artifact_path": "/tmp/openmoss-live-notify-1yhwSS/out/closeout-workspace/live-notify-001_d5f20f19/07_psychological-portrayal-expert/07_psychology_pass.md",
+      "source": "sqlite:data/tasks.db review_record.comment; docs/novel-factory/standard-flow-workspace-path-audit-20260426.md",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "ad143e8a-b528-40af-8d30-605e3e8dcf1e",
+      "task_id": "d5f20f19-6a64-4635-899d-e87463e3eb56",
+      "task_name": "Live Notify Novel Flow",
+      "sub_task_name": "情绪曲线 / emotion-curve-designer",
+      "artifact_path": "05_emotion-curve-designer/05_emotion_curve.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/tmp/openmoss-live-notify-1yhwSS/out/closeout-workspace",
+      "task_workspace_dir": "/tmp/openmoss-live-notify-1yhwSS/out/closeout-workspace/live-notify-001_d5f20f19",
+      "artifact_absolute_path": "/tmp/openmoss-live-notify-1yhwSS/out/closeout-workspace/live-notify-001_d5f20f19/05_emotion-curve-designer/05_emotion_curve.md",
+      "host_workspace_dir": "/tmp/openmoss-live-notify-1yhwSS/out/closeout-workspace/live-notify-001_d5f20f19",
+      "host_artifact_path": "/tmp/openmoss-live-notify-1yhwSS/out/closeout-workspace/live-notify-001_d5f20f19/05_emotion-curve-designer/05_emotion_curve.md",
+      "source": "sqlite:data/tasks.db review_record.comment; docs/novel-factory/standard-flow-workspace-path-audit-20260426.md",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "960a4a5c-c8f5-4390-9b2b-43ac7e7654f9",
+      "task_id": "d5f20f19-6a64-4635-899d-e87463e3eb56",
+      "task_name": "Live Notify Novel Flow",
+      "sub_task_name": "场景架构 / scene-architect",
+      "artifact_path": "02_scene-architect/02_scene_plan.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/tmp/openmoss-live-notify-1yhwSS/out/closeout-workspace",
+      "task_workspace_dir": "/tmp/openmoss-live-notify-1yhwSS/out/closeout-workspace/live-notify-001_d5f20f19",
+      "artifact_absolute_path": "/tmp/openmoss-live-notify-1yhwSS/out/closeout-workspace/live-notify-001_d5f20f19/02_scene-architect/02_scene_plan.md",
+      "host_workspace_dir": "/tmp/openmoss-live-notify-1yhwSS/out/closeout-workspace/live-notify-001_d5f20f19",
+      "host_artifact_path": "/tmp/openmoss-live-notify-1yhwSS/out/closeout-workspace/live-notify-001_d5f20f19/02_scene-architect/02_scene_plan.md",
+      "source": "sqlite:data/tasks.db review_record.comment; docs/novel-factory/standard-flow-workspace-path-audit-20260426.md",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "94bff37f-8941-412d-871c-6664650b9c11",
+      "task_id": "d5f20f19-6a64-4635-899d-e87463e3eb56",
+      "task_name": "Live Notify Novel Flow",
+      "sub_task_name": "人物成长 / character-growth",
+      "artifact_path": "06_character-growth/06_character_growth.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/tmp/openmoss-live-notify-1yhwSS/out/closeout-workspace",
+      "task_workspace_dir": "/tmp/openmoss-live-notify-1yhwSS/out/closeout-workspace/live-notify-001_d5f20f19",
+      "artifact_absolute_path": "/tmp/openmoss-live-notify-1yhwSS/out/closeout-workspace/live-notify-001_d5f20f19/06_character-growth/06_character_growth.md",
+      "host_workspace_dir": "/tmp/openmoss-live-notify-1yhwSS/out/closeout-workspace/live-notify-001_d5f20f19",
+      "host_artifact_path": "/tmp/openmoss-live-notify-1yhwSS/out/closeout-workspace/live-notify-001_d5f20f19/06_character-growth/06_character_growth.md",
+      "source": "sqlite:data/tasks.db review_record.comment; docs/novel-factory/standard-flow-workspace-path-audit-20260426.md",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "7f5c7a51-2814-4ffc-8170-d8f754948bab",
+      "task_id": "d5f20f19-6a64-4635-899d-e87463e3eb56",
+      "task_name": "Live Notify Novel Flow",
+      "sub_task_name": "剧情架构 / plot-architect",
+      "artifact_path": "01_plot-architect/01_plot_blueprint.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/tmp/openmoss-live-notify-1yhwSS/out/closeout-workspace",
+      "task_workspace_dir": "/tmp/openmoss-live-notify-1yhwSS/out/closeout-workspace/live-notify-001_d5f20f19",
+      "artifact_absolute_path": "/tmp/openmoss-live-notify-1yhwSS/out/closeout-workspace/live-notify-001_d5f20f19/01_plot-architect/01_plot_blueprint.md",
+      "host_workspace_dir": "/tmp/openmoss-live-notify-1yhwSS/out/closeout-workspace/live-notify-001_d5f20f19",
+      "host_artifact_path": "/tmp/openmoss-live-notify-1yhwSS/out/closeout-workspace/live-notify-001_d5f20f19/01_plot-architect/01_plot_blueprint.md",
+      "source": "sqlite:data/tasks.db review_record.comment; docs/novel-factory/standard-flow-workspace-path-audit-20260426.md",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "71d415b2-62e8-4e9e-a647-9061fc434dcf",
+      "task_id": "d5f20f19-6a64-4635-899d-e87463e3eb56",
+      "task_name": "Live Notify Novel Flow",
+      "sub_task_name": "正文初稿 / writer",
+      "artifact_path": "03_writer/03_draft.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/tmp/openmoss-live-notify-1yhwSS/out/closeout-workspace",
+      "task_workspace_dir": "/tmp/openmoss-live-notify-1yhwSS/out/closeout-workspace/live-notify-001_d5f20f19",
+      "artifact_absolute_path": "/tmp/openmoss-live-notify-1yhwSS/out/closeout-workspace/live-notify-001_d5f20f19/03_writer/03_draft.md",
+      "host_workspace_dir": "/tmp/openmoss-live-notify-1yhwSS/out/closeout-workspace/live-notify-001_d5f20f19",
+      "host_artifact_path": "/tmp/openmoss-live-notify-1yhwSS/out/closeout-workspace/live-notify-001_d5f20f19/03_writer/03_draft.md",
+      "source": "sqlite:data/tasks.db review_record.comment; docs/novel-factory/standard-flow-workspace-path-audit-20260426.md",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "5e376d5c-19ac-4c9e-b68e-42685178e43f",
+      "task_id": "d5f20f19-6a64-4635-899d-e87463e3eb56",
+      "task_name": "Live Notify Novel Flow",
+      "sub_task_name": "最终组装 / final-assembler",
+      "artifact_path": "13_final-assembler/13_final_chapter.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/tmp/openmoss-live-notify-1yhwSS/out/closeout-workspace",
+      "task_workspace_dir": "/tmp/openmoss-live-notify-1yhwSS/out/closeout-workspace/live-notify-001_d5f20f19",
+      "artifact_absolute_path": "/tmp/openmoss-live-notify-1yhwSS/out/closeout-workspace/live-notify-001_d5f20f19/13_final-assembler/13_final_chapter.md",
+      "host_workspace_dir": "/tmp/openmoss-live-notify-1yhwSS/out/closeout-workspace/live-notify-001_d5f20f19",
+      "host_artifact_path": "/tmp/openmoss-live-notify-1yhwSS/out/closeout-workspace/live-notify-001_d5f20f19/13_final-assembler/13_final_chapter.md",
+      "source": "sqlite:data/tasks.db review_record.comment; docs/novel-factory/standard-flow-workspace-path-audit-20260426.md",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "4b25a885-eef3-4b21-bb7d-4fba85035ea8",
+      "task_id": "d5f20f19-6a64-4635-899d-e87463e3eb56",
+      "task_name": "Live Notify Novel Flow",
+      "sub_task_name": "修订润色 / revision-polish-expert",
+      "artifact_path": "11_revision-polish-expert/11_revision_pass.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/tmp/openmoss-live-notify-1yhwSS/out/closeout-workspace",
+      "task_workspace_dir": "/tmp/openmoss-live-notify-1yhwSS/out/closeout-workspace/live-notify-001_d5f20f19",
+      "artifact_absolute_path": "/tmp/openmoss-live-notify-1yhwSS/out/closeout-workspace/live-notify-001_d5f20f19/11_revision-polish-expert/11_revision_pass.md",
+      "host_workspace_dir": "/tmp/openmoss-live-notify-1yhwSS/out/closeout-workspace/live-notify-001_d5f20f19",
+      "host_artifact_path": "/tmp/openmoss-live-notify-1yhwSS/out/closeout-workspace/live-notify-001_d5f20f19/11_revision-polish-expert/11_revision_pass.md",
+      "source": "sqlite:data/tasks.db review_record.comment; docs/novel-factory/standard-flow-workspace-path-audit-20260426.md",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "479c370b-12b7-4853-af61-c969205bc46c",
+      "task_id": "d5f20f19-6a64-4635-899d-e87463e3eb56",
+      "task_name": "Live Notify Novel Flow",
+      "sub_task_name": "对话优化 / dialogue-expert",
+      "artifact_path": "04_dialogue-expert/04_dialogue_pass.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/tmp/openmoss-live-notify-1yhwSS/out/closeout-workspace",
+      "task_workspace_dir": "/tmp/openmoss-live-notify-1yhwSS/out/closeout-workspace/live-notify-001_d5f20f19",
+      "artifact_absolute_path": "/tmp/openmoss-live-notify-1yhwSS/out/closeout-workspace/live-notify-001_d5f20f19/04_dialogue-expert/04_dialogue_pass.md",
+      "host_workspace_dir": "/tmp/openmoss-live-notify-1yhwSS/out/closeout-workspace/live-notify-001_d5f20f19",
+      "host_artifact_path": "/tmp/openmoss-live-notify-1yhwSS/out/closeout-workspace/live-notify-001_d5f20f19/04_dialogue-expert/04_dialogue_pass.md",
+      "source": "sqlite:data/tasks.db review_record.comment; docs/novel-factory/standard-flow-workspace-path-audit-20260426.md",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "2c078090-5df9-4827-9fc1-3f16091ae6e7",
+      "task_id": "d5f20f19-6a64-4635-899d-e87463e3eb56",
+      "task_name": "Live Notify Novel Flow",
+      "sub_task_name": "综合审查 / reviewer",
+      "artifact_path": "10_reviewer/10_review_report.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/tmp/openmoss-live-notify-1yhwSS/out/closeout-workspace",
+      "task_workspace_dir": "/tmp/openmoss-live-notify-1yhwSS/out/closeout-workspace/live-notify-001_d5f20f19",
+      "artifact_absolute_path": "/tmp/openmoss-live-notify-1yhwSS/out/closeout-workspace/live-notify-001_d5f20f19/10_reviewer/10_review_report.md",
+      "host_workspace_dir": "/tmp/openmoss-live-notify-1yhwSS/out/closeout-workspace/live-notify-001_d5f20f19",
+      "host_artifact_path": "/tmp/openmoss-live-notify-1yhwSS/out/closeout-workspace/live-notify-001_d5f20f19/10_reviewer/10_review_report.md",
+      "source": "sqlite:data/tasks.db review_record.comment; docs/novel-factory/standard-flow-workspace-path-audit-20260426.md",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "11beb901-4b4b-45bc-ab56-8a4a6b28173f",
+      "task_id": "d5f20f19-6a64-4635-899d-e87463e3eb56",
+      "task_name": "Live Notify Novel Flow",
+      "sub_task_name": "风格一致性 / style-consistency-checker",
+      "artifact_path": "12_style-consistency-checker/12_style_report.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/tmp/openmoss-live-notify-1yhwSS/out/closeout-workspace",
+      "task_workspace_dir": "/tmp/openmoss-live-notify-1yhwSS/out/closeout-workspace/live-notify-001_d5f20f19",
+      "artifact_absolute_path": "/tmp/openmoss-live-notify-1yhwSS/out/closeout-workspace/live-notify-001_d5f20f19/12_style-consistency-checker/12_style_report.md",
+      "host_workspace_dir": "/tmp/openmoss-live-notify-1yhwSS/out/closeout-workspace/live-notify-001_d5f20f19",
+      "host_artifact_path": "/tmp/openmoss-live-notify-1yhwSS/out/closeout-workspace/live-notify-001_d5f20f19/12_style-consistency-checker/12_style_report.md",
+      "source": "sqlite:data/tasks.db review_record.comment; docs/novel-factory/standard-flow-workspace-path-audit-20260426.md",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "f88f201e-3eaf-4296-9c8f-5c7a9a1fa560",
+      "task_id": "fc539811-d3a1-44ec-b097-ea827bd78907",
+      "task_name": "Live Sanity Novel Flow",
+      "sub_task_name": "开篇结尾 / opening-ending-designer",
+      "artifact_path": "08_opening-ending-designer/08_opening_ending.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/tmp/openmoss-live-flow-CNfLNR/out/closeout-workspace",
+      "task_workspace_dir": "/tmp/openmoss-live-flow-CNfLNR/out/closeout-workspace/live-sanity-001_fc539811",
+      "artifact_absolute_path": "/tmp/openmoss-live-flow-CNfLNR/out/closeout-workspace/live-sanity-001_fc539811/08_opening-ending-designer/08_opening_ending.md",
+      "host_workspace_dir": "/tmp/openmoss-live-flow-CNfLNR/out/closeout-workspace/live-sanity-001_fc539811",
+      "host_artifact_path": "/tmp/openmoss-live-flow-CNfLNR/out/closeout-workspace/live-sanity-001_fc539811/08_opening-ending-designer/08_opening_ending.md",
+      "source": "sqlite:data/tasks.db review_record.comment",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "f5025787-e3ef-4547-a9ee-cdc5402e580c",
+      "task_id": "fc539811-d3a1-44ec-b097-ea827bd78907",
+      "task_name": "Live Sanity Novel Flow",
+      "sub_task_name": "修订润色 / revision-polish-expert",
+      "artifact_path": "11_revision-polish-expert/11_revision_pass.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/tmp/openmoss-live-flow-CNfLNR/out/closeout-workspace",
+      "task_workspace_dir": "/tmp/openmoss-live-flow-CNfLNR/out/closeout-workspace/live-sanity-001_fc539811",
+      "artifact_absolute_path": "/tmp/openmoss-live-flow-CNfLNR/out/closeout-workspace/live-sanity-001_fc539811/11_revision-polish-expert/11_revision_pass.md",
+      "host_workspace_dir": "/tmp/openmoss-live-flow-CNfLNR/out/closeout-workspace/live-sanity-001_fc539811",
+      "host_artifact_path": "/tmp/openmoss-live-flow-CNfLNR/out/closeout-workspace/live-sanity-001_fc539811/11_revision-polish-expert/11_revision_pass.md",
+      "source": "sqlite:data/tasks.db review_record.comment",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "f4ec185d-27f2-4bbc-b57f-2f5a456b0ed9",
+      "task_id": "fc539811-d3a1-44ec-b097-ea827bd78907",
+      "task_name": "Live Sanity Novel Flow",
+      "sub_task_name": "钩子设计 / hook-designer",
+      "artifact_path": "09_hook-designer/09_hook_design.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/tmp/openmoss-live-flow-CNfLNR/out/closeout-workspace",
+      "task_workspace_dir": "/tmp/openmoss-live-flow-CNfLNR/out/closeout-workspace/live-sanity-001_fc539811",
+      "artifact_absolute_path": "/tmp/openmoss-live-flow-CNfLNR/out/closeout-workspace/live-sanity-001_fc539811/09_hook-designer/09_hook_design.md",
+      "host_workspace_dir": "/tmp/openmoss-live-flow-CNfLNR/out/closeout-workspace/live-sanity-001_fc539811",
+      "host_artifact_path": "/tmp/openmoss-live-flow-CNfLNR/out/closeout-workspace/live-sanity-001_fc539811/09_hook-designer/09_hook_design.md",
+      "source": "sqlite:data/tasks.db review_record.comment",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "f414d7d2-8750-4496-a38c-1523d8375635",
+      "task_id": "fc539811-d3a1-44ec-b097-ea827bd78907",
+      "task_name": "Live Sanity Novel Flow",
+      "sub_task_name": "人物成长 / character-growth",
+      "artifact_path": "06_character-growth/06_character_growth.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/tmp/openmoss-live-flow-CNfLNR/out/closeout-workspace",
+      "task_workspace_dir": "/tmp/openmoss-live-flow-CNfLNR/out/closeout-workspace/live-sanity-001_fc539811",
+      "artifact_absolute_path": "/tmp/openmoss-live-flow-CNfLNR/out/closeout-workspace/live-sanity-001_fc539811/06_character-growth/06_character_growth.md",
+      "host_workspace_dir": "/tmp/openmoss-live-flow-CNfLNR/out/closeout-workspace/live-sanity-001_fc539811",
+      "host_artifact_path": "/tmp/openmoss-live-flow-CNfLNR/out/closeout-workspace/live-sanity-001_fc539811/06_character-growth/06_character_growth.md",
+      "source": "sqlite:data/tasks.db review_record.comment",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "d0f1e166-5881-4298-9c58-2478b2d07f0a",
+      "task_id": "fc539811-d3a1-44ec-b097-ea827bd78907",
+      "task_name": "Live Sanity Novel Flow",
+      "sub_task_name": "剧情架构 / plot-architect",
+      "artifact_path": "01_plot-architect/01_plot_blueprint.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/tmp/openmoss-live-flow-CNfLNR/out/closeout-workspace",
+      "task_workspace_dir": "/tmp/openmoss-live-flow-CNfLNR/out/closeout-workspace/live-sanity-001_fc539811",
+      "artifact_absolute_path": "/tmp/openmoss-live-flow-CNfLNR/out/closeout-workspace/live-sanity-001_fc539811/01_plot-architect/01_plot_blueprint.md",
+      "host_workspace_dir": "/tmp/openmoss-live-flow-CNfLNR/out/closeout-workspace/live-sanity-001_fc539811",
+      "host_artifact_path": "/tmp/openmoss-live-flow-CNfLNR/out/closeout-workspace/live-sanity-001_fc539811/01_plot-architect/01_plot_blueprint.md",
+      "source": "sqlite:data/tasks.db review_record.comment",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "9389bd5e-cfd0-47c9-ae10-1d69136a852b",
+      "task_id": "fc539811-d3a1-44ec-b097-ea827bd78907",
+      "task_name": "Live Sanity Novel Flow",
+      "sub_task_name": "情绪曲线 / emotion-curve-designer",
+      "artifact_path": "05_emotion-curve-designer/05_emotion_curve.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/tmp/openmoss-live-flow-CNfLNR/out/closeout-workspace",
+      "task_workspace_dir": "/tmp/openmoss-live-flow-CNfLNR/out/closeout-workspace/live-sanity-001_fc539811",
+      "artifact_absolute_path": "/tmp/openmoss-live-flow-CNfLNR/out/closeout-workspace/live-sanity-001_fc539811/05_emotion-curve-designer/05_emotion_curve.md",
+      "host_workspace_dir": "/tmp/openmoss-live-flow-CNfLNR/out/closeout-workspace/live-sanity-001_fc539811",
+      "host_artifact_path": "/tmp/openmoss-live-flow-CNfLNR/out/closeout-workspace/live-sanity-001_fc539811/05_emotion-curve-designer/05_emotion_curve.md",
+      "source": "sqlite:data/tasks.db review_record.comment",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "842736e2-1e9a-4d51-b0a0-44fb90602202",
+      "task_id": "fc539811-d3a1-44ec-b097-ea827bd78907",
+      "task_name": "Live Sanity Novel Flow",
+      "sub_task_name": "风格一致性 / style-consistency-checker",
+      "artifact_path": "12_style-consistency-checker/12_style_report.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/tmp/openmoss-live-flow-CNfLNR/out/closeout-workspace",
+      "task_workspace_dir": "/tmp/openmoss-live-flow-CNfLNR/out/closeout-workspace/live-sanity-001_fc539811",
+      "artifact_absolute_path": "/tmp/openmoss-live-flow-CNfLNR/out/closeout-workspace/live-sanity-001_fc539811/12_style-consistency-checker/12_style_report.md",
+      "host_workspace_dir": "/tmp/openmoss-live-flow-CNfLNR/out/closeout-workspace/live-sanity-001_fc539811",
+      "host_artifact_path": "/tmp/openmoss-live-flow-CNfLNR/out/closeout-workspace/live-sanity-001_fc539811/12_style-consistency-checker/12_style_report.md",
+      "source": "sqlite:data/tasks.db review_record.comment",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "837c2a2f-7755-4382-ba98-c007fb09094a",
+      "task_id": "fc539811-d3a1-44ec-b097-ea827bd78907",
+      "task_name": "Live Sanity Novel Flow",
+      "sub_task_name": "对话优化 / dialogue-expert",
+      "artifact_path": "04_dialogue-expert/04_dialogue_pass.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/tmp/openmoss-live-flow-CNfLNR/out/closeout-workspace",
+      "task_workspace_dir": "/tmp/openmoss-live-flow-CNfLNR/out/closeout-workspace/live-sanity-001_fc539811",
+      "artifact_absolute_path": "/tmp/openmoss-live-flow-CNfLNR/out/closeout-workspace/live-sanity-001_fc539811/04_dialogue-expert/04_dialogue_pass.md",
+      "host_workspace_dir": "/tmp/openmoss-live-flow-CNfLNR/out/closeout-workspace/live-sanity-001_fc539811",
+      "host_artifact_path": "/tmp/openmoss-live-flow-CNfLNR/out/closeout-workspace/live-sanity-001_fc539811/04_dialogue-expert/04_dialogue_pass.md",
+      "source": "sqlite:data/tasks.db review_record.comment",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "51bdf35d-61ce-4f27-bf60-f07e294b9c9d",
+      "task_id": "fc539811-d3a1-44ec-b097-ea827bd78907",
+      "task_name": "Live Sanity Novel Flow",
+      "sub_task_name": "心理描写 / psychological-portrayal-expert",
+      "artifact_path": "07_psychological-portrayal-expert/07_psychology_pass.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/tmp/openmoss-live-flow-CNfLNR/out/closeout-workspace",
+      "task_workspace_dir": "/tmp/openmoss-live-flow-CNfLNR/out/closeout-workspace/live-sanity-001_fc539811",
+      "artifact_absolute_path": "/tmp/openmoss-live-flow-CNfLNR/out/closeout-workspace/live-sanity-001_fc539811/07_psychological-portrayal-expert/07_psychology_pass.md",
+      "host_workspace_dir": "/tmp/openmoss-live-flow-CNfLNR/out/closeout-workspace/live-sanity-001_fc539811",
+      "host_artifact_path": "/tmp/openmoss-live-flow-CNfLNR/out/closeout-workspace/live-sanity-001_fc539811/07_psychological-portrayal-expert/07_psychology_pass.md",
+      "source": "sqlite:data/tasks.db review_record.comment",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "469f4fad-e5bd-4026-a0ba-594865884226",
+      "task_id": "fc539811-d3a1-44ec-b097-ea827bd78907",
+      "task_name": "Live Sanity Novel Flow",
+      "sub_task_name": "综合审查 / reviewer",
+      "artifact_path": "10_reviewer/10_review_report.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/tmp/openmoss-live-flow-CNfLNR/out/closeout-workspace",
+      "task_workspace_dir": "/tmp/openmoss-live-flow-CNfLNR/out/closeout-workspace/live-sanity-001_fc539811",
+      "artifact_absolute_path": "/tmp/openmoss-live-flow-CNfLNR/out/closeout-workspace/live-sanity-001_fc539811/10_reviewer/10_review_report.md",
+      "host_workspace_dir": "/tmp/openmoss-live-flow-CNfLNR/out/closeout-workspace/live-sanity-001_fc539811",
+      "host_artifact_path": "/tmp/openmoss-live-flow-CNfLNR/out/closeout-workspace/live-sanity-001_fc539811/10_reviewer/10_review_report.md",
+      "source": "sqlite:data/tasks.db review_record.comment",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "3ae1d8d0-0fb7-4ec5-a823-ed39bbc8bcc3",
+      "task_id": "fc539811-d3a1-44ec-b097-ea827bd78907",
+      "task_name": "Live Sanity Novel Flow",
+      "sub_task_name": "场景架构 / scene-architect",
+      "artifact_path": "02_scene-architect/02_scene_plan.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/tmp/openmoss-live-flow-CNfLNR/out/closeout-workspace",
+      "task_workspace_dir": "/tmp/openmoss-live-flow-CNfLNR/out/closeout-workspace/live-sanity-001_fc539811",
+      "artifact_absolute_path": "/tmp/openmoss-live-flow-CNfLNR/out/closeout-workspace/live-sanity-001_fc539811/02_scene-architect/02_scene_plan.md",
+      "host_workspace_dir": "/tmp/openmoss-live-flow-CNfLNR/out/closeout-workspace/live-sanity-001_fc539811",
+      "host_artifact_path": "/tmp/openmoss-live-flow-CNfLNR/out/closeout-workspace/live-sanity-001_fc539811/02_scene-architect/02_scene_plan.md",
+      "source": "sqlite:data/tasks.db review_record.comment",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "061bcb13-63fc-46d2-92e8-fcdbb54e3413",
+      "task_id": "fc539811-d3a1-44ec-b097-ea827bd78907",
+      "task_name": "Live Sanity Novel Flow",
+      "sub_task_name": "最终组装 / final-assembler",
+      "artifact_path": "13_final-assembler/13_final_chapter.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/tmp/openmoss-live-flow-CNfLNR/out/closeout-workspace",
+      "task_workspace_dir": "/tmp/openmoss-live-flow-CNfLNR/out/closeout-workspace/live-sanity-001_fc539811",
+      "artifact_absolute_path": "/tmp/openmoss-live-flow-CNfLNR/out/closeout-workspace/live-sanity-001_fc539811/13_final-assembler/13_final_chapter.md",
+      "host_workspace_dir": "/tmp/openmoss-live-flow-CNfLNR/out/closeout-workspace/live-sanity-001_fc539811",
+      "host_artifact_path": "/tmp/openmoss-live-flow-CNfLNR/out/closeout-workspace/live-sanity-001_fc539811/13_final-assembler/13_final_chapter.md",
+      "source": "sqlite:data/tasks.db review_record.comment",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "0310b050-92c0-4b10-bc43-f955c2147edc",
+      "task_id": "fc539811-d3a1-44ec-b097-ea827bd78907",
+      "task_name": "Live Sanity Novel Flow",
+      "sub_task_name": "正文初稿 / writer",
+      "artifact_path": "03_writer/03_draft.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/tmp/openmoss-live-flow-CNfLNR/out/closeout-workspace",
+      "task_workspace_dir": "/tmp/openmoss-live-flow-CNfLNR/out/closeout-workspace/live-sanity-001_fc539811",
+      "artifact_absolute_path": "/tmp/openmoss-live-flow-CNfLNR/out/closeout-workspace/live-sanity-001_fc539811/03_writer/03_draft.md",
+      "host_workspace_dir": "/tmp/openmoss-live-flow-CNfLNR/out/closeout-workspace/live-sanity-001_fc539811",
+      "host_artifact_path": "/tmp/openmoss-live-flow-CNfLNR/out/closeout-workspace/live-sanity-001_fc539811/03_writer/03_draft.md",
+      "source": "sqlite:data/tasks.db review_record.comment",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "fc9a18af-3929-40de-b75d-897c079523b2",
+      "task_id": "19d848d3-9acc-406e-b545-6bb450d39e50",
+      "task_name": "单章节小说骨架试跑",
+      "sub_task_name": "风格一致性 / style-consistency-checker",
+      "artifact_path": "12_style-consistency-checker/12_style_report.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/home/joviji/.openclaw/workspace/openmoss/tmp/live-delivery-log-1777125024/closeout-workspace",
+      "task_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/tmp/live-delivery-log-1777125024/closeout-workspace/live-delivery-log-1777125024_19d848d3",
+      "artifact_absolute_path": "/home/joviji/.openclaw/workspace/openmoss/tmp/live-delivery-log-1777125024/closeout-workspace/live-delivery-log-1777125024_19d848d3/12_style-consistency-checker/12_style_report.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/tmp/live-delivery-log-1777125024/closeout-workspace/live-delivery-log-1777125024_19d848d3",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss/tmp/live-delivery-log-1777125024/closeout-workspace/live-delivery-log-1777125024_19d848d3/12_style-consistency-checker/12_style_report.md",
+      "source": "tmp/live-delivery-log-1777125024/standard-task-flow.live-delivery-log-1777125024.json",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "f87afd58-dea6-45f7-9b4f-4cdd6bea98e2",
+      "task_id": "19d848d3-9acc-406e-b545-6bb450d39e50",
+      "task_name": "单章节小说骨架试跑",
+      "sub_task_name": "人物成长 / character-growth",
+      "artifact_path": "06_character-growth/06_character_growth.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/home/joviji/.openclaw/workspace/openmoss/tmp/live-delivery-log-1777125024/closeout-workspace",
+      "task_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/tmp/live-delivery-log-1777125024/closeout-workspace/live-delivery-log-1777125024_19d848d3",
+      "artifact_absolute_path": "/home/joviji/.openclaw/workspace/openmoss/tmp/live-delivery-log-1777125024/closeout-workspace/live-delivery-log-1777125024_19d848d3/06_character-growth/06_character_growth.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/tmp/live-delivery-log-1777125024/closeout-workspace/live-delivery-log-1777125024_19d848d3",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss/tmp/live-delivery-log-1777125024/closeout-workspace/live-delivery-log-1777125024_19d848d3/06_character-growth/06_character_growth.md",
+      "source": "tmp/live-delivery-log-1777125024/standard-task-flow.live-delivery-log-1777125024.json",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "e0eeae4e-f26a-410e-8f6e-17e3985faff4",
+      "task_id": "19d848d3-9acc-406e-b545-6bb450d39e50",
+      "task_name": "单章节小说骨架试跑",
+      "sub_task_name": "钩子设计 / hook-designer",
+      "artifact_path": "09_hook-designer/09_hook_design.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/home/joviji/.openclaw/workspace/openmoss/tmp/live-delivery-log-1777125024/closeout-workspace",
+      "task_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/tmp/live-delivery-log-1777125024/closeout-workspace/live-delivery-log-1777125024_19d848d3",
+      "artifact_absolute_path": "/home/joviji/.openclaw/workspace/openmoss/tmp/live-delivery-log-1777125024/closeout-workspace/live-delivery-log-1777125024_19d848d3/09_hook-designer/09_hook_design.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/tmp/live-delivery-log-1777125024/closeout-workspace/live-delivery-log-1777125024_19d848d3",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss/tmp/live-delivery-log-1777125024/closeout-workspace/live-delivery-log-1777125024_19d848d3/09_hook-designer/09_hook_design.md",
+      "source": "tmp/live-delivery-log-1777125024/standard-task-flow.live-delivery-log-1777125024.json",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "d8ee427d-2ff3-461c-ae39-45f359703f31",
+      "task_id": "19d848d3-9acc-406e-b545-6bb450d39e50",
+      "task_name": "单章节小说骨架试跑",
+      "sub_task_name": "情绪曲线 / emotion-curve-designer",
+      "artifact_path": "05_emotion-curve-designer/05_emotion_curve.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/home/joviji/.openclaw/workspace/openmoss/tmp/live-delivery-log-1777125024/closeout-workspace",
+      "task_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/tmp/live-delivery-log-1777125024/closeout-workspace/live-delivery-log-1777125024_19d848d3",
+      "artifact_absolute_path": "/home/joviji/.openclaw/workspace/openmoss/tmp/live-delivery-log-1777125024/closeout-workspace/live-delivery-log-1777125024_19d848d3/05_emotion-curve-designer/05_emotion_curve.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/tmp/live-delivery-log-1777125024/closeout-workspace/live-delivery-log-1777125024_19d848d3",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss/tmp/live-delivery-log-1777125024/closeout-workspace/live-delivery-log-1777125024_19d848d3/05_emotion-curve-designer/05_emotion_curve.md",
+      "source": "tmp/live-delivery-log-1777125024/standard-task-flow.live-delivery-log-1777125024.json",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "a50c5e63-f39b-4286-9e58-5d84c22c018c",
+      "task_id": "19d848d3-9acc-406e-b545-6bb450d39e50",
+      "task_name": "单章节小说骨架试跑",
+      "sub_task_name": "综合审查 / reviewer",
+      "artifact_path": "10_reviewer/10_review_report.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/home/joviji/.openclaw/workspace/openmoss/tmp/live-delivery-log-1777125024/closeout-workspace",
+      "task_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/tmp/live-delivery-log-1777125024/closeout-workspace/live-delivery-log-1777125024_19d848d3",
+      "artifact_absolute_path": "/home/joviji/.openclaw/workspace/openmoss/tmp/live-delivery-log-1777125024/closeout-workspace/live-delivery-log-1777125024_19d848d3/10_reviewer/10_review_report.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/tmp/live-delivery-log-1777125024/closeout-workspace/live-delivery-log-1777125024_19d848d3",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss/tmp/live-delivery-log-1777125024/closeout-workspace/live-delivery-log-1777125024_19d848d3/10_reviewer/10_review_report.md",
+      "source": "tmp/live-delivery-log-1777125024/standard-task-flow.live-delivery-log-1777125024.json",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "90204cd0-7531-465f-9604-b231dd2669e1",
+      "task_id": "19d848d3-9acc-406e-b545-6bb450d39e50",
+      "task_name": "单章节小说骨架试跑",
+      "sub_task_name": "场景架构 / scene-architect",
+      "artifact_path": "02_scene-architect/02_scene_plan.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/home/joviji/.openclaw/workspace/openmoss/tmp/live-delivery-log-1777125024/closeout-workspace",
+      "task_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/tmp/live-delivery-log-1777125024/closeout-workspace/live-delivery-log-1777125024_19d848d3",
+      "artifact_absolute_path": "/home/joviji/.openclaw/workspace/openmoss/tmp/live-delivery-log-1777125024/closeout-workspace/live-delivery-log-1777125024_19d848d3/02_scene-architect/02_scene_plan.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/tmp/live-delivery-log-1777125024/closeout-workspace/live-delivery-log-1777125024_19d848d3",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss/tmp/live-delivery-log-1777125024/closeout-workspace/live-delivery-log-1777125024_19d848d3/02_scene-architect/02_scene_plan.md",
+      "source": "tmp/live-delivery-log-1777125024/standard-task-flow.live-delivery-log-1777125024.json",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "797ee2c0-cb49-4d16-9731-94345869d738",
+      "task_id": "19d848d3-9acc-406e-b545-6bb450d39e50",
+      "task_name": "单章节小说骨架试跑",
+      "sub_task_name": "剧情架构 / plot-architect",
+      "artifact_path": "01_plot-architect/01_plot_blueprint.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/home/joviji/.openclaw/workspace/openmoss/tmp/live-delivery-log-1777125024/closeout-workspace",
+      "task_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/tmp/live-delivery-log-1777125024/closeout-workspace/live-delivery-log-1777125024_19d848d3",
+      "artifact_absolute_path": "/home/joviji/.openclaw/workspace/openmoss/tmp/live-delivery-log-1777125024/closeout-workspace/live-delivery-log-1777125024_19d848d3/01_plot-architect/01_plot_blueprint.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/tmp/live-delivery-log-1777125024/closeout-workspace/live-delivery-log-1777125024_19d848d3",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss/tmp/live-delivery-log-1777125024/closeout-workspace/live-delivery-log-1777125024_19d848d3/01_plot-architect/01_plot_blueprint.md",
+      "source": "tmp/live-delivery-log-1777125024/standard-task-flow.live-delivery-log-1777125024.json",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "774be8dd-0006-4654-82da-2222ff2393c5",
+      "task_id": "19d848d3-9acc-406e-b545-6bb450d39e50",
+      "task_name": "单章节小说骨架试跑",
+      "sub_task_name": "正文初稿 / writer",
+      "artifact_path": "03_writer/03_draft.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/home/joviji/.openclaw/workspace/openmoss/tmp/live-delivery-log-1777125024/closeout-workspace",
+      "task_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/tmp/live-delivery-log-1777125024/closeout-workspace/live-delivery-log-1777125024_19d848d3",
+      "artifact_absolute_path": "/home/joviji/.openclaw/workspace/openmoss/tmp/live-delivery-log-1777125024/closeout-workspace/live-delivery-log-1777125024_19d848d3/03_writer/03_draft.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/tmp/live-delivery-log-1777125024/closeout-workspace/live-delivery-log-1777125024_19d848d3",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss/tmp/live-delivery-log-1777125024/closeout-workspace/live-delivery-log-1777125024_19d848d3/03_writer/03_draft.md",
+      "source": "tmp/live-delivery-log-1777125024/standard-task-flow.live-delivery-log-1777125024.json",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "55fa2645-3324-4a97-b7c8-a10a65d445f4",
+      "task_id": "19d848d3-9acc-406e-b545-6bb450d39e50",
+      "task_name": "单章节小说骨架试跑",
+      "sub_task_name": "心理描写 / psychological-portrayal-expert",
+      "artifact_path": "07_psychological-portrayal-expert/07_psychology_pass.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/home/joviji/.openclaw/workspace/openmoss/tmp/live-delivery-log-1777125024/closeout-workspace",
+      "task_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/tmp/live-delivery-log-1777125024/closeout-workspace/live-delivery-log-1777125024_19d848d3",
+      "artifact_absolute_path": "/home/joviji/.openclaw/workspace/openmoss/tmp/live-delivery-log-1777125024/closeout-workspace/live-delivery-log-1777125024_19d848d3/07_psychological-portrayal-expert/07_psychology_pass.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/tmp/live-delivery-log-1777125024/closeout-workspace/live-delivery-log-1777125024_19d848d3",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss/tmp/live-delivery-log-1777125024/closeout-workspace/live-delivery-log-1777125024_19d848d3/07_psychological-portrayal-expert/07_psychology_pass.md",
+      "source": "tmp/live-delivery-log-1777125024/standard-task-flow.live-delivery-log-1777125024.json",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "4e0d34d3-0ad6-4f77-bce9-b09c4e2ee09d",
+      "task_id": "19d848d3-9acc-406e-b545-6bb450d39e50",
+      "task_name": "单章节小说骨架试跑",
+      "sub_task_name": "对话优化 / dialogue-expert",
+      "artifact_path": "04_dialogue-expert/04_dialogue_pass.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/home/joviji/.openclaw/workspace/openmoss/tmp/live-delivery-log-1777125024/closeout-workspace",
+      "task_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/tmp/live-delivery-log-1777125024/closeout-workspace/live-delivery-log-1777125024_19d848d3",
+      "artifact_absolute_path": "/home/joviji/.openclaw/workspace/openmoss/tmp/live-delivery-log-1777125024/closeout-workspace/live-delivery-log-1777125024_19d848d3/04_dialogue-expert/04_dialogue_pass.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/tmp/live-delivery-log-1777125024/closeout-workspace/live-delivery-log-1777125024_19d848d3",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss/tmp/live-delivery-log-1777125024/closeout-workspace/live-delivery-log-1777125024_19d848d3/04_dialogue-expert/04_dialogue_pass.md",
+      "source": "tmp/live-delivery-log-1777125024/standard-task-flow.live-delivery-log-1777125024.json",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "42115dc6-c70c-4588-aa07-0c40907a08a0",
+      "task_id": "19d848d3-9acc-406e-b545-6bb450d39e50",
+      "task_name": "单章节小说骨架试跑",
+      "sub_task_name": "最终组装 / final-assembler",
+      "artifact_path": "13_final-assembler/13_final_chapter.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/home/joviji/.openclaw/workspace/openmoss/tmp/live-delivery-log-1777125024/closeout-workspace",
+      "task_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/tmp/live-delivery-log-1777125024/closeout-workspace/live-delivery-log-1777125024_19d848d3",
+      "artifact_absolute_path": "/home/joviji/.openclaw/workspace/openmoss/tmp/live-delivery-log-1777125024/closeout-workspace/live-delivery-log-1777125024_19d848d3/13_final-assembler/13_final_chapter.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/tmp/live-delivery-log-1777125024/closeout-workspace/live-delivery-log-1777125024_19d848d3",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss/tmp/live-delivery-log-1777125024/closeout-workspace/live-delivery-log-1777125024_19d848d3/13_final-assembler/13_final_chapter.md",
+      "source": "tmp/live-delivery-log-1777125024/standard-task-flow.live-delivery-log-1777125024.json",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "2ee58a70-7170-4b55-93fb-cf97770e13a8",
+      "task_id": "19d848d3-9acc-406e-b545-6bb450d39e50",
+      "task_name": "单章节小说骨架试跑",
+      "sub_task_name": "开篇结尾 / opening-ending-designer",
+      "artifact_path": "08_opening-ending-designer/08_opening_ending.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/home/joviji/.openclaw/workspace/openmoss/tmp/live-delivery-log-1777125024/closeout-workspace",
+      "task_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/tmp/live-delivery-log-1777125024/closeout-workspace/live-delivery-log-1777125024_19d848d3",
+      "artifact_absolute_path": "/home/joviji/.openclaw/workspace/openmoss/tmp/live-delivery-log-1777125024/closeout-workspace/live-delivery-log-1777125024_19d848d3/08_opening-ending-designer/08_opening_ending.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/tmp/live-delivery-log-1777125024/closeout-workspace/live-delivery-log-1777125024_19d848d3",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss/tmp/live-delivery-log-1777125024/closeout-workspace/live-delivery-log-1777125024_19d848d3/08_opening-ending-designer/08_opening_ending.md",
+      "source": "tmp/live-delivery-log-1777125024/standard-task-flow.live-delivery-log-1777125024.json",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "26448507-f4b6-4ad8-b309-5b278711bd71",
+      "task_id": "19d848d3-9acc-406e-b545-6bb450d39e50",
+      "task_name": "单章节小说骨架试跑",
+      "sub_task_name": "修订润色 / revision-polish-expert",
+      "artifact_path": "11_revision-polish-expert/11_revision_pass.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/home/joviji/.openclaw/workspace/openmoss/tmp/live-delivery-log-1777125024/closeout-workspace",
+      "task_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/tmp/live-delivery-log-1777125024/closeout-workspace/live-delivery-log-1777125024_19d848d3",
+      "artifact_absolute_path": "/home/joviji/.openclaw/workspace/openmoss/tmp/live-delivery-log-1777125024/closeout-workspace/live-delivery-log-1777125024_19d848d3/11_revision-polish-expert/11_revision_pass.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/tmp/live-delivery-log-1777125024/closeout-workspace/live-delivery-log-1777125024_19d848d3",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss/tmp/live-delivery-log-1777125024/closeout-workspace/live-delivery-log-1777125024_19d848d3/11_revision-polish-expert/11_revision_pass.md",
+      "source": "tmp/live-delivery-log-1777125024/standard-task-flow.live-delivery-log-1777125024.json",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "e9f08e55-e29e-4e45-8bae-a644b321ead1",
+      "task_id": "4456fd32-ecf4-4451-a307-5fd013a9ab9d",
+      "task_name": "单章节小说骨架试跑 / live-verify 20260425-182331",
+      "sub_task_name": "风格一致性 / style-consistency-checker",
+      "artifact_path": "12_style-consistency-checker/12_style_report.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/workspace/tasks",
+      "task_workspace_dir": "/workspace/tasks/novel-standard-live-verify-20260425-182331_4456fd32",
+      "artifact_absolute_path": "/workspace/tasks/novel-standard-live-verify-20260425-182331_4456fd32/12_style-consistency-checker/12_style_report.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-standard-live-verify-20260425-182331_4456fd32",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-standard-live-verify-20260425-182331_4456fd32/12_style-consistency-checker/12_style_report.md",
+      "source": "docs/novel-factory/standard-flow-workspace-path-audit-20260426.md",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "dded2636-1cac-48b0-86e0-28f195eb735e",
+      "task_id": "4456fd32-ecf4-4451-a307-5fd013a9ab9d",
+      "task_name": "单章节小说骨架试跑 / live-verify 20260425-182331",
+      "sub_task_name": "场景架构 / scene-architect",
+      "artifact_path": "02_scene-architect/02_scene_plan.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/workspace/tasks",
+      "task_workspace_dir": "/workspace/tasks/novel-standard-live-verify-20260425-182331_4456fd32",
+      "artifact_absolute_path": "/workspace/tasks/novel-standard-live-verify-20260425-182331_4456fd32/02_scene-architect/02_scene_plan.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-standard-live-verify-20260425-182331_4456fd32",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-standard-live-verify-20260425-182331_4456fd32/02_scene-architect/02_scene_plan.md",
+      "source": "docs/novel-factory/standard-flow-workspace-path-audit-20260426.md",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "d902533b-caff-4ad4-b7d0-edeb136c63f0",
+      "task_id": "4456fd32-ecf4-4451-a307-5fd013a9ab9d",
+      "task_name": "单章节小说骨架试跑 / live-verify 20260425-182331",
+      "sub_task_name": "综合审查 / reviewer",
+      "artifact_path": "10_reviewer/10_review_report.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/workspace/tasks",
+      "task_workspace_dir": "/workspace/tasks/novel-standard-live-verify-20260425-182331_4456fd32",
+      "artifact_absolute_path": "/workspace/tasks/novel-standard-live-verify-20260425-182331_4456fd32/10_reviewer/10_review_report.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-standard-live-verify-20260425-182331_4456fd32",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-standard-live-verify-20260425-182331_4456fd32/10_reviewer/10_review_report.md",
+      "source": "docs/novel-factory/standard-flow-workspace-path-audit-20260426.md",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "c59a72d1-9642-4322-895a-522f7ccfe482",
+      "task_id": "4456fd32-ecf4-4451-a307-5fd013a9ab9d",
+      "task_name": "单章节小说骨架试跑 / live-verify 20260425-182331",
+      "sub_task_name": "开篇结尾 / opening-ending-designer",
+      "artifact_path": "08_opening-ending-designer/08_opening_ending.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/workspace/tasks",
+      "task_workspace_dir": "/workspace/tasks/novel-standard-live-verify-20260425-182331_4456fd32",
+      "artifact_absolute_path": "/workspace/tasks/novel-standard-live-verify-20260425-182331_4456fd32/08_opening-ending-designer/08_opening_ending.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-standard-live-verify-20260425-182331_4456fd32",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-standard-live-verify-20260425-182331_4456fd32/08_opening-ending-designer/08_opening_ending.md",
+      "source": "docs/novel-factory/standard-flow-workspace-path-audit-20260426.md",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "c0c75fff-33b0-4131-b8e1-be29e8a91f62",
+      "task_id": "4456fd32-ecf4-4451-a307-5fd013a9ab9d",
+      "task_name": "单章节小说骨架试跑 / live-verify 20260425-182331",
+      "sub_task_name": "最终组装 / final-assembler",
+      "artifact_path": "13_final-assembler/13_final_chapter.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/workspace/tasks",
+      "task_workspace_dir": "/workspace/tasks/novel-standard-live-verify-20260425-182331_4456fd32",
+      "artifact_absolute_path": "/workspace/tasks/novel-standard-live-verify-20260425-182331_4456fd32/13_final-assembler/13_final_chapter.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-standard-live-verify-20260425-182331_4456fd32",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-standard-live-verify-20260425-182331_4456fd32/13_final-assembler/13_final_chapter.md",
+      "source": "docs/novel-factory/standard-flow-workspace-path-audit-20260426.md",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "ae33c789-4dae-460b-ab45-0da10a54dba0",
+      "task_id": "4456fd32-ecf4-4451-a307-5fd013a9ab9d",
+      "task_name": "单章节小说骨架试跑 / live-verify 20260425-182331",
+      "sub_task_name": "钩子设计 / hook-designer",
+      "artifact_path": "09_hook-designer/09_hook_design.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/workspace/tasks",
+      "task_workspace_dir": "/workspace/tasks/novel-standard-live-verify-20260425-182331_4456fd32",
+      "artifact_absolute_path": "/workspace/tasks/novel-standard-live-verify-20260425-182331_4456fd32/09_hook-designer/09_hook_design.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-standard-live-verify-20260425-182331_4456fd32",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-standard-live-verify-20260425-182331_4456fd32/09_hook-designer/09_hook_design.md",
+      "source": "docs/novel-factory/standard-flow-workspace-path-audit-20260426.md",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "a6bf0355-6c0a-4ca6-8c5f-eae08fe6afa8",
+      "task_id": "4456fd32-ecf4-4451-a307-5fd013a9ab9d",
+      "task_name": "单章节小说骨架试跑 / live-verify 20260425-182331",
+      "sub_task_name": "修订润色 / revision-polish-expert",
+      "artifact_path": "11_revision-polish-expert/11_revision_pass.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/workspace/tasks",
+      "task_workspace_dir": "/workspace/tasks/novel-standard-live-verify-20260425-182331_4456fd32",
+      "artifact_absolute_path": "/workspace/tasks/novel-standard-live-verify-20260425-182331_4456fd32/11_revision-polish-expert/11_revision_pass.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-standard-live-verify-20260425-182331_4456fd32",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-standard-live-verify-20260425-182331_4456fd32/11_revision-polish-expert/11_revision_pass.md",
+      "source": "docs/novel-factory/standard-flow-workspace-path-audit-20260426.md",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "8d3196cb-387b-4cd6-8c13-ccd6c1ad2c17",
+      "task_id": "4456fd32-ecf4-4451-a307-5fd013a9ab9d",
+      "task_name": "单章节小说骨架试跑 / live-verify 20260425-182331",
+      "sub_task_name": "剧情架构 / plot-architect",
+      "artifact_path": "01_plot-architect/01_plot_blueprint.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/workspace/tasks",
+      "task_workspace_dir": "/workspace/tasks/novel-standard-live-verify-20260425-182331_4456fd32",
+      "artifact_absolute_path": "/workspace/tasks/novel-standard-live-verify-20260425-182331_4456fd32/01_plot-architect/01_plot_blueprint.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-standard-live-verify-20260425-182331_4456fd32",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-standard-live-verify-20260425-182331_4456fd32/01_plot-architect/01_plot_blueprint.md",
+      "source": "docs/novel-factory/standard-flow-workspace-path-audit-20260426.md",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "630831c8-d859-4ae7-9039-a233912d6235",
+      "task_id": "4456fd32-ecf4-4451-a307-5fd013a9ab9d",
+      "task_name": "单章节小说骨架试跑 / live-verify 20260425-182331",
+      "sub_task_name": "情绪曲线 / emotion-curve-designer",
+      "artifact_path": "05_emotion-curve-designer/05_emotion_curve.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/workspace/tasks",
+      "task_workspace_dir": "/workspace/tasks/novel-standard-live-verify-20260425-182331_4456fd32",
+      "artifact_absolute_path": "/workspace/tasks/novel-standard-live-verify-20260425-182331_4456fd32/05_emotion-curve-designer/05_emotion_curve.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-standard-live-verify-20260425-182331_4456fd32",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-standard-live-verify-20260425-182331_4456fd32/05_emotion-curve-designer/05_emotion_curve.md",
+      "source": "docs/novel-factory/standard-flow-workspace-path-audit-20260426.md",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "58b489b8-c8c1-4100-9c9a-87dd3923b873",
+      "task_id": "4456fd32-ecf4-4451-a307-5fd013a9ab9d",
+      "task_name": "单章节小说骨架试跑 / live-verify 20260425-182331",
+      "sub_task_name": "人物成长 / character-growth",
+      "artifact_path": "06_character-growth/06_character_growth.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/workspace/tasks",
+      "task_workspace_dir": "/workspace/tasks/novel-standard-live-verify-20260425-182331_4456fd32",
+      "artifact_absolute_path": "/workspace/tasks/novel-standard-live-verify-20260425-182331_4456fd32/06_character-growth/06_character_growth.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-standard-live-verify-20260425-182331_4456fd32",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-standard-live-verify-20260425-182331_4456fd32/06_character-growth/06_character_growth.md",
+      "source": "docs/novel-factory/standard-flow-workspace-path-audit-20260426.md",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "1f167e05-2d59-4812-9aba-23d46254d307",
+      "task_id": "4456fd32-ecf4-4451-a307-5fd013a9ab9d",
+      "task_name": "单章节小说骨架试跑 / live-verify 20260425-182331",
+      "sub_task_name": "对话优化 / dialogue-expert",
+      "artifact_path": "04_dialogue-expert/04_dialogue_pass.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/workspace/tasks",
+      "task_workspace_dir": "/workspace/tasks/novel-standard-live-verify-20260425-182331_4456fd32",
+      "artifact_absolute_path": "/workspace/tasks/novel-standard-live-verify-20260425-182331_4456fd32/04_dialogue-expert/04_dialogue_pass.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-standard-live-verify-20260425-182331_4456fd32",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-standard-live-verify-20260425-182331_4456fd32/04_dialogue-expert/04_dialogue_pass.md",
+      "source": "docs/novel-factory/standard-flow-workspace-path-audit-20260426.md",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "1c1288b4-6763-4c8c-b55a-147f0db5d422",
+      "task_id": "4456fd32-ecf4-4451-a307-5fd013a9ab9d",
+      "task_name": "单章节小说骨架试跑 / live-verify 20260425-182331",
+      "sub_task_name": "正文初稿 / writer",
+      "artifact_path": "03_writer/03_draft.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/workspace/tasks",
+      "task_workspace_dir": "/workspace/tasks/novel-standard-live-verify-20260425-182331_4456fd32",
+      "artifact_absolute_path": "/workspace/tasks/novel-standard-live-verify-20260425-182331_4456fd32/03_writer/03_draft.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-standard-live-verify-20260425-182331_4456fd32",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-standard-live-verify-20260425-182331_4456fd32/03_writer/03_draft.md",
+      "source": "docs/novel-factory/standard-flow-workspace-path-audit-20260426.md",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "09537b22-e7fb-4df9-881b-e7203973765c",
+      "task_id": "4456fd32-ecf4-4451-a307-5fd013a9ab9d",
+      "task_name": "单章节小说骨架试跑 / live-verify 20260425-182331",
+      "sub_task_name": "心理描写 / psychological-portrayal-expert",
+      "artifact_path": "07_psychological-portrayal-expert/07_psychology_pass.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/workspace/tasks",
+      "task_workspace_dir": "/workspace/tasks/novel-standard-live-verify-20260425-182331_4456fd32",
+      "artifact_absolute_path": "/workspace/tasks/novel-standard-live-verify-20260425-182331_4456fd32/07_psychological-portrayal-expert/07_psychology_pass.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-standard-live-verify-20260425-182331_4456fd32",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-standard-live-verify-20260425-182331_4456fd32/07_psychological-portrayal-expert/07_psychology_pass.md",
+      "source": "docs/novel-factory/standard-flow-workspace-path-audit-20260426.md",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "fcef832b-c3e2-45ac-9ed2-1fd7584cbce1",
+      "task_id": "72968da8-b338-4c24-8b5d-93c1cc4d450a",
+      "task_name": "单章节小说骨架试跑 / live-verify 20260425-181926",
+      "sub_task_name": "综合审查 / reviewer",
+      "artifact_path": "10_reviewer/10_review_report.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/workspace/tasks",
+      "task_workspace_dir": "/workspace/tasks/novel-standard-live-verify-20260425-181926_72968da8",
+      "artifact_absolute_path": "/workspace/tasks/novel-standard-live-verify-20260425-181926_72968da8/10_reviewer/10_review_report.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-standard-live-verify-20260425-181926_72968da8",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-standard-live-verify-20260425-181926_72968da8/10_reviewer/10_review_report.md",
+      "source": "docs/novel-factory/standard-flow-workspace-path-audit-20260426.md",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "fa5b6124-d3fe-4cae-a13b-bcdfbb1ab391",
+      "task_id": "72968da8-b338-4c24-8b5d-93c1cc4d450a",
+      "task_name": "单章节小说骨架试跑 / live-verify 20260425-181926",
+      "sub_task_name": "情绪曲线 / emotion-curve-designer",
+      "artifact_path": "05_emotion-curve-designer/05_emotion_curve.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/workspace/tasks",
+      "task_workspace_dir": "/workspace/tasks/novel-standard-live-verify-20260425-181926_72968da8",
+      "artifact_absolute_path": "/workspace/tasks/novel-standard-live-verify-20260425-181926_72968da8/05_emotion-curve-designer/05_emotion_curve.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-standard-live-verify-20260425-181926_72968da8",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-standard-live-verify-20260425-181926_72968da8/05_emotion-curve-designer/05_emotion_curve.md",
+      "source": "docs/novel-factory/standard-flow-workspace-path-audit-20260426.md",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "a342e4bb-293f-4705-bf38-5da36d0bfcd0",
+      "task_id": "72968da8-b338-4c24-8b5d-93c1cc4d450a",
+      "task_name": "单章节小说骨架试跑 / live-verify 20260425-181926",
+      "sub_task_name": "剧情架构 / plot-architect",
+      "artifact_path": "01_plot-architect/01_plot_blueprint.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/workspace/tasks",
+      "task_workspace_dir": "/workspace/tasks/novel-standard-live-verify-20260425-181926_72968da8",
+      "artifact_absolute_path": "/workspace/tasks/novel-standard-live-verify-20260425-181926_72968da8/01_plot-architect/01_plot_blueprint.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-standard-live-verify-20260425-181926_72968da8",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-standard-live-verify-20260425-181926_72968da8/01_plot-architect/01_plot_blueprint.md",
+      "source": "docs/novel-factory/standard-flow-workspace-path-audit-20260426.md",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "a0b18fce-0a5f-47b9-9006-37c0a7815c8b",
+      "task_id": "72968da8-b338-4c24-8b5d-93c1cc4d450a",
+      "task_name": "单章节小说骨架试跑 / live-verify 20260425-181926",
+      "sub_task_name": "开篇结尾 / opening-ending-designer",
+      "artifact_path": "08_opening-ending-designer/08_opening_ending.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/workspace/tasks",
+      "task_workspace_dir": "/workspace/tasks/novel-standard-live-verify-20260425-181926_72968da8",
+      "artifact_absolute_path": "/workspace/tasks/novel-standard-live-verify-20260425-181926_72968da8/08_opening-ending-designer/08_opening_ending.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-standard-live-verify-20260425-181926_72968da8",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-standard-live-verify-20260425-181926_72968da8/08_opening-ending-designer/08_opening_ending.md",
+      "source": "docs/novel-factory/standard-flow-workspace-path-audit-20260426.md",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "6a255cb5-84c2-4180-ad9e-76cef7157c4b",
+      "task_id": "72968da8-b338-4c24-8b5d-93c1cc4d450a",
+      "task_name": "单章节小说骨架试跑 / live-verify 20260425-181926",
+      "sub_task_name": "场景架构 / scene-architect",
+      "artifact_path": "02_scene-architect/02_scene_plan.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/workspace/tasks",
+      "task_workspace_dir": "/workspace/tasks/novel-standard-live-verify-20260425-181926_72968da8",
+      "artifact_absolute_path": "/workspace/tasks/novel-standard-live-verify-20260425-181926_72968da8/02_scene-architect/02_scene_plan.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-standard-live-verify-20260425-181926_72968da8",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-standard-live-verify-20260425-181926_72968da8/02_scene-architect/02_scene_plan.md",
+      "source": "docs/novel-factory/standard-flow-workspace-path-audit-20260426.md",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "658ce748-cf65-4dd4-9ac2-6ebe79b6556f",
+      "task_id": "72968da8-b338-4c24-8b5d-93c1cc4d450a",
+      "task_name": "单章节小说骨架试跑 / live-verify 20260425-181926",
+      "sub_task_name": "对话优化 / dialogue-expert",
+      "artifact_path": "04_dialogue-expert/04_dialogue_pass.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/workspace/tasks",
+      "task_workspace_dir": "/workspace/tasks/novel-standard-live-verify-20260425-181926_72968da8",
+      "artifact_absolute_path": "/workspace/tasks/novel-standard-live-verify-20260425-181926_72968da8/04_dialogue-expert/04_dialogue_pass.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-standard-live-verify-20260425-181926_72968da8",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-standard-live-verify-20260425-181926_72968da8/04_dialogue-expert/04_dialogue_pass.md",
+      "source": "docs/novel-factory/standard-flow-workspace-path-audit-20260426.md",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "4d6a94cb-18d4-402a-9755-48dbe3124ee2",
+      "task_id": "72968da8-b338-4c24-8b5d-93c1cc4d450a",
+      "task_name": "单章节小说骨架试跑 / live-verify 20260425-181926",
+      "sub_task_name": "风格一致性 / style-consistency-checker",
+      "artifact_path": "12_style-consistency-checker/12_style_report.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/workspace/tasks",
+      "task_workspace_dir": "/workspace/tasks/novel-standard-live-verify-20260425-181926_72968da8",
+      "artifact_absolute_path": "/workspace/tasks/novel-standard-live-verify-20260425-181926_72968da8/12_style-consistency-checker/12_style_report.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-standard-live-verify-20260425-181926_72968da8",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-standard-live-verify-20260425-181926_72968da8/12_style-consistency-checker/12_style_report.md",
+      "source": "docs/novel-factory/standard-flow-workspace-path-audit-20260426.md",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "2dfb73bd-0426-44b9-b2fd-959831581207",
+      "task_id": "72968da8-b338-4c24-8b5d-93c1cc4d450a",
+      "task_name": "单章节小说骨架试跑 / live-verify 20260425-181926",
+      "sub_task_name": "钩子设计 / hook-designer",
+      "artifact_path": "09_hook-designer/09_hook_design.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/workspace/tasks",
+      "task_workspace_dir": "/workspace/tasks/novel-standard-live-verify-20260425-181926_72968da8",
+      "artifact_absolute_path": "/workspace/tasks/novel-standard-live-verify-20260425-181926_72968da8/09_hook-designer/09_hook_design.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-standard-live-verify-20260425-181926_72968da8",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-standard-live-verify-20260425-181926_72968da8/09_hook-designer/09_hook_design.md",
+      "source": "docs/novel-factory/standard-flow-workspace-path-audit-20260426.md",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "272873e5-c4e8-4686-8750-4e25ba476b06",
+      "task_id": "72968da8-b338-4c24-8b5d-93c1cc4d450a",
+      "task_name": "单章节小说骨架试跑 / live-verify 20260425-181926",
+      "sub_task_name": "心理描写 / psychological-portrayal-expert",
+      "artifact_path": "07_psychological-portrayal-expert/07_psychology_pass.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/workspace/tasks",
+      "task_workspace_dir": "/workspace/tasks/novel-standard-live-verify-20260425-181926_72968da8",
+      "artifact_absolute_path": "/workspace/tasks/novel-standard-live-verify-20260425-181926_72968da8/07_psychological-portrayal-expert/07_psychology_pass.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-standard-live-verify-20260425-181926_72968da8",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-standard-live-verify-20260425-181926_72968da8/07_psychological-portrayal-expert/07_psychology_pass.md",
+      "source": "docs/novel-factory/standard-flow-workspace-path-audit-20260426.md",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "24de529e-7fa5-4091-99f7-c1de633e79a4",
+      "task_id": "72968da8-b338-4c24-8b5d-93c1cc4d450a",
+      "task_name": "单章节小说骨架试跑 / live-verify 20260425-181926",
+      "sub_task_name": "修订润色 / revision-polish-expert",
+      "artifact_path": "11_revision-polish-expert/11_revision_pass.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/workspace/tasks",
+      "task_workspace_dir": "/workspace/tasks/novel-standard-live-verify-20260425-181926_72968da8",
+      "artifact_absolute_path": "/workspace/tasks/novel-standard-live-verify-20260425-181926_72968da8/11_revision-polish-expert/11_revision_pass.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-standard-live-verify-20260425-181926_72968da8",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-standard-live-verify-20260425-181926_72968da8/11_revision-polish-expert/11_revision_pass.md",
+      "source": "docs/novel-factory/standard-flow-workspace-path-audit-20260426.md",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "1fd4a697-8671-4c63-8eca-2a9abc623021",
+      "task_id": "72968da8-b338-4c24-8b5d-93c1cc4d450a",
+      "task_name": "单章节小说骨架试跑 / live-verify 20260425-181926",
+      "sub_task_name": "正文初稿 / writer",
+      "artifact_path": "03_writer/03_draft.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/workspace/tasks",
+      "task_workspace_dir": "/workspace/tasks/novel-standard-live-verify-20260425-181926_72968da8",
+      "artifact_absolute_path": "/workspace/tasks/novel-standard-live-verify-20260425-181926_72968da8/03_writer/03_draft.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-standard-live-verify-20260425-181926_72968da8",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-standard-live-verify-20260425-181926_72968da8/03_writer/03_draft.md",
+      "source": "docs/novel-factory/standard-flow-workspace-path-audit-20260426.md",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "18c626db-2a4b-4418-b493-1bfa160ef7a6",
+      "task_id": "72968da8-b338-4c24-8b5d-93c1cc4d450a",
+      "task_name": "单章节小说骨架试跑 / live-verify 20260425-181926",
+      "sub_task_name": "最终组装 / final-assembler",
+      "artifact_path": "13_final-assembler/13_final_chapter.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/workspace/tasks",
+      "task_workspace_dir": "/workspace/tasks/novel-standard-live-verify-20260425-181926_72968da8",
+      "artifact_absolute_path": "/workspace/tasks/novel-standard-live-verify-20260425-181926_72968da8/13_final-assembler/13_final_chapter.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-standard-live-verify-20260425-181926_72968da8",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-standard-live-verify-20260425-181926_72968da8/13_final-assembler/13_final_chapter.md",
+      "source": "docs/novel-factory/standard-flow-workspace-path-audit-20260426.md",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "09983561-c36b-4512-8fbd-ffaa92ad6cee",
+      "task_id": "72968da8-b338-4c24-8b5d-93c1cc4d450a",
+      "task_name": "单章节小说骨架试跑 / live-verify 20260425-181926",
+      "sub_task_name": "人物成长 / character-growth",
+      "artifact_path": "06_character-growth/06_character_growth.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/workspace/tasks",
+      "task_workspace_dir": "/workspace/tasks/novel-standard-live-verify-20260425-181926_72968da8",
+      "artifact_absolute_path": "/workspace/tasks/novel-standard-live-verify-20260425-181926_72968da8/06_character-growth/06_character_growth.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-standard-live-verify-20260425-181926_72968da8",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-standard-live-verify-20260425-181926_72968da8/06_character-growth/06_character_growth.md",
+      "source": "docs/novel-factory/standard-flow-workspace-path-audit-20260426.md",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "f85d4a3d-e8dc-4f32-b324-89400fa86738",
+      "task_id": "426e8beb-f637-4e47-bf96-d8d5a9ddab67",
+      "task_name": "标准任务入口 live 接线复验 20260425-131240",
+      "sub_task_name": "综合审查 / reviewer",
+      "artifact_path": "10_reviewer/10_review_report.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/workspace/tasks",
+      "task_workspace_dir": "/workspace/tasks/novel-live-bridge-20260425-131240_426e8beb",
+      "artifact_absolute_path": "/workspace/tasks/novel-live-bridge-20260425-131240_426e8beb/10_reviewer/10_review_report.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-live-bridge-20260425-131240_426e8beb",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-live-bridge-20260425-131240_426e8beb/10_reviewer/10_review_report.md",
+      "source": "docs/novel-factory/live-closeout-20260425-131240.md",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "e01ca2a5-dbdd-4999-a703-4dfadb5bbb56",
+      "task_id": "426e8beb-f637-4e47-bf96-d8d5a9ddab67",
+      "task_name": "标准任务入口 live 接线复验 20260425-131240",
+      "sub_task_name": "场景架构 / scene-architect",
+      "artifact_path": "02_scene-architect/02_scene_plan.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/workspace/tasks",
+      "task_workspace_dir": "/workspace/tasks/novel-live-bridge-20260425-131240_426e8beb",
+      "artifact_absolute_path": "/workspace/tasks/novel-live-bridge-20260425-131240_426e8beb/02_scene-architect/02_scene_plan.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-live-bridge-20260425-131240_426e8beb",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-live-bridge-20260425-131240_426e8beb/02_scene-architect/02_scene_plan.md",
+      "source": "docs/novel-factory/live-closeout-20260425-131240.md",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "b904ef24-3cf3-4ca3-bffe-36b12a08dc03",
+      "task_id": "426e8beb-f637-4e47-bf96-d8d5a9ddab67",
+      "task_name": "标准任务入口 live 接线复验 20260425-131240",
+      "sub_task_name": "风格一致性 / style-consistency-checker",
+      "artifact_path": "12_style-consistency-checker/12_style_report.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/workspace/tasks",
+      "task_workspace_dir": "/workspace/tasks/novel-live-bridge-20260425-131240_426e8beb",
+      "artifact_absolute_path": "/workspace/tasks/novel-live-bridge-20260425-131240_426e8beb/12_style-consistency-checker/12_style_report.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-live-bridge-20260425-131240_426e8beb",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-live-bridge-20260425-131240_426e8beb/12_style-consistency-checker/12_style_report.md",
+      "source": "docs/novel-factory/live-closeout-20260425-131240.md",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "b6c9b7f8-f7c9-453a-b76d-a73fc9a567dd",
+      "task_id": "426e8beb-f637-4e47-bf96-d8d5a9ddab67",
+      "task_name": "标准任务入口 live 接线复验 20260425-131240",
+      "sub_task_name": "剧情架构 / plot-architect",
+      "artifact_path": "01_plot-architect/01_plot_blueprint.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/workspace/tasks",
+      "task_workspace_dir": "/workspace/tasks/novel-live-bridge-20260425-131240_426e8beb",
+      "artifact_absolute_path": "/workspace/tasks/novel-live-bridge-20260425-131240_426e8beb/01_plot-architect/01_plot_blueprint.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-live-bridge-20260425-131240_426e8beb",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-live-bridge-20260425-131240_426e8beb/01_plot-architect/01_plot_blueprint.md",
+      "source": "docs/novel-factory/live-closeout-20260425-131240.md",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "ab41192c-ea20-49bf-8ccb-f043bf8aea32",
+      "task_id": "426e8beb-f637-4e47-bf96-d8d5a9ddab67",
+      "task_name": "标准任务入口 live 接线复验 20260425-131240",
+      "sub_task_name": "情绪曲线 / emotion-curve-designer",
+      "artifact_path": "05_emotion-curve-designer/05_emotion_curve.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/workspace/tasks",
+      "task_workspace_dir": "/workspace/tasks/novel-live-bridge-20260425-131240_426e8beb",
+      "artifact_absolute_path": "/workspace/tasks/novel-live-bridge-20260425-131240_426e8beb/05_emotion-curve-designer/05_emotion_curve.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-live-bridge-20260425-131240_426e8beb",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-live-bridge-20260425-131240_426e8beb/05_emotion-curve-designer/05_emotion_curve.md",
+      "source": "docs/novel-factory/live-closeout-20260425-131240.md",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "939aa8fb-318d-4c44-9dae-f71555f07e10",
+      "task_id": "426e8beb-f637-4e47-bf96-d8d5a9ddab67",
+      "task_name": "标准任务入口 live 接线复验 20260425-131240",
+      "sub_task_name": "对话优化 / dialogue-expert",
+      "artifact_path": "04_dialogue-expert/04_dialogue_pass.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/workspace/tasks",
+      "task_workspace_dir": "/workspace/tasks/novel-live-bridge-20260425-131240_426e8beb",
+      "artifact_absolute_path": "/workspace/tasks/novel-live-bridge-20260425-131240_426e8beb/04_dialogue-expert/04_dialogue_pass.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-live-bridge-20260425-131240_426e8beb",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-live-bridge-20260425-131240_426e8beb/04_dialogue-expert/04_dialogue_pass.md",
+      "source": "docs/novel-factory/live-closeout-20260425-131240.md",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "9301cfd8-e672-4083-9fe3-47f94778bb7a",
+      "task_id": "426e8beb-f637-4e47-bf96-d8d5a9ddab67",
+      "task_name": "标准任务入口 live 接线复验 20260425-131240",
+      "sub_task_name": "开篇结尾 / opening-ending-designer",
+      "artifact_path": "08_opening-ending-designer/08_opening_ending.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/workspace/tasks",
+      "task_workspace_dir": "/workspace/tasks/novel-live-bridge-20260425-131240_426e8beb",
+      "artifact_absolute_path": "/workspace/tasks/novel-live-bridge-20260425-131240_426e8beb/08_opening-ending-designer/08_opening_ending.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-live-bridge-20260425-131240_426e8beb",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-live-bridge-20260425-131240_426e8beb/08_opening-ending-designer/08_opening_ending.md",
+      "source": "docs/novel-factory/live-closeout-20260425-131240.md",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "4d249c15-fa1d-4f7e-9cee-57c6e9f533d5",
+      "task_id": "426e8beb-f637-4e47-bf96-d8d5a9ddab67",
+      "task_name": "标准任务入口 live 接线复验 20260425-131240",
+      "sub_task_name": "正文初稿 / writer",
+      "artifact_path": "03_writer/03_draft.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/workspace/tasks",
+      "task_workspace_dir": "/workspace/tasks/novel-live-bridge-20260425-131240_426e8beb",
+      "artifact_absolute_path": "/workspace/tasks/novel-live-bridge-20260425-131240_426e8beb/03_writer/03_draft.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-live-bridge-20260425-131240_426e8beb",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-live-bridge-20260425-131240_426e8beb/03_writer/03_draft.md",
+      "source": "docs/novel-factory/live-closeout-20260425-131240.md",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "3dc82538-c7ff-4f5b-8059-fba4de6df2a5",
+      "task_id": "426e8beb-f637-4e47-bf96-d8d5a9ddab67",
+      "task_name": "标准任务入口 live 接线复验 20260425-131240",
+      "sub_task_name": "最终组装 / final-assembler",
+      "artifact_path": "13_final-assembler/13_final_chapter.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/workspace/tasks",
+      "task_workspace_dir": "/workspace/tasks/novel-live-bridge-20260425-131240_426e8beb",
+      "artifact_absolute_path": "/workspace/tasks/novel-live-bridge-20260425-131240_426e8beb/13_final-assembler/13_final_chapter.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-live-bridge-20260425-131240_426e8beb",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-live-bridge-20260425-131240_426e8beb/13_final-assembler/13_final_chapter.md",
+      "source": "docs/novel-factory/live-closeout-20260425-131240.md",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "27da7d73-1fdf-47dc-8f10-658d9532a4db",
+      "task_id": "426e8beb-f637-4e47-bf96-d8d5a9ddab67",
+      "task_name": "标准任务入口 live 接线复验 20260425-131240",
+      "sub_task_name": "修订润色 / revision-polish-expert",
+      "artifact_path": "11_revision-polish-expert/11_revision_pass.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/workspace/tasks",
+      "task_workspace_dir": "/workspace/tasks/novel-live-bridge-20260425-131240_426e8beb",
+      "artifact_absolute_path": "/workspace/tasks/novel-live-bridge-20260425-131240_426e8beb/11_revision-polish-expert/11_revision_pass.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-live-bridge-20260425-131240_426e8beb",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-live-bridge-20260425-131240_426e8beb/11_revision-polish-expert/11_revision_pass.md",
+      "source": "docs/novel-factory/live-closeout-20260425-131240.md",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "16ec958c-e419-4252-94c2-3783e7c1a177",
+      "task_id": "426e8beb-f637-4e47-bf96-d8d5a9ddab67",
+      "task_name": "标准任务入口 live 接线复验 20260425-131240",
+      "sub_task_name": "人物成长 / character-growth",
+      "artifact_path": "06_character-growth/06_character_growth.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/workspace/tasks",
+      "task_workspace_dir": "/workspace/tasks/novel-live-bridge-20260425-131240_426e8beb",
+      "artifact_absolute_path": "/workspace/tasks/novel-live-bridge-20260425-131240_426e8beb/06_character-growth/06_character_growth.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-live-bridge-20260425-131240_426e8beb",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-live-bridge-20260425-131240_426e8beb/06_character-growth/06_character_growth.md",
+      "source": "docs/novel-factory/live-closeout-20260425-131240.md",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "14c9af44-51b3-4739-b97f-d1f4269332ff",
+      "task_id": "426e8beb-f637-4e47-bf96-d8d5a9ddab67",
+      "task_name": "标准任务入口 live 接线复验 20260425-131240",
+      "sub_task_name": "钩子设计 / hook-designer",
+      "artifact_path": "09_hook-designer/09_hook_design.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/workspace/tasks",
+      "task_workspace_dir": "/workspace/tasks/novel-live-bridge-20260425-131240_426e8beb",
+      "artifact_absolute_path": "/workspace/tasks/novel-live-bridge-20260425-131240_426e8beb/09_hook-designer/09_hook_design.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-live-bridge-20260425-131240_426e8beb",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-live-bridge-20260425-131240_426e8beb/09_hook-designer/09_hook_design.md",
+      "source": "docs/novel-factory/live-closeout-20260425-131240.md",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "0f8d9b6e-03e4-4399-928c-48fef84865b8",
+      "task_id": "426e8beb-f637-4e47-bf96-d8d5a9ddab67",
+      "task_name": "标准任务入口 live 接线复验 20260425-131240",
+      "sub_task_name": "心理描写 / psychological-portrayal-expert",
+      "artifact_path": "07_psychological-portrayal-expert/07_psychology_pass.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/workspace/tasks",
+      "task_workspace_dir": "/workspace/tasks/novel-live-bridge-20260425-131240_426e8beb",
+      "artifact_absolute_path": "/workspace/tasks/novel-live-bridge-20260425-131240_426e8beb/07_psychological-portrayal-expert/07_psychology_pass.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-live-bridge-20260425-131240_426e8beb",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss/workspace/tasks/novel-live-bridge-20260425-131240_426e8beb/07_psychological-portrayal-expert/07_psychology_pass.md",
+      "source": "docs/novel-factory/live-closeout-20260425-131240.md",
+      "confidence": "high"
+    }
+  ],
+  "skipped": []
+}

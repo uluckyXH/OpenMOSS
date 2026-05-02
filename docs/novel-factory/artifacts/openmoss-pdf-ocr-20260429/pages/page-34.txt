@@ -1,0 +1,34 @@
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+ET get cron.maxConcurrentRuns
+C  2  13     )
+没定义，那就是默认只能执行两个
+# ERMA LILAST TERE A CHP aE TERE A tok en ¢t i 2)
+openclaw config set cron.maxConcurrentRuns 5 --strict-json
+# HAWK
+openclaw gateway restart
+# BAWMHEREM
+openclaw config get cron.maxConcurrentRuns
+2. OpenClaw 的定时任务是支持指定某个模型来跑的，你可以根据自己的情况让
+agent 替你修改或者使用命令创建时就指定
+# 命令示例说明
+openclaw cron add \
+--name "iHLENES GERAD " \
+--every "10m" \
+--session isolated \
+--agent ai_xiaogui \
+--model "my-custom/gpt-5.4(xhigh)" \
+--message "iF LEX PAY AGENTS.md, FHKAHELNGO BXWRFESEMAKIES.
+--announce \
+--channel feishu \
+--to "chat:oc_602d099006635f553dd33c544cedc1857"
+# 指定这个定时任务单独使用哪个模型
+--model "my-custom/gpt-5.4(xhigh)"
+--model “openai/gpt-4.1"
+--model “anthropic/claude-sonnet-4-5"
+# 修改已有等定时任务模型注意这个模型必须配置在0penCLaw的渠道中，和否则无法使用)
+openclaw cron edit <job-id> --model “my-custom/gpt-5.4(xhigh)"
+# 支持修改其它参数
+openclaw cron edit <job-id> \
+--every "10m" \
+https://linux.do/t/topic/1794669                                                       34/62
+

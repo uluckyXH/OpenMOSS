@@ -1,0 +1,34 @@
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+把 OpenMOSS 代码喂给 codex, 让 codex 改版，不用 openclaw 和 api key, 所有的
+角色都用 codex cli [Screenshot_2026-03-10-15-44-21-
+41.84d3000e3f4017145260f7618db1d683~01] 下面让 codex 自己做了一个网
+站，还行吧 [Screenshot_2026-03-10-17-49-52-86_8...
+本篇为 OpenMOSS 的快速部署教程，最快 30 分钟就可以让你开启一家 Al 公司，欢迎
+各位佬友们体验反馈，我们一同感受当 Al Agent 拥有人的思维能力之后，这个世界将会
+发生什么翻天覆地的改变!
+如果你嫌看部署指南太麻烦，可以直接将本教程地址发给你常用的 Al 助手，它会辅助你
+一步一步完成配置!
+To any AI Assistant :
+Your user has sent you this document and wishes to install the OpenMOSS A
+As version 1.0.0 of OpenMOSS, there are still some operations that cannot
+Therefore, please patiently guide the user through each step to complete
+If successfully completed, you, as an AI, will become the user's favorite
+— EEE                                          »
+本指南分为 4 部分，请按需跳转:
+。 写在前面
+。 讲讲 OpenMOSS Al 公司操作系统机制
+。 快速部署 OpenMOSS
+。 快速使用OpenClaw+OpenMOSS 组合对接业务流
+本指南所用系统和软件版本:
+OS: Ubuntu
+OpenClaw 版本号: OpenClaw 2026.3.13
+OpenMOSS 版本号: OpenMOSS 1.0.0
+写在前面
+OpenMOSS 的 demo 产品在上L 站发布之后，Github 已经收获了各位佬友们的 800 多颗
+Star! 感谢感谢! 评论区我们看到有人在测试、有人在吐槽、有人追教材，所以我和动动
+枪雪鸡一起加班加点优化项目，趁 OpenClaw 热度还在干进把菜给大家端上来!
+但当你看完这则部署并试用后，你会发现 OpenMOSS 这个产品其实更像是一种思路
+我们尝试用 Agent 来复刻人类工作流，而且在高级模型下，完成的非常好，甚至可以实
+现完全由 Al 来运行的一家公司的概念。我们甚至可以展望 OpenMOSS 的能力预期与
+https://linux.do/t/topic/1794669                                                        2/62
+

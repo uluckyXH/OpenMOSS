@@ -1,0 +1,272 @@
+{
+  "db_path": "data/tasks.db",
+  "total_sub_tasks": 218,
+  "fully_populated": 79,
+  "missing_any": 139,
+  "missing_workspace_root": 139,
+  "missing_task_workspace_dir": 139,
+  "missing_artifact_absolute_path": 139,
+  "missing_all_three": 139,
+  "samples_missing_any": [
+    {
+      "id": "6e125933-e5a3-41c4-a2b3-6cfba75e5dde",
+      "task_id": "94747eed-f0a5-4be4-9d60-403f965b95a9",
+      "name": "submit-guard-probe",
+      "status": "in_progress",
+      "artifact_path": "03_writer/03_draft.md",
+      "created_at": "2026-04-26 07:29:23.643798",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ]
+    },
+    {
+      "id": "66e29880-c3f5-42c3-a9fb-373f65b6680c",
+      "task_id": "94747eed-f0a5-4be4-9d60-403f965b95a9",
+      "name": "review-guard-probe",
+      "status": "review",
+      "artifact_path": "03_writer/03_draft.md",
+      "created_at": "2026-04-26 07:29:23",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ]
+    },
+    {
+      "id": "7ab2e977-9e8c-4a68-8ddf-aaba144bfb94",
+      "task_id": "5e26561a-402c-4d6a-ba88-5ddc420c087d",
+      "name": "missing-artifact-review",
+      "status": "done",
+      "artifact_path": "03_writer/03_draft.md",
+      "created_at": "2026-04-26 07:00:59.574687",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ]
+    },
+    {
+      "id": "b5905e0f-f51f-41d2-8e37-9bd8ec041d80",
+      "task_id": "c971f4fb-9e7c-4453-9adb-3687b547d0e9",
+      "name": "missing-artifact-writer",
+      "status": "review",
+      "artifact_path": "03_writer/03_draft.md",
+      "created_at": "2026-04-26 06:42:33.813990",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ]
+    },
+    {
+      "id": "7594fbd9-a361-4821-933d-71ea90bd9826",
+      "task_id": "17b348b2-6fa6-4343-a376-0f590556ca1d",
+      "name": "最终组装 / final-assembler real chain",
+      "status": "done",
+      "artifact_path": "13_final-assembler/13_final_chapter.md",
+      "created_at": "2026-04-26 05:45:10.483019",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ]
+    },
+    {
+      "id": "4058b189-b6f4-4792-af60-e719d0c3a8fc",
+      "task_id": "17b348b2-6fa6-4343-a376-0f590556ca1d",
+      "name": "正文初稿 / writer real chain",
+      "status": "done",
+      "artifact_path": "03_writer/03_draft.md",
+      "created_at": "2026-04-26 05:45:10.462804",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ]
+    },
+    {
+      "id": "220fff40-67b4-43e3-bedf-bb04e3500ce0",
+      "task_id": "d202ad66-5b60-4deb-bc26-2b06cad72249",
+      "name": "正文初稿 / writer real probe",
+      "status": "done",
+      "artifact_path": "03_writer/03_draft.md",
+      "created_at": "2026-04-26 05:38:05.444916",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ]
+    },
+    {
+      "id": "f63ed661-8039-4dbf-a7d3-2385431e178b",
+      "task_id": "d5f20f19-6a64-4635-899d-e87463e3eb56",
+      "name": "钩子设计 / hook-designer",
+      "status": "done",
+      "artifact_path": "09_hook-designer/09_hook_design.md",
+      "created_at": "2026-04-26 05:11:41.528236",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ]
+    },
+    {
+      "id": "bea8e409-26ff-492d-8f8f-442dfd73c6a9",
+      "task_id": "d5f20f19-6a64-4635-899d-e87463e3eb56",
+      "name": "开篇结尾 / opening-ending-designer",
+      "status": "done",
+      "artifact_path": "08_opening-ending-designer/08_opening_ending.md",
+      "created_at": "2026-04-26 05:11:41.512757",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ]
+    },
+    {
+      "id": "b9301d1f-914a-4f36-af17-3e0126153bc9",
+      "task_id": "d5f20f19-6a64-4635-899d-e87463e3eb56",
+      "name": "心理描写 / psychological-portrayal-expert",
+      "status": "done",
+      "artifact_path": "07_psychological-portrayal-expert/07_psychology_pass.md",
+      "created_at": "2026-04-26 05:11:41.495203",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ]
+    },
+    {
+      "id": "ad143e8a-b528-40af-8d30-605e3e8dcf1e",
+      "task_id": "d5f20f19-6a64-4635-899d-e87463e3eb56",
+      "name": "情绪曲线 / emotion-curve-designer",
+      "status": "done",
+      "artifact_path": "05_emotion-curve-designer/05_emotion_curve.md",
+      "created_at": "2026-04-26 05:11:41.461704",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ]
+    },
+    {
+      "id": "960a4a5c-c8f5-4390-9b2b-43ac7e7654f9",
+      "task_id": "d5f20f19-6a64-4635-899d-e87463e3eb56",
+      "name": "场景架构 / scene-architect",
+      "status": "done",
+      "artifact_path": "02_scene-architect/02_scene_plan.md",
+      "created_at": "2026-04-26 05:11:41.410958",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ]
+    },
+    {
+      "id": "94bff37f-8941-412d-871c-6664650b9c11",
+      "task_id": "d5f20f19-6a64-4635-899d-e87463e3eb56",
+      "name": "人物成长 / character-growth",
+      "status": "done",
+      "artifact_path": "06_character-growth/06_character_growth.md",
+      "created_at": "2026-04-26 05:11:41.479260",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ]
+    },
+    {
+      "id": "7f5c7a51-2814-4ffc-8170-d8f754948bab",
+      "task_id": "d5f20f19-6a64-4635-899d-e87463e3eb56",
+      "name": "剧情架构 / plot-architect",
+      "status": "done",
+      "artifact_path": "01_plot-architect/01_plot_blueprint.md",
+      "created_at": "2026-04-26 05:11:41.390489",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ]
+    },
+    {
+      "id": "71d415b2-62e8-4e9e-a647-9061fc434dcf",
+      "task_id": "d5f20f19-6a64-4635-899d-e87463e3eb56",
+      "name": "正文初稿 / writer",
+      "status": "done",
+      "artifact_path": "03_writer/03_draft.md",
+      "created_at": "2026-04-26 05:11:41.427417",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ]
+    },
+    {
+      "id": "5e376d5c-19ac-4c9e-b68e-42685178e43f",
+      "task_id": "d5f20f19-6a64-4635-899d-e87463e3eb56",
+      "name": "最终组装 / final-assembler",
+      "status": "done",
+      "artifact_path": "13_final-assembler/13_final_chapter.md",
+      "created_at": "2026-04-26 05:11:41.598993",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ]
+    },
+    {
+      "id": "4b25a885-eef3-4b21-bb7d-4fba85035ea8",
+      "task_id": "d5f20f19-6a64-4635-899d-e87463e3eb56",
+      "name": "修订润色 / revision-polish-expert",
+      "status": "done",
+      "artifact_path": "11_revision-polish-expert/11_revision_pass.md",
+      "created_at": "2026-04-26 05:11:41.562624",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ]
+    },
+    {
+      "id": "479c370b-12b7-4853-af61-c969205bc46c",
+      "task_id": "d5f20f19-6a64-4635-899d-e87463e3eb56",
+      "name": "对话优化 / dialogue-expert",
+      "status": "done",
+      "artifact_path": "04_dialogue-expert/04_dialogue_pass.md",
+      "created_at": "2026-04-26 05:11:41.444188",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ]
+    },
+    {
+      "id": "2c078090-5df9-4827-9fc1-3f16091ae6e7",
+      "task_id": "d5f20f19-6a64-4635-899d-e87463e3eb56",
+      "name": "综合审查 / reviewer",
+      "status": "done",
+      "artifact_path": "10_reviewer/10_review_report.md",
+      "created_at": "2026-04-26 05:11:41.544248",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ]
+    },
+    {
+      "id": "11beb901-4b4b-45bc-ab56-8a4a6b28173f",
+      "task_id": "d5f20f19-6a64-4635-899d-e87463e3eb56",
+      "name": "风格一致性 / style-consistency-checker",
+      "status": "done",
+      "artifact_path": "12_style-consistency-checker/12_style_report.md",
+      "created_at": "2026-04-26 05:11:41.579699",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ]
+    }
+  ]
+}

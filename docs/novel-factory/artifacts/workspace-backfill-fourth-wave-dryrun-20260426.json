@@ -1,0 +1,653 @@
+{
+  "mode": "dry_run",
+  "db_path": "data/tasks.db",
+  "mapping_path": "docs/novel-factory/artifacts/workspace-backfill-high-confidence-map-20260426.json",
+  "task_ids_filter": [
+    "a44757e8-ad94-465e-9673-9776646a3516",
+    "d83d94a7-0402-4cab-9ad5-248252535eb7",
+    "e33e31d5-c071-487b-a2d3-c6a411bec9ca"
+  ],
+  "candidate_count": 33,
+  "skipped_count": 2,
+  "candidates": [
+    {
+      "sub_task_id": "fda11209-98b5-4883-b3ee-0b21820bea2d",
+      "task_id": "a44757e8-ad94-465e-9673-9776646a3516",
+      "task_name": "在线桥接验证 novel-case-online-verify-20260419-110701",
+      "sub_task_name": "剧情架构 / plot-architect",
+      "artifact_path": "01_plot-architect/01_plot_blueprint.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/online-bridge-live-verify-20260419-110701",
+      "task_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/online-bridge-live-verify-20260419-110701/单章节小说骨架试跑_novel-case-online-verify-20260419-110701",
+      "artifact_absolute_path": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/online-bridge-live-verify-20260419-110701/单章节小说骨架试跑_novel-case-online-verify-20260419-110701/01_plot-architect/01_plot_blueprint.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/online-bridge-live-verify-20260419-110701/单章节小说骨架试跑_novel-case-online-verify-20260419-110701",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/online-bridge-live-verify-20260419-110701/单章节小说骨架试跑_novel-case-online-verify-20260419-110701/01_plot-architect/01_plot_blueprint.md",
+      "source": "docs/novel-factory/online-bridge-live-verify-20260419-110701/create_result.json",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "f64ff910-7bd5-4fad-a047-f9e21bc238bd",
+      "task_id": "a44757e8-ad94-465e-9673-9776646a3516",
+      "task_name": "在线桥接验证 novel-case-online-verify-20260419-110701",
+      "sub_task_name": "对话优化 / dialogue-expert",
+      "artifact_path": "04_dialogue-expert/04_dialogue_pass.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/online-bridge-live-verify-20260419-110701",
+      "task_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/online-bridge-live-verify-20260419-110701/单章节小说骨架试跑_novel-case-online-verify-20260419-110701",
+      "artifact_absolute_path": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/online-bridge-live-verify-20260419-110701/单章节小说骨架试跑_novel-case-online-verify-20260419-110701/04_dialogue-expert/04_dialogue_pass.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/online-bridge-live-verify-20260419-110701/单章节小说骨架试跑_novel-case-online-verify-20260419-110701",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/online-bridge-live-verify-20260419-110701/单章节小说骨架试跑_novel-case-online-verify-20260419-110701/04_dialogue-expert/04_dialogue_pass.md",
+      "source": "docs/novel-factory/online-bridge-live-verify-20260419-110701/create_result.json",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "eddb0bbb-b26a-4c40-a8de-6ca7b787512d",
+      "task_id": "a44757e8-ad94-465e-9673-9776646a3516",
+      "task_name": "在线桥接验证 novel-case-online-verify-20260419-110701",
+      "sub_task_name": "场景架构 / scene-architect",
+      "artifact_path": "02_scene-architect/02_scene_plan.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/online-bridge-live-verify-20260419-110701",
+      "task_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/online-bridge-live-verify-20260419-110701/单章节小说骨架试跑_novel-case-online-verify-20260419-110701",
+      "artifact_absolute_path": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/online-bridge-live-verify-20260419-110701/单章节小说骨架试跑_novel-case-online-verify-20260419-110701/02_scene-architect/02_scene_plan.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/online-bridge-live-verify-20260419-110701/单章节小说骨架试跑_novel-case-online-verify-20260419-110701",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/online-bridge-live-verify-20260419-110701/单章节小说骨架试跑_novel-case-online-verify-20260419-110701/02_scene-architect/02_scene_plan.md",
+      "source": "docs/novel-factory/online-bridge-live-verify-20260419-110701/create_result.json",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "dabf3e5a-98b5-4fb0-8924-3db217d737fd",
+      "task_id": "a44757e8-ad94-465e-9673-9776646a3516",
+      "task_name": "在线桥接验证 novel-case-online-verify-20260419-110701",
+      "sub_task_name": "人物成长 / character-growth",
+      "artifact_path": "06_character-growth/06_character_growth.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/online-bridge-live-verify-20260419-110701",
+      "task_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/online-bridge-live-verify-20260419-110701/单章节小说骨架试跑_novel-case-online-verify-20260419-110701",
+      "artifact_absolute_path": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/online-bridge-live-verify-20260419-110701/单章节小说骨架试跑_novel-case-online-verify-20260419-110701/06_character-growth/06_character_growth.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/online-bridge-live-verify-20260419-110701/单章节小说骨架试跑_novel-case-online-verify-20260419-110701",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/online-bridge-live-verify-20260419-110701/单章节小说骨架试跑_novel-case-online-verify-20260419-110701/06_character-growth/06_character_growth.md",
+      "source": "docs/novel-factory/online-bridge-live-verify-20260419-110701/create_result.json",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "d1b88f6c-b2b0-468c-9b80-ecdf4c5cf36f",
+      "task_id": "a44757e8-ad94-465e-9673-9776646a3516",
+      "task_name": "在线桥接验证 novel-case-online-verify-20260419-110701",
+      "sub_task_name": "综合审查 / reviewer",
+      "artifact_path": "10_reviewer/10_review_report.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/online-bridge-live-verify-20260419-110701",
+      "task_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/online-bridge-live-verify-20260419-110701/单章节小说骨架试跑_novel-case-online-verify-20260419-110701",
+      "artifact_absolute_path": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/online-bridge-live-verify-20260419-110701/单章节小说骨架试跑_novel-case-online-verify-20260419-110701/10_reviewer/10_review_report.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/online-bridge-live-verify-20260419-110701/单章节小说骨架试跑_novel-case-online-verify-20260419-110701",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/online-bridge-live-verify-20260419-110701/单章节小说骨架试跑_novel-case-online-verify-20260419-110701/10_reviewer/10_review_report.md",
+      "source": "docs/novel-factory/online-bridge-live-verify-20260419-110701/create_result.json",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "d0d1bef0-f053-4028-b9f9-4796fa53722d",
+      "task_id": "a44757e8-ad94-465e-9673-9776646a3516",
+      "task_name": "在线桥接验证 novel-case-online-verify-20260419-110701",
+      "sub_task_name": "修订润色 / revision-polish-expert",
+      "artifact_path": "11_revision-polish-expert/11_revision_pass.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/online-bridge-live-verify-20260419-110701",
+      "task_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/online-bridge-live-verify-20260419-110701/单章节小说骨架试跑_novel-case-online-verify-20260419-110701",
+      "artifact_absolute_path": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/online-bridge-live-verify-20260419-110701/单章节小说骨架试跑_novel-case-online-verify-20260419-110701/11_revision-polish-expert/11_revision_pass.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/online-bridge-live-verify-20260419-110701/单章节小说骨架试跑_novel-case-online-verify-20260419-110701",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/online-bridge-live-verify-20260419-110701/单章节小说骨架试跑_novel-case-online-verify-20260419-110701/11_revision-polish-expert/11_revision_pass.md",
+      "source": "docs/novel-factory/online-bridge-live-verify-20260419-110701/create_result.json",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "c0bf072f-7ed4-4be4-8274-f3336136d1c3",
+      "task_id": "a44757e8-ad94-465e-9673-9776646a3516",
+      "task_name": "在线桥接验证 novel-case-online-verify-20260419-110701",
+      "sub_task_name": "心理描写 / psychological-portrayal-expert",
+      "artifact_path": "07_psychological-portrayal-expert/07_psychology_pass.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/online-bridge-live-verify-20260419-110701",
+      "task_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/online-bridge-live-verify-20260419-110701/单章节小说骨架试跑_novel-case-online-verify-20260419-110701",
+      "artifact_absolute_path": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/online-bridge-live-verify-20260419-110701/单章节小说骨架试跑_novel-case-online-verify-20260419-110701/07_psychological-portrayal-expert/07_psychology_pass.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/online-bridge-live-verify-20260419-110701/单章节小说骨架试跑_novel-case-online-verify-20260419-110701",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/online-bridge-live-verify-20260419-110701/单章节小说骨架试跑_novel-case-online-verify-20260419-110701/07_psychological-portrayal-expert/07_psychology_pass.md",
+      "source": "docs/novel-factory/online-bridge-live-verify-20260419-110701/create_result.json",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "9b5c7d4b-e7bd-43c1-9dc2-d1ecef77a9a9",
+      "task_id": "a44757e8-ad94-465e-9673-9776646a3516",
+      "task_name": "在线桥接验证 novel-case-online-verify-20260419-110701",
+      "sub_task_name": "钩子设计 / hook-designer",
+      "artifact_path": "09_hook-designer/09_hook_design.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/online-bridge-live-verify-20260419-110701",
+      "task_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/online-bridge-live-verify-20260419-110701/单章节小说骨架试跑_novel-case-online-verify-20260419-110701",
+      "artifact_absolute_path": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/online-bridge-live-verify-20260419-110701/单章节小说骨架试跑_novel-case-online-verify-20260419-110701/09_hook-designer/09_hook_design.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/online-bridge-live-verify-20260419-110701/单章节小说骨架试跑_novel-case-online-verify-20260419-110701",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/online-bridge-live-verify-20260419-110701/单章节小说骨架试跑_novel-case-online-verify-20260419-110701/09_hook-designer/09_hook_design.md",
+      "source": "docs/novel-factory/online-bridge-live-verify-20260419-110701/create_result.json",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "799b9cc2-78c3-410c-93d6-bef9c96614cd",
+      "task_id": "a44757e8-ad94-465e-9673-9776646a3516",
+      "task_name": "在线桥接验证 novel-case-online-verify-20260419-110701",
+      "sub_task_name": "开篇结尾 / opening-ending-designer",
+      "artifact_path": "08_opening-ending-designer/08_opening_ending.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/online-bridge-live-verify-20260419-110701",
+      "task_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/online-bridge-live-verify-20260419-110701/单章节小说骨架试跑_novel-case-online-verify-20260419-110701",
+      "artifact_absolute_path": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/online-bridge-live-verify-20260419-110701/单章节小说骨架试跑_novel-case-online-verify-20260419-110701/08_opening-ending-designer/08_opening_ending.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/online-bridge-live-verify-20260419-110701/单章节小说骨架试跑_novel-case-online-verify-20260419-110701",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/online-bridge-live-verify-20260419-110701/单章节小说骨架试跑_novel-case-online-verify-20260419-110701/08_opening-ending-designer/08_opening_ending.md",
+      "source": "docs/novel-factory/online-bridge-live-verify-20260419-110701/create_result.json",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "71f37d80-9433-4040-9e20-78ccd3c366a6",
+      "task_id": "a44757e8-ad94-465e-9673-9776646a3516",
+      "task_name": "在线桥接验证 novel-case-online-verify-20260419-110701",
+      "sub_task_name": "风格一致性 / style-consistency-checker",
+      "artifact_path": "12_style-consistency-checker/12_style_report.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/online-bridge-live-verify-20260419-110701",
+      "task_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/online-bridge-live-verify-20260419-110701/单章节小说骨架试跑_novel-case-online-verify-20260419-110701",
+      "artifact_absolute_path": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/online-bridge-live-verify-20260419-110701/单章节小说骨架试跑_novel-case-online-verify-20260419-110701/12_style-consistency-checker/12_style_report.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/online-bridge-live-verify-20260419-110701/单章节小说骨架试跑_novel-case-online-verify-20260419-110701",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/online-bridge-live-verify-20260419-110701/单章节小说骨架试跑_novel-case-online-verify-20260419-110701/12_style-consistency-checker/12_style_report.md",
+      "source": "docs/novel-factory/online-bridge-live-verify-20260419-110701/create_result.json",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "53d311ee-0d2a-4369-b4c0-8cdf3d17ebab",
+      "task_id": "a44757e8-ad94-465e-9673-9776646a3516",
+      "task_name": "在线桥接验证 novel-case-online-verify-20260419-110701",
+      "sub_task_name": "情绪曲线 / emotion-curve-designer",
+      "artifact_path": "05_emotion-curve-designer/05_emotion_curve.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/online-bridge-live-verify-20260419-110701",
+      "task_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/online-bridge-live-verify-20260419-110701/单章节小说骨架试跑_novel-case-online-verify-20260419-110701",
+      "artifact_absolute_path": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/online-bridge-live-verify-20260419-110701/单章节小说骨架试跑_novel-case-online-verify-20260419-110701/05_emotion-curve-designer/05_emotion_curve.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/online-bridge-live-verify-20260419-110701/单章节小说骨架试跑_novel-case-online-verify-20260419-110701",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/online-bridge-live-verify-20260419-110701/单章节小说骨架试跑_novel-case-online-verify-20260419-110701/05_emotion-curve-designer/05_emotion_curve.md",
+      "source": "docs/novel-factory/online-bridge-live-verify-20260419-110701/create_result.json",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "3b10ca14-1a29-443a-850b-2a164587c4a0",
+      "task_id": "a44757e8-ad94-465e-9673-9776646a3516",
+      "task_name": "在线桥接验证 novel-case-online-verify-20260419-110701",
+      "sub_task_name": "正文初稿 / writer",
+      "artifact_path": "03_writer/03_draft.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/online-bridge-live-verify-20260419-110701",
+      "task_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/online-bridge-live-verify-20260419-110701/单章节小说骨架试跑_novel-case-online-verify-20260419-110701",
+      "artifact_absolute_path": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/online-bridge-live-verify-20260419-110701/单章节小说骨架试跑_novel-case-online-verify-20260419-110701/03_writer/03_draft.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/online-bridge-live-verify-20260419-110701/单章节小说骨架试跑_novel-case-online-verify-20260419-110701",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/online-bridge-live-verify-20260419-110701/单章节小说骨架试跑_novel-case-online-verify-20260419-110701/03_writer/03_draft.md",
+      "source": "docs/novel-factory/online-bridge-live-verify-20260419-110701/create_result.json",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "27425c79-43fb-4f50-a772-d868d3020205",
+      "task_id": "a44757e8-ad94-465e-9673-9776646a3516",
+      "task_name": "在线桥接验证 novel-case-online-verify-20260419-110701",
+      "sub_task_name": "最终组装 / final-assembler",
+      "artifact_path": "13_final-assembler/13_final_chapter.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/online-bridge-live-verify-20260419-110701",
+      "task_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/online-bridge-live-verify-20260419-110701/单章节小说骨架试跑_novel-case-online-verify-20260419-110701",
+      "artifact_absolute_path": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/online-bridge-live-verify-20260419-110701/单章节小说骨架试跑_novel-case-online-verify-20260419-110701/13_final-assembler/13_final_chapter.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/online-bridge-live-verify-20260419-110701/单章节小说骨架试跑_novel-case-online-verify-20260419-110701",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss/docs/novel-factory/online-bridge-live-verify-20260419-110701/单章节小说骨架试跑_novel-case-online-verify-20260419-110701/13_final-assembler/13_final_chapter.md",
+      "source": "docs/novel-factory/online-bridge-live-verify-20260419-110701/create_result.json",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "fba04845-e1ca-4934-b6b3-221213b7f977",
+      "task_id": "e33e31d5-c071-487b-a2d3-c6a411bec9ca",
+      "task_name": "hermes-official-online-20260418-061024-replay01-online-case",
+      "sub_task_name": "06-成长弧设计师",
+      "artifact_path": "06_character_growth.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks",
+      "task_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-online-20260418-061024-replay01-online-case_e33e31d5",
+      "artifact_absolute_path": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-online-20260418-061024-replay01-online-case_e33e31d5/06_character_growth.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-online-20260418-061024-replay01-online-case_e33e31d5",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-online-20260418-061024-replay01-online-case_e33e31d5/06_character_growth.md",
+      "source": "sqlite:data/tasks.db delivery_summary; docs/novel-factory/openmoss-case-closeout-checklist-audit-20260419.md",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "ce183337-6694-4d81-b827-7c3306202cb3",
+      "task_id": "e33e31d5-c071-487b-a2d3-c6a411bec9ca",
+      "task_name": "hermes-official-online-20260418-061024-replay01-online-case",
+      "sub_task_name": "09-钩子设计师",
+      "artifact_path": "09_hook_design.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks",
+      "task_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-online-20260418-061024-replay01-online-case_e33e31d5",
+      "artifact_absolute_path": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-online-20260418-061024-replay01-online-case_e33e31d5/09_hook_design.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-online-20260418-061024-replay01-online-case_e33e31d5",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-online-20260418-061024-replay01-online-case_e33e31d5/09_hook_design.md",
+      "source": "sqlite:data/tasks.db delivery_summary; docs/novel-factory/openmoss-case-closeout-checklist-audit-20260419.md",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "85597a03-302a-4475-836b-5b2c9f9c930b",
+      "task_id": "e33e31d5-c071-487b-a2d3-c6a411bec9ca",
+      "task_name": "hermes-official-online-20260418-061024-replay01-online-case",
+      "sub_task_name": "10-修订润色师",
+      "artifact_path": "11_revision_pass.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks",
+      "task_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-online-20260418-061024-replay01-online-case_e33e31d5",
+      "artifact_absolute_path": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-online-20260418-061024-replay01-online-case_e33e31d5/11_revision_pass.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-online-20260418-061024-replay01-online-case_e33e31d5",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-online-20260418-061024-replay01-online-case_e33e31d5/11_revision_pass.md",
+      "source": "sqlite:data/tasks.db delivery_summary; docs/novel-factory/openmoss-case-closeout-checklist-audit-20260419.md",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "7c30a5b8-f9d6-4268-901f-ad6acdf84d86",
+      "task_id": "e33e31d5-c071-487b-a2d3-c6a411bec9ca",
+      "task_name": "hermes-official-online-20260418-061024-replay01-online-case",
+      "sub_task_name": "07-心理描写专家",
+      "artifact_path": "07_psychology_pass.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks",
+      "task_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-online-20260418-061024-replay01-online-case_e33e31d5",
+      "artifact_absolute_path": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-online-20260418-061024-replay01-online-case_e33e31d5/07_psychology_pass.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-online-20260418-061024-replay01-online-case_e33e31d5",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-online-20260418-061024-replay01-online-case_e33e31d5/07_psychology_pass.md",
+      "source": "sqlite:data/tasks.db delivery_summary; docs/novel-factory/openmoss-case-closeout-checklist-audit-20260419.md",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "50eb683e-5f35-44a7-ba7b-7b935898fbc6",
+      "task_id": "e33e31d5-c071-487b-a2d3-c6a411bec9ca",
+      "task_name": "hermes-official-online-20260418-061024-replay01-online-case",
+      "sub_task_name": "08-开篇收尾设计师",
+      "artifact_path": "08_opening_ending.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks",
+      "task_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-online-20260418-061024-replay01-online-case_e33e31d5",
+      "artifact_absolute_path": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-online-20260418-061024-replay01-online-case_e33e31d5/08_opening_ending.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-online-20260418-061024-replay01-online-case_e33e31d5",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-online-20260418-061024-replay01-online-case_e33e31d5/08_opening_ending.md",
+      "source": "sqlite:data/tasks.db delivery_summary; docs/novel-factory/openmoss-case-closeout-checklist-audit-20260419.md",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "2e04cc91-688a-4cf3-b90b-ebe9c0a4cb45",
+      "task_id": "e33e31d5-c071-487b-a2d3-c6a411bec9ca",
+      "task_name": "hermes-official-online-20260418-061024-replay01-online-case",
+      "sub_task_name": "11-最终组装师",
+      "artifact_path": "13_final-assembler/13_final_chapter.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks",
+      "task_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-online-20260418-061024-replay01-online-case_e33e31d5",
+      "artifact_absolute_path": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-online-20260418-061024-replay01-online-case_e33e31d5/13_final-assembler/13_final_chapter.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-online-20260418-061024-replay01-online-case_e33e31d5",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-online-20260418-061024-replay01-online-case_e33e31d5/13_final-assembler/13_final_chapter.md",
+      "source": "sqlite:data/tasks.db delivery_summary; docs/novel-factory/openmoss-case-closeout-checklist-audit-20260419.md",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "e4abbd3d-e6b0-4158-9522-bba038e22e1f",
+      "task_id": "e33e31d5-c071-487b-a2d3-c6a411bec9ca",
+      "task_name": "hermes-official-online-20260418-061024-replay01-online-case",
+      "sub_task_name": "05-情感曲线设计师",
+      "artifact_path": "05_emotion_curve.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks",
+      "task_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-online-20260418-061024-replay01-online-case_e33e31d5",
+      "artifact_absolute_path": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-online-20260418-061024-replay01-online-case_e33e31d5/05_emotion_curve.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-online-20260418-061024-replay01-online-case_e33e31d5",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-online-20260418-061024-replay01-online-case_e33e31d5/05_emotion_curve.md",
+      "source": "sqlite:data/tasks.db delivery_summary; docs/novel-factory/openmoss-case-closeout-checklist-audit-20260419.md",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "b23821f1-2937-455e-b274-43edca5750a6",
+      "task_id": "e33e31d5-c071-487b-a2d3-c6a411bec9ca",
+      "task_name": "hermes-official-online-20260418-061024-replay01-online-case",
+      "sub_task_name": "01-情节架构师",
+      "artifact_path": "01_plot_blueprint.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks",
+      "task_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-online-20260418-061024-replay01-online-case_e33e31d5",
+      "artifact_absolute_path": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-online-20260418-061024-replay01-online-case_e33e31d5/01_plot_blueprint.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-online-20260418-061024-replay01-online-case_e33e31d5",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-online-20260418-061024-replay01-online-case_e33e31d5/01_plot_blueprint.md",
+      "source": "sqlite:data/tasks.db delivery_summary; docs/novel-factory/openmoss-case-closeout-checklist-audit-20260419.md",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "71ed3e9e-42f5-4082-b64d-59c7bebfcde4",
+      "task_id": "e33e31d5-c071-487b-a2d3-c6a411bec9ca",
+      "task_name": "hermes-official-online-20260418-061024-replay01-online-case",
+      "sub_task_name": "03-正文起草者",
+      "artifact_path": "03_draft.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks",
+      "task_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-online-20260418-061024-replay01-online-case_e33e31d5",
+      "artifact_absolute_path": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-online-20260418-061024-replay01-online-case_e33e31d5/03_draft.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-online-20260418-061024-replay01-online-case_e33e31d5",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-online-20260418-061024-replay01-online-case_e33e31d5/03_draft.md",
+      "source": "sqlite:data/tasks.db delivery_summary; docs/novel-factory/openmoss-case-closeout-checklist-audit-20260419.md",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "71c80c96-c9ae-44b4-bc65-7c0f3ad111b8",
+      "task_id": "e33e31d5-c071-487b-a2d3-c6a411bec9ca",
+      "task_name": "hermes-official-online-20260418-061024-replay01-online-case",
+      "sub_task_name": "04-对话专家",
+      "artifact_path": "04_dialogue_pass.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks",
+      "task_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-online-20260418-061024-replay01-online-case_e33e31d5",
+      "artifact_absolute_path": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-online-20260418-061024-replay01-online-case_e33e31d5/04_dialogue_pass.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-online-20260418-061024-replay01-online-case_e33e31d5",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-online-20260418-061024-replay01-online-case_e33e31d5/04_dialogue_pass.md",
+      "source": "sqlite:data/tasks.db delivery_summary; docs/novel-factory/openmoss-case-closeout-checklist-audit-20260419.md",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "5e478a96-bce4-45ec-906e-0a5df27f9da0",
+      "task_id": "e33e31d5-c071-487b-a2d3-c6a411bec9ca",
+      "task_name": "hermes-official-online-20260418-061024-replay01-online-case",
+      "sub_task_name": "02-场景架构师",
+      "artifact_path": "02_scene_plan.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks",
+      "task_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-online-20260418-061024-replay01-online-case_e33e31d5",
+      "artifact_absolute_path": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-online-20260418-061024-replay01-online-case_e33e31d5/02_scene_plan.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-online-20260418-061024-replay01-online-case_e33e31d5",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-online-20260418-061024-replay01-online-case_e33e31d5/02_scene_plan.md",
+      "source": "sqlite:data/tasks.db delivery_summary; docs/novel-factory/openmoss-case-closeout-checklist-audit-20260419.md",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "ea70cdcb-a909-4cad-9c3a-1ee09801b632",
+      "task_id": "d83d94a7-0402-4cab-9ad5-248252535eb7",
+      "task_name": "hermes-official-20260418-060340-冻结正式小说case-replay-01",
+      "sub_task_name": "09-钩子设计师",
+      "artifact_path": "09_hook_design.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks",
+      "task_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-20260418-060340-case-replay-01_d83d94a7",
+      "artifact_absolute_path": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-20260418-060340-case-replay-01_d83d94a7/09_hook_design.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-20260418-060340-case-replay-01_d83d94a7",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-20260418-060340-case-replay-01_d83d94a7/09_hook_design.md",
+      "source": "sqlite:data/tasks.db delivery_summary; docs/novel-factory/openmoss-case-closeout-checklist-audit-20260419.md",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "92a3aa55-4e29-4035-b53a-2c9c1cddc0aa",
+      "task_id": "d83d94a7-0402-4cab-9ad5-248252535eb7",
+      "task_name": "hermes-official-20260418-060340-冻结正式小说case-replay-01",
+      "sub_task_name": "03-正文起草者",
+      "artifact_path": "03_draft.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks",
+      "task_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-20260418-060340-case-replay-01_d83d94a7",
+      "artifact_absolute_path": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-20260418-060340-case-replay-01_d83d94a7/03_draft.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-20260418-060340-case-replay-01_d83d94a7",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-20260418-060340-case-replay-01_d83d94a7/03_draft.md",
+      "source": "sqlite:data/tasks.db delivery_summary; docs/novel-factory/openmoss-case-closeout-checklist-audit-20260419.md",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "86e0ddd6-c245-4421-b10c-49a164bdc0cf",
+      "task_id": "d83d94a7-0402-4cab-9ad5-248252535eb7",
+      "task_name": "hermes-official-20260418-060340-冻结正式小说case-replay-01",
+      "sub_task_name": "07-心理描写专家",
+      "artifact_path": "07_psychology_pass.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks",
+      "task_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-20260418-060340-case-replay-01_d83d94a7",
+      "artifact_absolute_path": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-20260418-060340-case-replay-01_d83d94a7/07_psychology_pass.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-20260418-060340-case-replay-01_d83d94a7",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-20260418-060340-case-replay-01_d83d94a7/07_psychology_pass.md",
+      "source": "sqlite:data/tasks.db delivery_summary; docs/novel-factory/openmoss-case-closeout-checklist-audit-20260419.md",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "731804a7-8557-4015-b034-1aaa886924db",
+      "task_id": "d83d94a7-0402-4cab-9ad5-248252535eb7",
+      "task_name": "hermes-official-20260418-060340-冻结正式小说case-replay-01",
+      "sub_task_name": "01-情节架构师",
+      "artifact_path": "01_plot_blueprint.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks",
+      "task_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-20260418-060340-case-replay-01_d83d94a7",
+      "artifact_absolute_path": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-20260418-060340-case-replay-01_d83d94a7/01_plot_blueprint.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-20260418-060340-case-replay-01_d83d94a7",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-20260418-060340-case-replay-01_d83d94a7/01_plot_blueprint.md",
+      "source": "sqlite:data/tasks.db delivery_summary; docs/novel-factory/openmoss-case-closeout-checklist-audit-20260419.md",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "60c07644-be0c-4d0e-9c4b-76bcc70fdd4a",
+      "task_id": "d83d94a7-0402-4cab-9ad5-248252535eb7",
+      "task_name": "hermes-official-20260418-060340-冻结正式小说case-replay-01",
+      "sub_task_name": "04-对话专家",
+      "artifact_path": "04_dialogue_pass.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks",
+      "task_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-20260418-060340-case-replay-01_d83d94a7",
+      "artifact_absolute_path": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-20260418-060340-case-replay-01_d83d94a7/04_dialogue_pass.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-20260418-060340-case-replay-01_d83d94a7",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-20260418-060340-case-replay-01_d83d94a7/04_dialogue_pass.md",
+      "source": "sqlite:data/tasks.db delivery_summary; docs/novel-factory/openmoss-case-closeout-checklist-audit-20260419.md",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "5d760e06-54ba-49b7-8a18-c12cbd58f9c8",
+      "task_id": "d83d94a7-0402-4cab-9ad5-248252535eb7",
+      "task_name": "hermes-official-20260418-060340-冻结正式小说case-replay-01",
+      "sub_task_name": "05-情感曲线设计师",
+      "artifact_path": "05_emotion_curve.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks",
+      "task_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-20260418-060340-case-replay-01_d83d94a7",
+      "artifact_absolute_path": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-20260418-060340-case-replay-01_d83d94a7/05_emotion_curve.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-20260418-060340-case-replay-01_d83d94a7",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-20260418-060340-case-replay-01_d83d94a7/05_emotion_curve.md",
+      "source": "sqlite:data/tasks.db delivery_summary; docs/novel-factory/openmoss-case-closeout-checklist-audit-20260419.md",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "3acf9df8-51b8-4f2f-910e-e930001ef3ef",
+      "task_id": "d83d94a7-0402-4cab-9ad5-248252535eb7",
+      "task_name": "hermes-official-20260418-060340-冻结正式小说case-replay-01",
+      "sub_task_name": "08-开篇收尾设计师",
+      "artifact_path": "08_opening_ending.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks",
+      "task_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-20260418-060340-case-replay-01_d83d94a7",
+      "artifact_absolute_path": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-20260418-060340-case-replay-01_d83d94a7/08_opening_ending.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-20260418-060340-case-replay-01_d83d94a7",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-20260418-060340-case-replay-01_d83d94a7/08_opening_ending.md",
+      "source": "sqlite:data/tasks.db delivery_summary; docs/novel-factory/openmoss-case-closeout-checklist-audit-20260419.md",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "32180122-0cb3-4e05-bdf5-8095bfcf9d89",
+      "task_id": "d83d94a7-0402-4cab-9ad5-248252535eb7",
+      "task_name": "hermes-official-20260418-060340-冻结正式小说case-replay-01",
+      "sub_task_name": "02-场景架构师",
+      "artifact_path": "02_scene_plan.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks",
+      "task_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-20260418-060340-case-replay-01_d83d94a7",
+      "artifact_absolute_path": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-20260418-060340-case-replay-01_d83d94a7/02_scene_plan.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-20260418-060340-case-replay-01_d83d94a7",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-20260418-060340-case-replay-01_d83d94a7/02_scene_plan.md",
+      "source": "sqlite:data/tasks.db delivery_summary; docs/novel-factory/openmoss-case-closeout-checklist-audit-20260419.md",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "281cb77b-94cc-47ae-8437-ff4c24fd8c05",
+      "task_id": "d83d94a7-0402-4cab-9ad5-248252535eb7",
+      "task_name": "hermes-official-20260418-060340-冻结正式小说case-replay-01",
+      "sub_task_name": "06-成长弧设计师",
+      "artifact_path": "06_character_growth.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks",
+      "task_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-20260418-060340-case-replay-01_d83d94a7",
+      "artifact_absolute_path": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-20260418-060340-case-replay-01_d83d94a7/06_character_growth.md",
+      "host_workspace_dir": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-20260418-060340-case-replay-01_d83d94a7",
+      "host_artifact_path": "/home/joviji/.openclaw/workspace/openmoss-workspace/tasks/hermes-official-20260418-060340-case-replay-01_d83d94a7/06_character_growth.md",
+      "source": "sqlite:data/tasks.db delivery_summary; docs/novel-factory/openmoss-case-closeout-checklist-audit-20260419.md",
+      "confidence": "high"
+    }
+  ],
+  "skipped": [
+    {
+      "sub_task_id": "17e52cf6-2eb8-44d4-b6e2-fdc755ccb0f2",
+      "task_id": "e33e31d5-c071-487b-a2d3-c6a411bec9ca",
+      "reason": "missing_artifact_path"
+    },
+    {
+      "sub_task_id": "e0350f5c-31cd-4e8f-bd3c-33af75d0fc2c",
+      "task_id": "d83d94a7-0402-4cab-9ad5-248252535eb7",
+      "reason": "missing_artifact_path"
+    }
+  ]
+}

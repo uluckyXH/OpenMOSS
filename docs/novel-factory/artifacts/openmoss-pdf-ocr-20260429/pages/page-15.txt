@@ -1,0 +1,14 @@
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+创建好后，我们先来在 OpenClaw 上创建子 Agent，在你的 OpenClaw 机器上执行命
+令，进入配置引导，以“Al - 小规" 为例:
+openclaw agents add ai_xiaogui
+/root/.openclaw/workspace-ai_xiaoguif
+这里是配置模型渠道，注意，如果你要单独配置的话，也可以选择 Yes，单独配置，
+我这台机器上我在本地部署了 CPA，所有的模型请求都找我本地部署的 CPA，所以
+我直接让它继承，省的麻烦的配置了!
+s, im)    /
+Workspace directory
+@ Configure model/auth for this agent now?
+先直接 no，我们先不配置聊天渠道
+https://linux.do/t/topic/1794669                                                     15/62
+

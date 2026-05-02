@@ -1,0 +1,32 @@
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+但是! 还是得你自己在 飞书 开放平台创建 bot 应用，然后配置权限拿到AppID 和 App
+Socret!
+CFRP A pei cen k’ fils Al reciewer: RESALE. |
+Se Pie
+o i ae aM  SOQr 他好了告诉
+<             —           Peru
+我先检查一下 ATI_reviewe 有没有已经存在，然后直
+接创建、挂上飞书账号并重启网关。                  1
+我现在直接创建AT_reviewetr，再把飞书 reviewer
+账号配进去并绑定。                                    1547
+RM IA Baie,     (CR |
+ OpenClaw 2026.3.13 (61d171a)
+& Model: my-custom/gpt-5.4(xhigh) -  api-key
+(models json)
+| pre 232 in / 1.3k out « 2 Cost: $0.0000
+Cache: 100% hit - 310k cached, 0 new
+© Context: 310k/1.0m (31%) + « Compactions: 0
+I Session: agent-main:telegecem ulimit: "iebainiiiGS7 -
+© Runtime: direct - Think: off
+= Queue: collect (depth 0)                                 45:20
+en                           oy,
+LES                                     PHBE TB? coy
+我确认一下当前实际状态: agent 有没有进配置、飞书
+reviewer 账号在不在、绑定有没有生效。            16:22
+我补一眼 agent 列表和配置里 reviewer /
+Al_reviewer 的实际状态。                 15:23                                                                                 5
+回复
+楼主
+等级
+https:Wlinux.do/ttopic/1794669                                                                                                                     21/62
+

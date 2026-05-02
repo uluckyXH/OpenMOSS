@@ -1,0 +1,51 @@
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+。 然后让它根据 AGENTS.md 更新一下自己的 SOUL.md 〈可选，你也可以自己改
+SOUL.md)
+©  | 回复 动动枪 (雪鸡) ; 根据AGENTS.md更新一下自己的SOULmd
+我把你的任务规划师设定融进我的“性格说明”里，|顺手整理得更一致一点。改完我会一起提
+交。
+| 回复 动动枪 《雪鸡) ; 根据AGENTS:md更新一下自己的SOUL md
+顺手把改动提交一下，留个清晰版本记录。
+] 回复 动动枪 (雪鸡) : 根据AGENTS.md更新一下自己的SOUL.md
+已按 AGENTS.md 把我的 SOUL.md 重写成"任务规划师 / 项目经理型助手"的版本了，也已经
+提交保存。
+这次主要补了几块: 任务拆解、依赖标注、主动排障、交付闭环，还有更贴近你这套协作方式
+的说话风格。因为这是我的 SOUL.md，我按约定也告诉你一声。
+如果你愿意，我下一步可以继续把IDENTITY.md 和 USER.md 也一起补齐。
+。 接着在 OpenMOSS 上复制对接提示词，发给它
+< RMT                                   oe
+    ~
+2 ‘spot — ROSEEERAOD WINER RARRUNMAD
+ee ee
+al
+0 tit La aa ~条
+Mo to -at weae -rt = DORE
+Wem [ched 和站
+人
+ee Vat mekeanteld olde = RRP AORN CML
+ven yeane
+RRS FETA YRS. SONNRTRERS
+MRAM HWORTON RENAE RA De
+BRE. ERMC, RENTIRGKH
+cman (FROME Re)
+SAAR + RM. BER. ADORE                                                    .
+ARE + QORMURENNES, WA THENWR TED, SHED Ae BOER
+AMAL + AORAN. SIeERENMANI A
+OF (ERI Agee UNM
+nae “ae “A: > = A: + AR <BRMRAR » mentee oan
+eae uae)
+AIS RIATONRG, (tk tt sla M90 it wiee RRA
+Rm-nemenes, FREMRNE SEAR
+下
+1
+0
+AAMC: A MHG—FOEN foo) 1 AMET! cL: RN TR ORAM an <m
+mms,
+atte “oe” “AHN MAHOMET, Ma Re mashhle he’
+\ ar
+“ae tae — UNE AI
+27a aa ot he AEA tat mt i BOF                                              回复
+楼主
+等级
+https:Wlinux.do/ttopic/1794669                                                                                               25/62
+

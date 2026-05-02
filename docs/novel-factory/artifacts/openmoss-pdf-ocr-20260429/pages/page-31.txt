@@ -1,0 +1,13 @@
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+@  i ee eh tt] oe eee be Sts sl)
+9  Seal the
+第二种就是自己在 WebUl 手动创建
+注意定时任务的提示词，相当于发起会话的第一句话，这个请根据自己的情况去修改
+提示词，你也可以跟 agent 沟通，慢慢优化自己想要的提示词
+eon         oe
+a                                          ore          ‘“
+=                                  Pe
+Wi
+自己手动新建
+https://linux.do/t/topic/1794669                                                                                                31/62
+

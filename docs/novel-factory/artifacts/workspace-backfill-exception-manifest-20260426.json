@@ -1,0 +1,171 @@
+{
+  "generated_at": "2026-04-26 18:10 CST",
+  "scope": {
+    "total_sub_tasks": 218,
+    "fully_populated": 199,
+    "remaining_missing_any": 19,
+    "canonical_dryrun_candidate_count": 0
+  },
+  "policy": {
+    "eligible_new_evidence_only": [
+      "external closeout/live verify document with explicit workspace absolute path",
+      "request_log/request body with explicit workspace_root/task_workspace_dir/artifact_absolute_path",
+      "restored tmp/workspace artifact that binds task_id/sub_task_id to a real file path"
+    ],
+    "do_not_guess": true
+  },
+  "groups": [
+    {
+      "group": "historical_prestate_blank_artifact_path",
+      "count": 11,
+      "status": "blocked",
+      "reason": "artifact_path blank and no trustworthy workspace evidence",
+      "task_ids": [
+        "08fa17db-bf82-436c-bb58-03bdebb3442b",
+        "92d5c320-cf9d-430d-b53c-adc25fbdb5d0",
+        "0bd9e42d-256c-4701-9a80-9858fc6532ef",
+        "3577b33d-d0dc-4f2a-834b-5e34c2cec622",
+        "eae5963c-9446-4fdd-a1bf-b89e4ba74915",
+        "6699a798-debf-4ea1-a710-5f48ca900d8e"
+      ]
+    },
+    {
+      "group": "missing_artifact_probes_no_absolute_path",
+      "count": 2,
+      "status": "blocked",
+      "reason": "only relative artifact_path remains; no explicit task workspace path in DB/request/log/doc artifacts",
+      "entries": [
+        {
+          "task_id": "5e26561a-402c-4d6a-ba88-5ddc420c087d",
+          "task_name": "Missing Artifact Review Probe",
+          "sub_task_id": "7ab2e977-9e8c-4a68-8ddf-aaba144bfb94",
+          "artifact_path": "03_writer/03_draft.md",
+          "evidence_found": [
+            "delivery summary with relative artifact path",
+            "review comment approve even though no artifact exists",
+            "notification_audit shows task_completed/all_done sent"
+          ],
+          "evidence_missing": [
+            "workspace_root",
+            "task_workspace_dir",
+            "artifact_absolute_path"
+          ]
+        },
+        {
+          "task_id": "c971f4fb-9e7c-4453-9adb-3687b547d0e9",
+          "task_name": "Missing Artifact Submit Probe",
+          "sub_task_id": "b5905e0f-f51f-41d2-8e37-9bd8ec041d80",
+          "artifact_path": "03_writer/03_draft.md",
+          "evidence_found": [
+            "delivery summary with relative artifact path",
+            "sub_task currently stopped at review"
+          ],
+          "evidence_missing": [
+            "workspace_root",
+            "task_workspace_dir",
+            "artifact_absolute_path"
+          ]
+        }
+      ]
+    },
+    {
+      "group": "notify_closeout_no_real_file_path",
+      "count": 2,
+      "status": "blocked",
+      "reason": "deliverable and notification proofs exist only as logical records; no real file path or task workspace path found on disk/request/DB backups",
+      "entries": [
+        {
+          "task_id": "4375fc01-cac8-481e-beed-6f50ebd71701",
+          "task_name": "notify-closeout-20260421-122002",
+          "sub_task_id": "64aa0a38-7d76-4f32-b219-affa0fff68dd",
+          "artifact_path": "notification-proof.md",
+          "evidence_found": [
+            "deliverable=notification-proof.md",
+            "delivery summary",
+            "review approved",
+            "notification_audit task_completed/all_done sent"
+          ],
+          "evidence_missing": [
+            "workspace_root",
+            "task_workspace_dir",
+            "artifact_absolute_path",
+            "real notification-proof.md file"
+          ]
+        },
+        {
+          "task_id": "031bc1f1-a418-4986-8c99-a5cd631cd40a",
+          "task_name": "notify-closeout-20260421-121627",
+          "sub_task_id": "3ef6d921-a615-4f77-bf14-f96dcff7d682",
+          "artifact_path": "notification-proof.md",
+          "evidence_found": [
+            "deliverable=notification-proof.md",
+            "delivery summary",
+            "review approved"
+          ],
+          "evidence_missing": [
+            "workspace_root",
+            "task_workspace_dir",
+            "artifact_absolute_path",
+            "real notification-proof.md file"
+          ]
+        }
+      ]
+    },
+    {
+      "group": "deliverable_exists_but_no_workspace_trace",
+      "count": 2,
+      "status": "blocked",
+      "entries": [
+        {
+          "task_id": "ea79132e-8627-466f-92f5-e9de782ef55d",
+          "task_name": "hermes-contract-live-1776512808",
+          "sub_task_id": "91e86cac-f353-4d10-9506-84c380c9c0f4",
+          "deliverable": "contract-proof.md",
+          "evidence_found": [
+            "real task/sub_task/review record in DB backup",
+            "current_session_id=hermes-contract-session-1776512808",
+            "review comment live API contract review passed",
+            "agent live-log names found in tmp live-delivery-log artifact"
+          ],
+          "evidence_missing": [
+            "artifact_path",
+            "workspace_root",
+            "task_workspace_dir",
+            "artifact_absolute_path",
+            "contract-proof.md file",
+            "request_log path evidence"
+          ]
+        },
+        {
+          "task_id": "ca25a7f1-f16e-4a17-a03b-2f64d4a69907",
+          "task_name": "最小派发验证-20260410160539",
+          "sub_task_id": "c8885829-b63e-40eb-b244-953ecad47d48",
+          "deliverable": "返回已接单状态或后续可执行凭据",
+          "evidence_found": [
+            "request_log chain for create/start/delivery/review exists in runtime-backup DB",
+            "activity_log confirms 文曲 completed minimal delivery",
+            "review comment confirms dispatch/ack/delivery/submit chain passed",
+            "executor/patrol side text snapshots mention this subtask"
+          ],
+          "evidence_missing": [
+            "artifact_path",
+            "workspace_root",
+            "task_workspace_dir",
+            "artifact_absolute_path",
+            "real artifact file path"
+          ]
+        }
+      ]
+    },
+    {
+      "group": "intentional_blocked_orphans",
+      "count": 2,
+      "status": "blocked_intentional",
+      "reason": "kept blank on purpose; do not invent artifact paths",
+      "task_ids": [
+        "e33e31d5-c071-487b-a2d3-c6a411bec9ca",
+        "d83d94a7-0402-4cab-9ad5-248252535eb7"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1444 @@
+===== PAGE 01 =====
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+3                               b&b
+【开源】OpenMOSS 部署配置指南
+ATE BRAK openclaw A ARH
+小黄 XiaoHuang JAIATHIE oK                           15天 #1
+本帖使用社区开源推广，符合推广要求。我申明并遵循社区要求的以下内容:
+
+。 我的帖子已经打上 CHR ME: =
+。 我的开源项目完整开源，无未开源部分: 是
+。 我的开源项目已链接认可 LINUX DO 社区: 是
+。 我帖子内的项目介绍，Al 生成、润色内容部分已截图发出: 是
+。 以上选择我承诺是永久有效的，接受社区和佬友监督: 是
+
+以下为项户介绍正广内容，4/ 竺成、海鱼内容已俘历载图方式发内
+
+各位好!
+
+OpenMOSS 是一个“Al 组织 / Al 公司操作系统"，它凭借OpenClaw、Claude Code 等
+
+Al Agent 系统的模拟工作能力，实现了自组织、自修复、自优化、自进化、自巡监、自
+
+激励、闭环质量控制、Skill 可拔插、循环任务等堪比真人团队的工作能力，高度还原真
+
+人工作流。经过实测它在一定程度上具备替代“重复劳动办公环境" 的可能性，使其可以
+
+获得无限进步的生产力。
+
+目前 OpenMOSS Al 公司系统已在 1个实验网站、1 个月 1.2 亿流量的媒体网站、1 个网
+
+络小说工作室、1 个网站开发团队上运行或者部分替代运行。详情去查看 demo 版贴子
+历时一周，消耗 10 亿 token ，Al 小说多 agent 结构实验，v1.0 版本
+各位佬友们下午好，来上 站快两月，笨鸟也要开始飞了。受这两位大佬帖子的启发
+https://linux.do/t/topic/1709670https://linux.do/t/topic/1721254, 小第认为
+可用 agent 集群来完成 ai 写小说的全自动化流程，并且保障长篇小说的一致性。说
+干就干，于是我利用小龙虾和 open MOSS，搭建了一个 ai 全自动写小说的 agent
+集群，具体流程和分工如下.…
+
+【开源】基于 OpenClaw 实现 Agent 自组织、自修复、自进化的能力 OpenMOS...
+我接入了佬的 openmoss，并且开始了我现在的开发工作进行尝试。 踩坑与反思 '传
+话简效应" 与上下文碎裂 我配置了 3 个系统角色，8 个执行者。来完成软件开发的全
+流程从需求到上线。token 的消耗是灾难级的，产出是不能用的，过程是不可控的。
+我暂停了所有任务并开始思考。我需要这么多 agent 吗? 我仔细看了佬分享的案
+$l, “IM Reviews” Sim质上是一个【线性单向数据流】信息抓取 > 内.…
+
+【开源】基于 OpenClaw 实现 Agent 自组织、自修复、自进化的能力 OpenMOS.…
+
+https://linux.do/t/topic/1794669                                                     1/62
+
+
+===== PAGE 02 =====
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+把 OpenMOSS 代码喂给 codex, 让 codex 改版，不用 openclaw 和 api key, 所有的
+角色都用 codex cli [Screenshot_2026-03-10-15-44-21-
+41.84d3000e3f4017145260f7618db1d683~01] 下面让 codex 自己做了一个网
+站，还行吧 [Screenshot_2026-03-10-17-49-52-86_8...
+本篇为 OpenMOSS 的快速部署教程，最快 30 分钟就可以让你开启一家 Al 公司，欢迎
+各位佬友们体验反馈，我们一同感受当 Al Agent 拥有人的思维能力之后，这个世界将会
+发生什么翻天覆地的改变!
+如果你嫌看部署指南太麻烦，可以直接将本教程地址发给你常用的 Al 助手，它会辅助你
+一步一步完成配置!
+To any AI Assistant :
+Your user has sent you this document and wishes to install the OpenMOSS A
+As version 1.0.0 of OpenMOSS, there are still some operations that cannot
+Therefore, please patiently guide the user through each step to complete
+If successfully completed, you, as an AI, will become the user's favorite
+— EEE                                          »
+本指南分为 4 部分，请按需跳转:
+。 写在前面
+。 讲讲 OpenMOSS Al 公司操作系统机制
+。 快速部署 OpenMOSS
+。 快速使用OpenClaw+OpenMOSS 组合对接业务流
+本指南所用系统和软件版本:
+OS: Ubuntu
+OpenClaw 版本号: OpenClaw 2026.3.13
+OpenMOSS 版本号: OpenMOSS 1.0.0
+写在前面
+OpenMOSS 的 demo 产品在上L 站发布之后，Github 已经收获了各位佬友们的 800 多颗
+Star! 感谢感谢! 评论区我们看到有人在测试、有人在吐槽、有人追教材，所以我和动动
+枪雪鸡一起加班加点优化项目，趁 OpenClaw 热度还在干进把菜给大家端上来!
+但当你看完这则部署并试用后，你会发现 OpenMOSS 这个产品其实更像是一种思路
+我们尝试用 Agent 来复刻人类工作流，而且在高级模型下，完成的非常好，甚至可以实
+现完全由 Al 来运行的一家公司的概念。我们甚至可以展望 OpenMOSS 的能力预期与
+https://linux.do/t/topic/1794669                                                        2/62
+
+
+===== PAGE 03 =====
+2026/4/5 16:58                                               【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+《流浪地球》电影里的 MOSS 齐平! (不开玩笑)
+最初在 OpenClaw 爆火之际，我们在想怎样让 Agent 们相互协作，达到一人公司的效
+果，于是就有了 OpenMOSS，一开始我们党试让 Agent 们来维护 Redis 的 key 流转任
+务结果，但很显然气的我全部踢出了群，失败了，于是在半夜我们想到了软件开发的思
+路，那竟然内部没办法协作，我们就抽离出来中间件，所有 Agent 都与中间件做交互由
+三个核心角色组成来维护整个任务的流程。
+而且必须说明的是，目前 OpenMOSS 的部署虽然有详细的指南但门槛因为版本初期依旧
+很高，我们已经在计划优化新的部署方案了 ，尽可能做到快速部署 、一键部署，在还没
+出更好的部署版本之前，大家先看这篇指南，佬友们跟着教程理解思路和上手!
+© Important
+OpenMOSS 的效果与底层大语言模型强相关，上下文窗口越大越好。推荐使用
+GPT-5.3-Codex 或 GPT-5.4。
+A Warning
+多 Agent 运行会成倍消耗模型额度，请合理控制接口限额和速率，防止超量产生经
+济损失。
+© Tip
+为实现最佳效果，建议为 OpenMOSS 配置独立的桌面级生产环境。
+讲讲机制和难理解的点
+在我们开始前，我们得理解机制，首先 OpenMOSS 目前支持 OpenClaw、Claude
+Code 等 Agent 软件或者平台服务，本指南以 OpenClaw 为例。
+OpenClaw 多 Agent 机制
+当你部署好 OpenClaw 后会获得一个默认的 main agent，这个 agent 我们不融入团队，
+你可以把它当作你平常的小助手，例如让它帮忙改配置呀，或者让它帮你创建子 agent
+呀，都是可以的。
+那我们要创建一个 agent 团队应该怎么办? OpenClaw 是支持创建永久 “子 agent " 的，
+接下来会讲怎么创建子 agent。
+OpenClaw 会话机制
+https://linux.do/t/topic/1794669                                                                                  3/62
+
+
+===== PAGE 04 =====
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+我们要理解，你平常和 OpenClaw 对话，会话是怎么产生的? 其实很简单，就跟网页和
+ChatGPT 聊天一样:
+。 你跟它私聊，它是一个单独的上下文，属于一个会话窗口
+。 你再跟它在群里聊，它又是一个新的会话，它不和私聊的上下文同步的
+。 定时任务唤醒，其实也是一个完全新的上下文
+小技巧: 有时候你和你的 main agent 对话的时候，让它去干活的时候，你会发现它
+干活去了，就阻塞了，无法继续和你对话，这时候其实你可以跟它说创建一个临时的
+子 agent 去做喻喻啥，它就会派活过去创建一个独立的临时会话，你就能继续和你的
+main agent 继续沟通了。
+OpenClaw 定时任务
+这个估计大家都知道，我们要知道的是，OpenClaw 的定时任务它是支持自己写提示词
+的。你在定时任务写的提示词，每次到点的时候会作为内容，起一个新的会话发给
+agent，这样它就知道要干什么了，但是还有 OpenClaw 的定时任务是可以绑定通知渠道
+的，也可以绑定对应 agent (就是哪个 agent 来执行这个定时任务) ，所以总结一下:
+。 定时任务支持自己自定义提示词
+。 定时任务支持绑定自定义通知渠道(OpenClaw 内部的通知渠道 id)
+。 定时任务支持绑定对应的 agent 来执行任务 〈就是绑定让哪个 agent 来执行)
+通知渠道机制
+这个我还没有去细了解，但是我知道的是，我每次把它们拉进群后，或者私聊的时候都会
+有一个内部的对话 id，似乎根据渠道不同 id 也不一样，但是你可以直接问 agent 要，这
+样之后你就可以在 OpenMOSS 里指定一个任务完成后通知渠道了，例如我指定一个群聊
+ID，每次完成对应任务都会发到这个群里。
+https://linux.do/t/topic/1794669                                                   4/62
+
+
+===== PAGE 05 =====
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+
+我先查一下 OpenClaw 里飞书会话 ID 的实际格式，免得
+RAM RAL.                                             16
+REG-FRM, Hid CHAWAELA open_id Ge
+chat_id 做目标，免得把你带沟里。               IE
+我顺手看一眼实现代码，确认飞书发消息到底吃哪种ID。
+
+1619
+如果你说的是拿来指定通知目标的那个1D，飞书和
+Telegram 不太一样:
+* 飞书私聊: 通常用用户的 open_id
+“长这样: ou_xxx
+“可写成: feishu:ou_xXX
+“飞书群允: 用群的 chat_id
+“长这样: Ooc_XXX
+“可写成: feishu:oc_XXXx
+* 或更阴确一点: feishu:chat:oc_xxx
+你可以简单记成:
++ Telegram 74): toi pgeaes SOMES?
++ Feishu #8: feishu:ou_xxx
++ Feishu #: feishu:oc_xxx
+所以飞书私胸不是纯数字，一般是ou_.，.;
+飞书群一般是 oc_，.。
+如果你要，我可以下一条直接告诉你:
+怎么把你自己的飞书私聊 ID (open_id) 找出来。
+
+T5226
+BURZI LAL 1 (opin jal M8 =A
+7. ueazeat ~~~—~CSCS*«~wR
+方法1 8 Openciow BA: RH)
+UME eT
+LAGE ARS. MUEAR—Se
+BEB Onerchw MNS LMES
+AGBSER one is
+SRaNenarn
+a
+Wik 2: SMEG EEMESAE poking A
+HMUTER paiting BK.
+ELAR, SUMIBM MRR SR:
+RGAE MBIHVTEIPHL open_id,
+P26EAR                                                                                                                                          回复
+SUG, Mate BERET
+                             oe
+inet
+FOULS, MERE:
+                                                                                                                           oe
+WAS open_id=ou_.... BEE,
+ARABS. FRIAR
+URES" HERES.         a
+https://linux.do/t/topic/1794669                                                                                                                                     5/62
+
+
+===== PAGE 06 =====
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+
+OpenMOSS 的运行机制:
+
+初期作为一个视频整活，想要实现在飞书 @ 所有人 之后，多个 agent 回复的效果。
+
+但是飞书插件存在问题以及 OpenClaw 早期版本 cron 失效的问题，所以我们开发中间件
+
+来进行修复并实现多 agent 的任务协作，包括 AL_planner_agent (规划者) 在获得人类
+
+的任务之后，自己分配任务给不同的 ALemployee_agent (Al 员工，每个 agent 为单独
+
+的 OpenClaw Agent 实例，可在同一套系统中运行) 。
+
+因为 OpenClaw 的 Agent 不通信设置，我们想到了可以仿照人类社会 "中台" 的概念，
+
+通过一个中间服务器来进行统一的信息传递。所有 Agent 的历史日志都会被放入数据库
+
+中，当一个 Agent 要行动的时候，它会通过 OpenMOSS 的服务器 API 获取自己现在的
+
+状态信息: 我现在被分配了什么任务? 任务的验收标准是什么”其他 agent 的交付摘要
+〈如依赖的上游产出) ? 我提交的任务是否被审查者审查了? 审查结果是通过还是需要返
+
+工? 如果被驳回，具体哪里有问题? 我的积分变动情况如何?
+
+获取到最新的状态信息之后，Agent 开始根据自己的系统提示词进行工作，任务完成之
+
+后，再次通过 API 将交付记录和执行日志写入 OpenMOSS 数据库，为后续的 agent 提
+
+供信息。随后 Agent 休眠，各 agent 通过 OpenClaw 的 cron 定时唤醒 (如每 30 分
+
+钟) ，唤醒后主动查询数据库获取最新状态，再决定下一步行动。
+
+这样，我们实现了 OpenMOSS 里的 Agent 的 100% 活跃可用，而为了让这套系统更加
+
+高效的运行，我们参考人类社会的工作流程加入了任务审核机制，使任务不再囊衍完成、
+
+Agent 不再因为大模型幻觉而撒谎、误删文件数据库等 “非主观的恶意操作"。
+
+我们设计了 Al_reviewer_agent (审查者) 来对 ALLemployee_agent (Al 员工) 的任务
+
+完成情况进行审查，若通过则放行，若不通过驳回返工。为了二次防止 cron 失效带来的
+
+任务失败，我们又仿照人类社会增加了一个 “监工" 的角色，设立了一个
+
+Al_patroller_agent 的巡查者，它在 OpenMOSS 系统中会定时对项目内的 agent 进行巡
+
+查，检查每个 agent 任务是否存在异常，若有异常则报告。
+
+光报错并不能解决问题，我们修改了 ALplanner_agent 的功能，使其在 OpenMOSS 收
+
+到告警信息后，会党试进行自我修复 (修复情况视 OpenClaw 实例里 skill 技能库的数量
+
+和模型能力)。
+
+与此同时引入了强化学习的激励概念，Al_reviewer_agent 还需要负责对 Agent 的任务
+
+进行打分，每个 Agent 会对自己的错误进行反思并主动优化自己的 Agent 系统提示词。
+
+因为 OpenMOSS 系统下的 Agent 具备强大的自组织、自进化、自修复能力，你甚至可
+
+以直接跟 AL_planner_agent 对话，手动引入人类工作场所的日报、周报概念，每天
+
+Agent 会汇集过去一天、一周出现的问题，然后集体反思复盘，集中优化工作流、提示
+
+词，实现无限金华。
+
+整个任务完成的全过程不需要人类介入，Agent 之间只通过 OpenMOSS 的任务状态和日
+
+志就可以完成异步协作。
+
+https://linux.do/t/topic/1794669                                                                                         6/62
+
+
+===== PAGE 07 =====
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+部署 OpenMOSS (最快 30 分钟)
+当我们理解了 OpenClaw 的 Agent 创建机制、会话机制、定时任务机制、通知渠道机制|
+之后，就可以开始 OpenMOSS 的部署。
+仓库地址:
+      围       GitHub - uluckyXH/OpenMOSS: A self-
+organizing multi-agent collaboration...
+A self-organizing multi-agent collaboration platform for OpenClaw. Multiple Al
+agents work as an autonomous team — planning, executing, reviewing, and
+patrolling tasks with zero human intervention.
+快速启动
+# #t/4OpenMOSS BYE
+git clone https://github.com/uLuckyXH/OpenMOSS/ openmoss
+# #AOpenMOSS AR
+cd openmoss
+# Hlépythonewy ry
+python3 -m venv openmoss-env
+# BOE LE
+source openmoss-env/bin/activate
+# ZBI A 5 KR
+pip install -r requirements. txt
+# EAEAR
+mkdir -p Logs
+# Ja A ayOpenMoss
+nohup python3 -m uvicorn app.main:app \
+--host 0.0.0.0 --port 6565 --access-log \
+> ./logs/server.log 2>&1 &
+# APAASEAMMWET
+tail -f ./logs/server.log
+如果执行完后出现跟截图一样，就代表成功了
+人 root@vultr:~/openmoss# tail -f ./logs/server.log
+nohup: ignoring input
+na 0s    Started server process [236469]
+INFO:    Waiting for application startup.
+INFO:    Application startup complete.
+patos    Uvicorn running on http://@.@.0.0:6565 (Press CTRL+C to quit)
+https://linux.do/t/topic/1794669                                                                  7/162
+
+
+===== PAGE 08 =====
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+访问 WebUl 快速配置
+是的，最初的版本是只支持自己改配置文件的，但是后面和迭代了两个版本，完善了初始化
+的 WebUl，如果你是在你本机上部署的，那么你可以通过:
+。 http://127.0.0.1:6565
+就可以开始初始化配置了，如果你是部署在服务器上的，你可以通过反代提供访问地址或
+者通过自己服务器 IP 地址 + 6565 的形式，当然，不推荐使用 http ，我还是非常建议
+你用反代用 https 来访问的，例如:
+。 ”http:// 服务器IP 地址: 6565
+。 ”https:// 域名 or 服务器 IP 地址
+如果是服务器直接 IP + 端口访问别忘了放行端口
+第一步: 设置管理员密码 (用户访问后台的管理密码)
+欢迎使用OpenMOSS
+多 Al Agent 自组织协作平台 一 初始化设置
+@       2         3         a         5
+设置管理员登录密码
+管理员密码
+至少6位
+确认密码
+再次输入密码
+1280x1166 93.8 KB
+第二步: 配置 Agent 工作目录
+相当于给 Agent 们指定一个工作目录，所有工作成果都应该保存到该目录下，方便统一
+管理及查看，我这里直接在我的根路径创建了一个 TaskWork 目录，注意这个目录是创
+建在你的OpenClaw 机器上的，而不是OpenMOSS 部署的服务器上 ，如果你的
+OpenClaw 和OpenMOSS 在一台机器上，那么肯定是同一路径的!
+https://linux.do/t/topic/1794669                                                                                         8/62
+
+
+===== PAGE 09 =====
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+为了方便后续工作协同，建议目录名与项目名一致，可以在很大程度上防止 OpenClaw
+的大模型操作幻觉。
+欢迎使用OpenMOSS
+多 Al Agent 自组织协作平台 一 初始化设置
+8      @       3        4        5
+配置项目名称和工作目录
+项目名称
+OpenMOSS                                     重点
+工作目录
+1TaskWork
+BB OpenClaw BHM LMR ARM, MA Agent 都会在此目录下读写产出
+物。请确保该路径在服务器上已存在县 Agent 进程有读写权限。
+第三步: 配置 Agent 注册令牌
+这个令牌很关键，是必须的，当你的 Agent 还没注册 OpenMOSS 时，它是没有权限访
+问的，没办法直接和 OpenMOSS 进行交互，你需要让 Agent 通过令牌注册后获得 API
+Key 并存储下来，才能真正交互上 (下面会说怎么让它们对接，请继续往下看)
+https://linux.do/t/topic/1794669                                                                                                 9/62
+
+
+===== PAGE 10 =====
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+欢迎使用OpenMOSS
+多 Al Agent 自给织协作平台 一 初始化设置
+eeg@B :，
+注册令牌
+fda854d9b296e3d452f79cd60e6a83d7             o 后
+Agont MAM Wit SRA St
+ee oe aia Sf Agent                             «q
+第四步: 配置访问地址
+这个访问地址也很重要，是用来告诉 agent 你的 OpenMOSS 服务地址在哪，通过哪个
+地址能正常访问，我这里是 OpenMOSS 和 OpenClaw 都在一台机器上，所以它直接走
+本地访问就行，完全没有问题，如果你的 OpenMOSS 部署在别的服务器上，这里应该配
+置正确的访问地址 。
+你可以这么理解，你怎么访问的 WebUl 就把你的地址复制粘贴进来，当然如果你的
+OpenMOSS 和 OpenClaw 在一台机器上，那么肯定就是 127.0.0.1:6565 了，就别填外
+网访问地址了。
+https://linux.do/t/topic/1794669                                                                                        10/62
+
+
+===== PAGE 11 =====
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+欢迎使用OpenMOSS
+多 Al Agent 自娟织协作平台 一 初挫化设置
+中置 Agent 对撑的区务访问地址
+了 服务访问地址
+Nttp://127.0.0.1:6568,
+这是什么
+Ge A Agorn maT Tate
++ FOTATA (taskelipy
++ SITAR (SKILL. md
++ SESRRAR. MOM REM
+ASA
+AAGERAUT ARRAS. MECN 6565
+https: //eoss.example.com © (MSLICE (NyuyCadey
+Nttp://123.45.67.89:6565 © HU +m
+Nttps//127.0,0,1:6565 «+ Sem
+OPSNeH) Sued, Mee KRM ORR
+第五步: 完成配置
+启用通知推送我们可以后续对接好 agent 来再来配置!
+欢迎使用OpenMOSS
+多 Al Agent 自组织协作平台 一 初始化设置
+瑟置消息通知 (可跳过
+启用通知推送
+Agent 完成任务、市查琢回和事件时发送送知
+=
+https://linux.do/t/topic/1794669                                                                                                11/62
+
+
+===== PAGE 12 =====
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+v
+初始化完成!
+请妥善保存以下 Agent HSH
+Agent 注册令牌
+da854d0b296e30452f79cd60e6a83d7        局
+Agent 注角时需要此令牌。你可以在 【系统设置 中箔时外改
+登录后可在 1提示词管理上 中快速创建 Agent 提示词并对接。
+启动 OpenMOSS AI 公司
+当你完成 OpenMOSS 的配置后，应该会默认到提示词的管理页面，如果没到就手动点过
+来，如下:
+加一~-      2 wom
+aes                      ponerse                                   aa
+Com)                   a
+*            =    +           -    +            =
+%            eile           “
+an               wns
+Q: 可能有的佬友会问，提示词管理是什么?
+https://linux.do/t/topic/1794669                                                                                                         12/62
+
+
+===== PAGE 13 =====
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+A: 这个页面负责生成快速让 Agent 接入 OpenMOSS 的提示词，它只是一个简单的提示
+词管理页面，不做任何实际管理的操作! 所以你创建好对应角色提示词后，你需要发给你
+对应的 Agentl!
+接下来:
+首先我们要理解，目前我们的 OpenMOSS Al 组织架构需要最少 4 位核心的角色才能运
+行下去:
+
+。 ALplanner_agent (规划者，1 位) : 负责和你沟通任务细节，并规划任务
+
+。 Al_reviewer_agent (审查者，1 位) : 负责审查任务执行结果，不合规就驳回返工
+
+。 AlL_patroller agent (督查者，1 位) : 负责巡查任务是否执行超时 〈例如 1小时没反
+应，或者 2 小时没反应后标记任务状态 blocked)
+
+。 ALemployee_agent (员工，最低 1位) : 负责完成规划者分配的任务，并对规划
+者、审查者和督查者的反馈进行回应和修复。若不设置员工 Agent，具体工作可由
+规划者来完成。
+
+目前 OpenMOSS 还是处于初期，这是一道开放题，你可以根据思路重新设计以达到
+
+你觉得最好的效果 (这几天已经有佬友陆续优化出了自己可用的版本，我真的很惊讶
+
+好吗! 更多的是惊喜! )
+
+创建 Al 员工 (子 Agent)
+请注意，本指南提供了 2 种创建 Al 员工的方式，第一种需要有探索精神，第二种比较适
+合“懒人"。Al 时代，我当然推荐你使用第二种。
+首先从页面的引导我们也能看到，我们需要创建核心的三位成员。
+https://linux.do/t/topic/1794669                                                  13/62
+
+
+===== PAGE 14 =====
+2026/4/5 16:58                                                    【开源】OpenMOSS部署配置指南 - 开发调优- LINUX DO
+PR nant SEH CO),                           O 20mm 6)                             Saeww
+fants =n
+Pe ee ee er
+一                                                 se
+点击可以快速创建提示词
+WIE Agent ATW. nover MEH REIT RE.
+OpenClaw FI
+LAS RAMS, HRSA REO
+2 MBM Agent, ERMINE: WR AGENTS. ma + BR SOUL ma + 53h + FR Ske
+3 BATAAN Agert, UA) ‘Agent AMG, #1} MS i + Sele 其引
+ROre—0TK Ue, RA. ARM,
+© ATM EXECUTOR
+A
+“                                     ™                                     ”
+¢                                     %                                     多
+Asie                                 Ab去                                 Av加
+BMINM, QRANAR, MRA. COTA        dndes TIM, AMOK, ROKER. Hae        Amine, ARMOUR. REAM. mH
+ETE Cxecvtor                             AR Eavcstor                             RIT Comeutor
+—
+机                                     mm
+多                                     4
+AVR                                 Aus
+AARROMAROTR REASON, RAI        CAmAIRR, AiO. ROME. AUT
+twit tsecuer                             ism teste
+—Fhe §              to
+第一种: 通过官方命令的形式创建
+、                、                               、            vv Asm是                 目一人一               、                        wy
+我们以创建规划者为例，首先我们先定义一个规划角色的提示词，你可以根据自己的需求
+——
+修改提示词
+《新建提示词                                                                                       =
+seme:
+mso                  mso                  mae orc                  © meer
+‘seen                                 ene anes ©                            =                                 :
+At                                  op                                ERR                             }
+TE ETT RT                                 So                                          Sam
+(# MB: EBM (Task Planner)                                 1
+one                                                                    “Z
+角色: 任务规划师 (Task Planner)
+个全和，人于硬化纪检-
+ee noun                                                  身份
+1, sRRMNes - RAMNMPRENNN, RRRSRR, TIBI               一个和关机-
+2, AMMIee  EREAMELIOM, AALMAAMEAMR CO 8
+*
+2. aiRRes - AUCMNIARANTER, OTTERR—* gent Ho | OR
+站
+wy9nY 开-。- 闪失 kgent 列表给       本 有 IME
+a eee en gg rset                    2 RANG —ROMEAEEEKON, ARAKENaRMAMR (OR 3-87)
+和nn         2 EARS —aeMRKORANTED, wrTEMN—T mean |
+Agent eno                                             moran
+ene - GREAHRATRLIONS, SAGKA (EHBE)_OF         A Agent BE — RETR RSE BH Agee HE, REMNANT. HER
+8, wARENes - TRARACHUNEN, ORFERRARR. RBA              ERREN tore RORADRNR ARS
+3, cagRitien — SEB TENTERED coe 1. LARRAEBEA RA        人区着，人有天天
+a                                                        6       -         EBNF                           a
+We panties - aaane, nenrnanne. neexanen              sna TER naRFanememENASA, RAR ete
+1. Tiaace = Qari, BMPAUALRERISAR GEM ROR, B              :
+|                                                         工人四时工人四于人为) mr
+和 - RAR Kw Ha “ees FO, REMESIEGR 6 agus NNceNNE, REFGRARNR, Ree                                                                        回复
+th, sennies — 0M Slocked FEATRRENSE, BenONANAD,自。。。 天 下有人二ene 村，开车
+站内 Agent OR, RRMAPRCANOSMELER io, MER MURINE ROMCHANAS. OORKEHER
+2. SAURRNS - AERNERRAREAS, ARESHRIO ROME, gi. em, AMPRUARERNA (EM. RAT, NN
+ea
+os ram                                                                      19, RRM — OE Noe 的 eeaea FN, IMR
+weeny eee as                19, MOMs oLcted FERARAMERR, RESPKRMAD, CORA
+和人二 仙人和            2 和和                                                                            楼主
+NT                           有全攻关，多
+和 天汪汪世人，用、task tst
+“et Uist Tog aunes 和有由
+和 和入，天和
+等级
+创建子Agent
+https:Wlinux.do/ttopic/1794669                                                                                                                                                      14/62
+
+
+===== PAGE 15 =====
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+创建好后，我们先来在 OpenClaw 上创建子 Agent，在你的 OpenClaw 机器上执行命
+令，进入配置引导，以“Al - 小规" 为例:
+openclaw agents add ai_xiaogui
+/root/.openclaw/workspace-ai_xiaoguif
+这里是配置模型渠道，注意，如果你要单独配置的话，也可以选择 Yes，单独配置，
+我这台机器上我在本地部署了 CPA，所有的模型请求都找我本地部署的 CPA，所以
+我直接让它继承，省的麻烦的配置了!
+s, im)    /
+Workspace directory
+@ Configure model/auth for this agent now?
+先直接 no，我们先不配置聊天渠道
+https://linux.do/t/topic/1794669                                                     15/62
+
+
+===== PAGE 16 =====
+2026/4/5 16:58                                              【开源】OpenMOSS部署配置指南 - 开发调优- LINUX DO
+
+多      ure ch     channel     Nig
+
+|                No
+
+Hates:                     E
+
+接下来通过命令查看 agent 的配置状态
+
+openclaw models status --agent ai_xiaogui
+
+yea             Ss      m7      、
+可以看到 agent 配置是直接继承了我的全局配置
+rootevultrs-# openiclaw models status --agent ai xiaogui
+A    bs    tA ae Te  ts/ai_xiaogui/agent/auth-profiles.jsoi
+if.      feishu_drive: Registered feishu_drive_file, feishu_doc_comments, feishu_doc_media
+
+rootewitr:~#
+
+root@vultr:-M openclaw agents list
+
+eee
+
+- main (default)
+
+ieee eye terre ed
+
+emer ery ar rinstny eran Ut tas
+
+Model: my-custom/gpt-5.4({xhigh)
+
+Routing ruless 2
+
+Urn Cmte st tests)
+
+Workspace: ~/.openclaw/workspace-ai_xiaogui
+
+eerie etree rmree Terr Ts
+
+Model: my-custom/gpt-S.6(xhigh)
+
+Routing rules: 2
+
+Rte ec RE oe ee era oberon
+
+CTU ate ee etl hee Pee ete ee eee Pere emu Pete td eee sae
+erred
+
+https://linux.do/t/topic/1794669                                                                                 16/62
+
+
+===== PAGE 17 =====
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+以飞书为例，配置多账号渠道
+该流程比较废时间，每个“书机器人的配对需要最少 5 分钟。
+我这里是用的飞书官方的插件: OpenClaw 飞书官方插件使用指南 (公开版)
+第一步: 将单账号变为多账号配置
+# RARUK SE
+openclaw config set channels.feishu.defaultAccount main
+作用:
+。 当消息 / 出站没显式写 accountld 时，默认使用 main 这个飞书账号
+为什么要做?多账号模式里必须有一个“默认账号" 概念，不然以后路由会变得模糊。做
+完后你应该理解成
+以后:
+。 feishu 默认指向 feishu:main
+第二步: 把现有主 bot 的 App ID 写进 accounts.main
+opencLaw config set channeLs .feishu.accounts.main.appId '<你现在主飞书Bot的/
+《SS
+作用:
+创建多账号结构里的:
+e channels.feishu.accounts.main.appld
+FEMA = bot BY App Secret S3# accounts.main
+openclaw config set channeLs .feishu.accounts.main.appSecret '<你现在主飞书B
+1 CR
+作用
+创建:
+e channels.feishu.accounts.main.appSecret
+第三步: 对接新 Agent
+至此，你需要在飞书开放平台申请一个新的 bot，获得 App ID 和 App Secret
+飞书开放平台
+https:Wlinux.do/ttopic/1794669                                                                      17/62
+
+
+===== PAGE 18 =====
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+应用敏捷开发，服务高效入驻。飞书开放平台致力于以先进的协同办公理念和产品
+助力企业成长，帮助企业打造愉悦高效的专属办公平台。
+官方插件说明: “OpenClaw 飞书官方插件使用指南 〈公开版)
+opencLaw config set channeLs .feishu.accounts.xiaogui.appId '<你新建的小规Bo
+SCF          »
+作用
+创建第二个账号:
+e channels.feishu.accounts.xiaogui
+opencLaw config set channeLs .feishu.accounts.xiaogui.appSecret '<你新建的小
+了 |                »
+作用
+。补全 xiaogui 账号凭据。
+第四步: 删除顶部层的 App ID 和 App Secret
+openclaw config unset channels.feishu.applId
+openclaw config unset channels.feishu.appSecret
+第五步: 绑定主飞书 bot 到 main
+openclaw agents bind --agent main --bind feishu:main
+作用
+。把 feishu:main 路由给 main
+第六步: 绑定 Al 小规飞书 bot 到 ai_xiaogui
+openclaw agents bind --agent ai_xiaogui --bind feishu:xiaogui
+回复
+第七步: 检查配置是不是已经真的变成多账号
+openclaw config get channels.feishu                               楼主
+等级
+https:Wlinux.do/ttopic/1794669                                                     18/62
+
+
+===== PAGE 19 =====
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+Oe EE a ST
+i OpenClaw 2026.3.13 (61d171a)
+Say "stop" and I   stop-say "ship" and we   ioth learn  Seip
+i
+"enabled": true,
+"domain": “feishu",
+"connectionMode": "websocket",
+“requireMention"™: true,
+“dmPolicy": “allowlist",
+"allowFroms: [
+Per th tet er sto wens tebe ated ve
+1,
+"groupAllowFrom": [
+外   ran |   5
+ip
+"groupPolicy": “allowlist",
+"groups": {
+sare §
+“enabled": true
+}
+oF
+“"defaultAccount": "main",
+Dre Tis oe
+De beee
+SCRE a erat. Vie
+bak J+) ¢b-1 103 9 al a Se | oS |b ad
+和
+|
+人
+"appSecret": 上-__PPE 与 _ FEBACTSES
+a
+》
+》
+重启网关，检查网关状态
+# AIX
+openclaw gateway restart
+# eM RKKE
+openclaw gateway status
+第八步: 配置白名单 (这一步不做飞书 bot 默认不会回复任何信息)
+>      ch              ap    ch
+先来看看自己的飞书是不是审批机制，如果不是就改成审批机制
+openclaw config get channels.feishu.dmPolicy
+我这是白名单机制，那么接下来就改
+root@vultr:~# openclaw config get channels.feishu.dmPolicy
+iy OpenClaw 2026.3.13 (61d171¢   No $999 stand required
+allowlist
+# MERAH蔷
+openclaw config set channels.feishu.dmPoLlicy pairing
+# MEU FIIIR
+openclaw gateway restart
+https://linux.do/t/topic/1794669                                                              19/62
+
+
+===== PAGE 20 =====
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+# MEER CHAAR AMI峙
+openclaw config get channels.feishu.dmPoLlicy
+pairing
+这时再去对 bot 发信息，就会收到审批命令，拿到 OpenClaw 机器上执行就行
+@ ws
+15:00
+©    OpenClaw: access not configured.
+ou_9Yabe7c390f1048f1601d9f7017a238a6
+Pairing code: TLESWC6S
+openclaw pairing approve feishu TLESWC6S
+翻译
+J        sender                                  5
+root@vultr:~# fj
+@   你好!
+81408
+©    回复 动动枪 (雪鸡) : 你好!
+你好。我刚上线，还在认识自己。
+先认识一下吧: 你希望我叫什么? 我又该怎么称呼你?如果你愿意，也可以顺手给我定个气质
+一温柔、利落、毒舌、神秘，都行。
+恭喜你! 成功创建好了一个子 Agentl
+第二种: 交给 Main Agent 来帮有我们对接 (推荐)
+如果你觉得手动配置的方式非常的麻烦，那么这个方法简直就是懒人福音!
+就是通过对话的方式让主 agent 帮有我们创建，我们只管提供飞书机器人的 App ID 和 App
+Secret 就行。
+https://linux.do/t/topic/1794669                                                                                        20/62
+
+
+===== PAGE 21 =====
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+但是! 还是得你自己在 飞书 开放平台创建 bot 应用，然后配置权限拿到AppID 和 App
+Socret!
+CFRP A pei cen k’ fils Al reciewer: RESALE. |
+Se Pie
+o i ae aM  SOQr 他好了告诉
+<             —           Peru
+我先检查一下 ATI_reviewe 有没有已经存在，然后直
+接创建、挂上飞书账号并重启网关。                  1
+我现在直接创建AT_reviewetr，再把飞书 reviewer
+账号配进去并绑定。                                    1547
+RM IA Baie,     (CR |
+ OpenClaw 2026.3.13 (61d171a)
+& Model: my-custom/gpt-5.4(xhigh) -  api-key
+(models json)
+| pre 232 in / 1.3k out « 2 Cost: $0.0000
+Cache: 100% hit - 310k cached, 0 new
+© Context: 310k/1.0m (31%) + « Compactions: 0
+I Session: agent-main:telegecem ulimit: "iebainiiiGS7 -
+© Runtime: direct - Think: off
+= Queue: collect (depth 0)                                 45:20
+en                           oy,
+LES                                     PHBE TB? coy
+我确认一下当前实际状态: agent 有没有进配置、飞书
+reviewer 账号在不在、绑定有没有生效。            16:22
+我补一眼 agent 列表和配置里 reviewer /
+Al_reviewer 的实际状态。                 15:23                                                                                 5
+回复
+楼主
+等级
+https:Wlinux.do/ttopic/1794669                                                                                                                     21/62
+
+
+===== PAGE 22 =====
+2026/4/5 16:58                                                    【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+reviewer BEBE, MEARE.
+Al_reviewer 的实际状态。
+创建好了.
+当前状态
+我这边确认囊:
++ Agent Bait
++ Mm: ai_reviewer (AI_reviewer)
++ workspace: ~/.openclaw/workspace~
+Al_reviewer
+«agentOir: ~/.openclaw/agents/ai_reviewer/
+agent
++ GH reviewer RBERH
++Feishu reviewer: enabled, configured,
+Tunning, works
+"已经撞定到这个 agent
+"fewviewer 这箱飞书提道已经挂到 AT_reviewer /
+ai_reviewer 这个 agent 上了
+一个你名要知道的小姻节
+你输入的名字是:
+|                                                1
+但 OpenCiaw 实际世地后的 agent id 显示成了:
+PR      |
+HERE T MMR,                                      :      |
+ADERARRENG. HE. RHWMSS, WA              SA ify
+@ sz
+©    OpenClaw: access not configured.
+ou_50e9001624b4d708d28368cccc31ee04
+Pairing code: 3TDZR35F
+Ask the bot owner to approve with:
+openclaw pairing approve feishu 3TDZR35F
+                        加
+楼主
+等级
+https:Wlinux.do/ttopic/1794669                                                                                               22/62
+
+
+===== PAGE 23 =====
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+st)  介绍一下你自己
+罗 1条回复
+©   lM abahte (MIS) : MA—HRAS
+
+我是一个刚上线、还在"成形中"的助手，住在你的 OpenClaw 工作区里。
+简单说:
++ 我能陪你有姥天，也能干活
+*。 擅长查资料、读写文件、整理信息、写东西、做分析、跑命令
+* 在内部事务上我会主动一点，能自己先查就先查
+， 但涉及对外发送、公开动作、或者有风险的操作，我会先问你
+性格上，我不想当那种很宫腔的机器人。我的目标是: 有用、靠谱、说人话。
+不过现在我还有一点“初始角色未设定"状态一-我还没有真正定下自己的:
+， 名字
++ RUB
++ 设定/ "是什么样的存在”
+* 签名emoji
+所以更准确地说，我现在是: 一个正在被你塑形的助手。
+如果你愿意，我们可以顺手把我定下来。比如你可以直接告诉我:
+© 你想怎么称呼我
+。 我该叫你什么
+。 你喜欢我偏冷静、伪活泼、偏毒舌，还是偏温柔一点
+你也可以先把我当成你的 Al 搭子用着。
+
+Al 员工入职 OpenMOSS
+
+现在我们的 Al 员工已经完成了体检工作，需要将其拉入 OpenMOSS Al 工区入职!
+
+有两种方式:
+
+。 第一种你可以复制 OpenMOSS 创建 Agent 时的提示词到 OpenClaw 的 WebUl
+对应 AGENT S .md 内，然后再把注册 OpenMOSS 的提示词单独发给 agent 让它
+自己下载安装 skill 并注册
+
+。 第二种方式就是把提示词完整的发给它，让它自己设置并注册 OpenMOSS (比较
+考验模型)
+
+第一种: 自己将提示词复制到 AGENTS.md 并把注册提示词单独发给 Agent
+https:Wlinux.do/ttopic/1794669                                                                           23/62
+
+
+===== PAGE 24 =====
+2026/4/5 16:58                                                    【开源】 OpenMOSS部署配置指南 - 开发调优- LINUX DO
+。 RETR                                      oem
+“Sam |"        =
+角色: 任务规划师 (Task Planner)
+an
+en-7dsnien, cteunPunninasceno nena
+RRR Ria
+ORR
+|, Wen SARRNPNENGN. RENAME, BHO
+1 nied —eIMELERER, RRONSIATENRR CD87
+2 Sinh - RatENNORNONTER, RHTEAR-s Aga wRaRshE IHR
+4 Agee GR — ROTH ERPLARN Gee hA, CAKGAKAARS, MENRRASEY Agent, ACRARMIUS HT
+© RASS — CMA R. SASHANMTORRG
+人 euReTennN omeamRm, woke Aprende
+1 £988 GHUAMERREATTAS, O6RS ‘ehe.c8 ue
+* BEBR-THMAAINMNGH. REFEARARR. Dee
+机有有 名天有的
+ee
+站ep
+2 RRR UMD ages HET Meer TAR. RMR
+ML BORN enone IRERARINE, RpHERNEN, SERNA. NaAciN lool na mnUaTAKN
+benoit
+4 BCR - CARATRSRHAIAN, BHFPIFONs. CRANKAReUES
+<IemM
+有
+二 2H, ani. FRMMRPRD, mMniiumbmeneNd
+AGRE -APROENEN. ug My 和有 FRALEE
+人 neannaaanren
+0498-1 KRORRCRFOM eoRaNs
+了本 和，
+RBR ~ PAROSEONAT, Lop eas CONTE
+ROAR - TEKAHCAANTKAM, +senan, remy
+ARES - NR coces h, ROTISAHRBGLW. TRRTCETE PACD. TENNER
+ARES —WSHMONHE Lem + 9H +78 +N), HK en anmeoNTEN
+QRAS — XARA EEANIAAN, KOATRUT AT IRSAANMAM, CNS BEREAS. CAT eeRaO. Tek
+=
+F2RRR
+个上为 OpenMOSS 的 Agent 页面
+火下位 OpenClaw 官方的 WebUl - 代理页面
+ce       cs
+=       ond       ‘BARI agent
+2        woe =
+和      二|]=-                                                            云三三
+= °   mm                °     eS, MEET
+回复
+SS                                                                                                       楼主
+接下来就是:
+等级
+、                           see                              aA
+。 OpenMOSS 的注册，打开飞书和 bot 进行聊天，先 /new 重置一下会话
+https:Wlinux.do/ttopic/1794669                                                                                               24/62
+
+
+===== PAGE 25 =====
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+。 然后让它根据 AGENTS.md 更新一下自己的 SOUL.md 〈可选，你也可以自己改
+SOUL.md)
+©  | 回复 动动枪 (雪鸡) ; 根据AGENTS.md更新一下自己的SOULmd
+我把你的任务规划师设定融进我的“性格说明”里，|顺手整理得更一致一点。改完我会一起提
+交。
+| 回复 动动枪 《雪鸡) ; 根据AGENTS:md更新一下自己的SOUL md
+顺手把改动提交一下，留个清晰版本记录。
+] 回复 动动枪 (雪鸡) : 根据AGENTS.md更新一下自己的SOUL.md
+已按 AGENTS.md 把我的 SOUL.md 重写成"任务规划师 / 项目经理型助手"的版本了，也已经
+提交保存。
+这次主要补了几块: 任务拆解、依赖标注、主动排障、交付闭环，还有更贴近你这套协作方式
+的说话风格。因为这是我的 SOUL.md，我按约定也告诉你一声。
+如果你愿意，我下一步可以继续把IDENTITY.md 和 USER.md 也一起补齐。
+。 接着在 OpenMOSS 上复制对接提示词，发给它
+< RMT                                   oe
+    ~
+2 ‘spot — ROSEEERAOD WINER RARRUNMAD
+ee ee
+al
+0 tit La aa ~条
+Mo to -at weae -rt = DORE
+Wem [ched 和站
+人
+ee Vat mekeanteld olde = RRP AORN CML
+ven yeane
+RRS FETA YRS. SONNRTRERS
+MRAM HWORTON RENAE RA De
+BRE. ERMC, RENTIRGKH
+cman (FROME Re)
+SAAR + RM. BER. ADORE                                                    .
+ARE + QORMURENNES, WA THENWR TED, SHED Ae BOER
+AMAL + AORAN. SIeERENMANI A
+OF (ERI Agee UNM
+nae “ae “A: > = A: + AR <BRMRAR » mentee oan
+eae uae)
+AIS RIATONRG, (tk tt sla M90 it wiee RRA
+Rm-nemenes, FREMRNE SEAR
+下
+1
+0
+AAMC: A MHG—FOEN foo) 1 AMET! cL: RN TR ORAM an <m
+mms,
+atte “oe” “AHN MAHOMET, Ma Re mashhle he’
+\ ar
+“ae tae — UNE AI
+27a aa ot he AEA tat mt i BOF                                              回复
+楼主
+等级
+https:Wlinux.do/ttopic/1794669                                                                                               25/62
+
+
+===== PAGE 26 =====
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优- LINUX DO
+, eNO                                   ae
+SSD cw oe                          aa
+\ Prt (CAF RRS, RAAT)
+
+“)MmON CYROGNIRRAH, NORMOROURREN ROMER, BRREAE A scOUTE MS, kms RAMEN
+anne
+a-o: ERNEHSR (RESeNMT)
+—
+en) FEN)
+solt:) ABAM Gn /eaprerrsecanes 10008
+acre: REMONER (2 BENE, 28 7 REE)
+“hanieny ROUMNRA—*, aneoweR, NAR RNUAWENER.”
+Boo: BRINIANBAA Se
+amcinweon sane
+aaa vote
+EAT -Nahoplneret tosh ay
+RAMI AAT e-gamerahA ER 加
+MES: BU Aine EAH
+y mean                 ware                 meen.
+个 \ Fane (CMTE, RASwRNSK)
+全 大村 FBUNFARLR, ASMAGAMURROAASUNED. HOM SIMA HOTS od, SOL md RTTLMORRATO,
+BS: FENESER (NERSERL)
+<4 "remmet: RIES, “ratens “planer”, Tdescesptiont: “RIMERAIE)*
+FRM
+:      nee Wain)
+>     IOI (stiecee /aneciee reviewer /eovet)
+:      tio! ABMetefeIbeem (at (Laue, AAP pret
+Sate ey, EARNERS
+LAP Koy RETRAER SX, ARSOGLO, OMA HOOK NTARR.
+BIS: BUIPIANAHD Sem
+ca ZR
+* ROMA (skit RMB, APT wey BMRA
+RAULAERAD sae OB:
+© PROD toss-plarner-shilt/
+© BCU TRADH tosh-plorner-sei Ll /tost-<lt.py
++ PUMA RR cork-plancor- aki tL /SKILt ns
++ RACSHISTAS, SAW So mo PHMNORE
+MES: BU AM Mey ER
+DFR Silo, MA ee UES BREDA AM Key:
+DM AM Key RADA, UFR LRTEBS Koy MEM LHOM,
+wae: Wet
+oyven askeel soy oles» SUTIN
+python task-cU py qdt # AR
+ase
+* MBM: em 00 bse
+二:da854dOb20t3<652179cdt0e6b53d7
+ee
+CRASAHM: MORIRATH RR, AP Key DEWAN tosk-pleneer-sisil @. IO TANGA SLSAGHREMT: ORENRARHEM. FES, BOOZ
+x.
+RSRAFARTE SRERETOURT RRM), RI ATEN-HRARHSEK, RABHENeRA,
+https://linux.do/t/topic/1794669                                                                                                26/62
+
+
+===== PAGE 27 =====
+2026/4/5 16:58                                                    【开源】OpenMOSS部署配置指南 - 开发调优- LINUX DO
+至此就完成了 Agent 的注册 (入职)
+第二种，直接把【OpenClaw 快速复制】提示词丢给 Agent 让它自己处理
+< RATA    seas                              o.
+角色: 任务审查者(Task Reviewer)
+an
+Tawas seayqaaarss aazneanztavca meanan-ast
+KORE
+| eawa—suyannenus, senansnee
+masa —xu2naRenen, Annewemeen
+和 s4uny, #80
++ Sram pmanaeeear. eimrnan se ane
+an -anweogcs mr eve ny                                        '
+© FUME APTS, OM sien att eid Sn some “a Fa Ager EY
+waar
+wane —rannyunzaneaanen, e108e
+AGSH- CARN ACKER IMAM, ARRAAUD
+ARI nvorMRMIRIA, LIAS ewe ein
+和下人
+交工，有
+am
+         “=                  ve
+Ns
+eraspsy Pagsm pw
+Wayor Term mt eae
+tnnReaR cwfomnmmait. HERR, sont
+fewNed “ANDER, REUET. 58°
+al LASERINT ET
+回复
+楼主
+等级
+https:Wlinux.do/ttopic/1794669                                                                                               27/62
+
+
+===== PAGE 28 =====
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+如果这样的话，确实是可以放手不用管，唯一的缺点就是它处理起来有点慢，需要等
+待
+Agent 配置总结
+至此我就已经创建好了两个角色，一个规划者一个审查者，接下来你还需要创建一个巡查
+者，然后再是根据你自己的场景任务创建多个或单个执行者，每个任务执行者，你都可以
+定义不同的角色，例如开发者、例如测试、例如运维，但请注意不是配置完角色就完事
+了，你需要为它们提供对应的工具 skill，否则它们依旧不知道怎么干活，会效率很低，
+所以配置对应能力的 skill 是非常重要的!
+在你的 Agent 都配置完后，就需要把它们全部拉入一个群内，之后你就可以 @它们进行
+对话了，或者 @规划者开始规划任务，如果你发现 @没有反应的话，需要确保是否配置
+了白名单机制，如果配置了白名单机制可以改为 open 机制| (就是不用繁琐的配置白名
+单，谁 @都会触发) 还是不建议白名单机制 ，太折腾了!
+# RUE CBP EA MILER
+openclaw config set channels.feishu.groupPolicy open
+# BANE
+openclaw config get channels.feishu.groupPolicy
+https://linux.do/t/topic/1794669                                                     28/62
+
+
+===== PAGE 29 =====
+2026/4/5 16:58                                               【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+# EIR
+openclaw gateway restart
+[着 IMO. abS an 8's
+CPE cr]
+由，
+在的，刚刚这边静默检查了一下。你好~有需要我审查或跟进的任务，直接丢给我就行。
+3
+你是在叫 Al_reviewer 吗? 如果是找我处理，也可以直接说。
+官方版的飞书插件，似乎不支持 @所有人了，只能 @特定的 bot 才会触发
+配置通知渠道
+这个通知渠道其实也是开放的，我在提示词里要求了，完成任务后通过 skill 工具来获取
+通知渠道，为什么说说开放的? 这个通知渠道，其实你可以写邮箱或者写私聊的ID，当
+然如果你填邮箱的话，必须要为 agent 配置邮箱发送的 skill，否则它肯定不知道怎么发
+的。
+群聊ID、私聊 ID 怎么来呢? 直接问! 最简单，最粗暴
+乓
+@AL_reviewer @Ai小规 告诉我现在这个群里的会话d，我用来发通知的
+[
+é        ,
+DIM eget Sear                        .
+a er
+不确定该填哪种格式的话，把你要配置的地方贴我一眼，我帮你对一下
+OSes和              551
+如果你用的是飞书侧的群 open_chat_id ，那就是 ze._强              er      5
+或者你可以在群聊或者私信聊天后打开 WebUl 的聊天页面，也能看到
+e Openclaw                   =
+https://linux.do/t/topic/1794669                                                                           29/62
+
+
+===== PAGE 30 =====
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+接着来到 OpenMOSS 后台进行配置
+oO openMoss      OD Reon
+仪表盘             通知设置
+本            ER Apert BINA
+sot         sw              @@ =
+       aaa 生
+——            一            + Bem       ©
+SO RRR  0       nase   :    -         加
+加 子任务完成                        GO taxa
+O es2nne             O sneer
+a9
+这样我们就配置好通知渠道了，也就是说完成任务后会往群里发通知信息
+配置 OpenClaw 定时任务
+第一种方法: 目前在 OpenClaw 中，我推荐唤醒的方式还是定时任务，至于多少分钟一
+次，这个可以根据自己的需求来定，怎么配置?其实也很简单，直接要求它自己建就行。
+https://linux.do/t/topic/1794669                                                                                        30/62
+
+
+===== PAGE 31 =====
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+@  i ee eh tt] oe eee be Sts sl)
+9  Seal the
+第二种就是自己在 WebUl 手动创建
+注意定时任务的提示词，相当于发起会话的第一句话，这个请根据自己的情况去修改
+提示词，你也可以跟 agent 沟通，慢慢优化自己想要的提示词
+eon         oe
+a                                          ore          ‘“
+=                                  Pe
+Wi
+自己手动新建
+https://linux.do/t/topic/1794669                                                                                                31/62
+
+
+===== PAGE 32 =====
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+
+第三种通过命令创建
+
+#4 met arAity
+
+openclaw cron add \
+
+--name "<任务名称>" \
+
+--every "5m" \
+
+--session isolated \
+
+--agent <agent_id> \
+
+--message "先读取你工作区中的 AGENTS .md，并按其中定义的身份、职责和流程完成本次任务.
+--announce \
+
+--channel <channel_name> \
+
+--to "<target_id>"
+
+# BUH
+
+--name "AI reviewer 544} Wr"
+
+--every "Sm" # 4 5 “HiT xh
+
+--every "30m" # 4 30 AM¢LMIT—-K
+
+--every "1h" #4 461 DASH iF—%K
+
+--session isolated # ihix//(FAULA TF HET.
+
+# EME agent HTS REMES.
+
+--agent ai_reviewer
+
+--agent ai_xiaogui
+
+# ARI
+
+--message "这里写任务提示词..."
+
+# BATT, WARK ALAR
+
+--announce
+
+# PREM R A a
+
+--channel feishu
+
+--channel telegram
+
+4 fea Am ID (ARfHagent#)
+
+--to "chat :xxxxxx"
+
+— EEE                                           »
+
+以下是执行的示例命令，请不要直接复制粘贴执行，根据自己的情况修改后再执行
+
+# 这个命令请修改后再粘贴执行，不要直接复制粘贴!
+
+openclaw cron add \                                           回复
+--name "AI xiaogui 5A ehK« KE" \
+--every "5m" \
+--session isolated \                                           楼主
+--agent ai_xiaogui \
+--message "*iZHOUK TIE PY AGENTS.md, FHRAKEXWG UE BAMRIETMALKIEFE
+--announce \                                           sy
+--channel feishu \                                           级
+--to "chat:oc_602d99006635f553dd33c544cedc1857"
+
+# 查看定时任务列表
+
+https:Wlinux.do/tytopic/1794669                                                       32/62
+
+
+===== PAGE 33 =====
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+openclaw cron List
+# 查看调度器状态
+openclaw cron status
+=
+PADRE
+nana                                              '
+定时任务机制补充
+1. OpenClaw 定时任务有最大执行限制，默认配置似乎是 2，这意味着一次只能执行
+两个定时任务，怎么改?
+# DA
+openclaw config get cron.maxConcurrentRuns
+https://linux.do/t/topic/1794669                                                       33/62
+
+
+===== PAGE 34 =====
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+ET get cron.maxConcurrentRuns
+C  2  13     )
+没定义，那就是默认只能执行两个
+# ERMA LILAST TERE A CHP aE TERE A tok en ¢t i 2)
+openclaw config set cron.maxConcurrentRuns 5 --strict-json
+# HAWK
+openclaw gateway restart
+# BAWMHEREM
+openclaw config get cron.maxConcurrentRuns
+2. OpenClaw 的定时任务是支持指定某个模型来跑的，你可以根据自己的情况让
+agent 替你修改或者使用命令创建时就指定
+# 命令示例说明
+openclaw cron add \
+--name "iHLENES GERAD " \
+--every "10m" \
+--session isolated \
+--agent ai_xiaogui \
+--model "my-custom/gpt-5.4(xhigh)" \
+--message "iF LEX PAY AGENTS.md, FHKAHELNGO BXWRFESEMAKIES.
+--announce \
+--channel feishu \
+--to "chat:oc_602d099006635f553dd33c544cedc1857"
+# 指定这个定时任务单独使用哪个模型
+--model "my-custom/gpt-5.4(xhigh)"
+--model “openai/gpt-4.1"
+--model “anthropic/claude-sonnet-4-5"
+# 修改已有等定时任务模型注意这个模型必须配置在0penCLaw的渠道中，和否则无法使用)
+openclaw cron edit <job-id> --model “my-custom/gpt-5.4(xhigh)"
+# 支持修改其它参数
+openclaw cron edit <job-id> \
+--every "10m" \
+https://linux.do/t/topic/1794669                                                       34/62
+
+
+===== PAGE 35 =====
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+--model "“my-custom/gpt-5.4(xhigh)" \
+--channel feishu \
+--to "chat: 0c_602099006635f553dd33c544cedc1857" \
+--announce
+3. 例如 Al 小规的定时任务已经在跑了，那么这个定时任务它并不会重复执行，只会等
+着一轮执行完之后，才会唤醒下一轮，这个得注意!
+最后
+目前 OpenMOSS 我们正在慢慢进行完善，把部署门槛降低，但是这确实需要时间，我有
+时候真的很感慨，我们只是把思路分享了出来，但有佬友们快速上手并优化出了自己真正
+可用的生产力版本，真的太让人惊喜了!
+希望佬友们玩的愉快一
+TOPIC OWNER
+@ 【开源】基于OpenClaw实现Agent自组织、自修复、自进化的能力OpenMOSS (含..…
+@ OpenMOSS - 这种当老板的感觉太爽了!
+一上次访问 一一
+https:Wlinux.do/ttopic/1794669                                                     35/62
+
+
+===== PAGE 36 =====
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+https://linux.do/t/topic/1794669                                                                                                                                   36/62
+
+
+===== PAGE 37 =====
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+https://linux.do/t/topic/1794669                                                                                                                                   37/62
+
+
+===== PAGE 38 =====
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+https://linux.do/t/topic/1794669                                                                                                                                   38/62
+
+
+===== PAGE 39 =====
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+https://linux.do/t/topic/1794669                                                                                                                                   39/62
+
+
+===== PAGE 40 =====
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+https://linux.do/t/topic/1794669                                                                                                                                   40/62
+
+
+===== PAGE 41 =====
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+https://linux.do/t/topic/1794669                                                                                                                                   41/62
+
+
+===== PAGE 42 =====
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+https://linux.do/t/topic/1794669                                                                                                                                   42/62
+
+
+===== PAGE 43 =====
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+https://linux.do/t/topic/1794669                                                                                                                                   43/62
+
+
+===== PAGE 44 =====
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+https://linux.do/t/topic/1794669                                                                                                                                   44/62
+
+
+===== PAGE 45 =====
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+https://linux.do/t/topic/1794669                                                                                                                                   45/62
+
+
+===== PAGE 46 =====
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+https://linux.do/t/topic/1794669                                                                                                                                   46/62
+
+
+===== PAGE 47 =====
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+https://linux.do/t/topic/1794669                                                                                                                                   47/62
+
+
+===== PAGE 48 =====
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+https://linux.do/t/topic/1794669                                                                                                                                   48/62
+
+
+===== PAGE 49 =====
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+https://linux.do/t/topic/1794669                                                                                                                                   49/62
+
+
+===== PAGE 50 =====
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+https://linux.do/t/topic/1794669                                                                                                                                   50/62
+
+
+===== PAGE 51 =====
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+https://linux.do/t/topic/1794669                                                                                                                                   51/62
+
+
+===== PAGE 52 =====
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+https://linux.do/t/topic/1794669                                                                                                                                   52/62
+
+
+===== PAGE 53 =====
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+https://linux.do/t/topic/1794669                                                                                                                                   53/62
+
+
+===== PAGE 54 =====
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+https://linux.do/t/topic/1794669                                                                                                                                   54/62
+
+
+===== PAGE 55 =====
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+https://linux.do/t/topic/1794669                                                                                                                                   55/62
+
+
+===== PAGE 56 =====
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+https://linux.do/t/topic/1794669                                                                                                                                   56/62
+
+
+===== PAGE 57 =====
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+https://linux.do/t/topic/1794669                                                                                                                                   57/62
+
+
+===== PAGE 58 =====
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+https://linux.do/t/topic/1794669                                                                                                                                   58/62
+
+
+===== PAGE 59 =====
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+https://linux.do/t/topic/1794669                                                                                                                                   59/62
+
+
+===== PAGE 60 =====
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+https://linux.do/t/topic/1794669                                                                                                                                   60/62
+
+
+===== PAGE 61 =====
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+https://linux.do/t/topic/1794669                                                                                                                                   61/62
+
+
+===== PAGE 62 =====
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+https://linux.do/t/topic/1794669                                                                                                                                   62/62

@@ -1,0 +1,52 @@
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+
+我先查一下 OpenClaw 里飞书会话 ID 的实际格式，免得
+RAM RAL.                                             16
+REG-FRM, Hid CHAWAELA open_id Ge
+chat_id 做目标，免得把你带沟里。               IE
+我顺手看一眼实现代码，确认飞书发消息到底吃哪种ID。
+
+1619
+如果你说的是拿来指定通知目标的那个1D，飞书和
+Telegram 不太一样:
+* 飞书私聊: 通常用用户的 open_id
+“长这样: ou_xxx
+“可写成: feishu:ou_xXX
+“飞书群允: 用群的 chat_id
+“长这样: Ooc_XXX
+“可写成: feishu:oc_XXXx
+* 或更阴确一点: feishu:chat:oc_xxx
+你可以简单记成:
++ Telegram 74): toi pgeaes SOMES?
++ Feishu #8: feishu:ou_xxx
++ Feishu #: feishu:oc_xxx
+所以飞书私胸不是纯数字，一般是ou_.，.;
+飞书群一般是 oc_，.。
+如果你要，我可以下一条直接告诉你:
+怎么把你自己的飞书私聊 ID (open_id) 找出来。
+
+T5226
+BURZI LAL 1 (opin jal M8 =A
+7. ueazeat ~~~—~CSCS*«~wR
+方法1 8 Openciow BA: RH)
+UME eT
+LAGE ARS. MUEAR—Se
+BEB Onerchw MNS LMES
+AGBSER one is
+SRaNenarn
+a
+Wik 2: SMEG EEMESAE poking A
+HMUTER paiting BK.
+ELAR, SUMIBM MRR SR:
+RGAE MBIHVTEIPHL open_id,
+P26EAR                                                                                                                                          回复
+SUG, Mate BERET
+                             oe
+inet
+FOULS, MERE:
+                                                                                                                           oe
+WAS open_id=ou_.... BEE,
+ARABS. FRIAR
+URES" HERES.         a
+https://linux.do/t/topic/1794669                                                                                                                                     5/62
+

@@ -1,0 +1,53 @@
+{
+  "mode": "dry_run",
+  "db_path": "data/tasks.db",
+  "mapping_path": "docs/novel-factory/artifacts/workspace-backfill-high-confidence-map-20260426.json",
+  "task_ids_filter": [
+    "94747eed-f0a5-4be4-9d60-403f965b95a9"
+  ],
+  "candidate_count": 2,
+  "skipped_count": 0,
+  "candidates": [
+    {
+      "sub_task_id": "6e125933-e5a3-41c4-a2b3-6cfba75e5dde",
+      "task_id": "94747eed-f0a5-4be4-9d60-403f965b95a9",
+      "task_name": "Artifact Guard Live Probe 9a244336",
+      "sub_task_name": "submit-guard-probe",
+      "artifact_path": "03_writer/03_draft.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/tmp",
+      "task_workspace_dir": "/tmp/missing-artifact-9a244336",
+      "artifact_absolute_path": "/tmp/missing-artifact-9a244336/03_writer/03_draft.md",
+      "host_workspace_dir": "/tmp/missing-artifact-9a244336",
+      "host_artifact_path": "/tmp/missing-artifact-9a244336/03_writer/03_draft.md",
+      "host_artifact_exists": false,
+      "source": "request_log explicit workspace fields on submit/review 400 guard probes",
+      "confidence": "high"
+    },
+    {
+      "sub_task_id": "66e29880-c3f5-42c3-a9fb-373f65b6680c",
+      "task_id": "94747eed-f0a5-4be4-9d60-403f965b95a9",
+      "task_name": "Artifact Guard Live Probe 9a244336",
+      "sub_task_name": "review-guard-probe",
+      "artifact_path": "03_writer/03_draft.md",
+      "missing_fields": [
+        "workspace_root",
+        "task_workspace_dir",
+        "artifact_absolute_path"
+      ],
+      "workspace_root": "/tmp",
+      "task_workspace_dir": "/tmp/missing-review-artifact-9a244336",
+      "artifact_absolute_path": "/tmp/missing-review-artifact-9a244336/03_writer/03_draft.md",
+      "host_workspace_dir": "/tmp/missing-review-artifact-9a244336",
+      "host_artifact_path": "/tmp/missing-review-artifact-9a244336/03_writer/03_draft.md",
+      "host_artifact_exists": false,
+      "source": "request_log explicit workspace fields on submit/review 400 guard probes",
+      "confidence": "high"
+    }
+  ],
+  "skipped": []
+}

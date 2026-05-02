@@ -1,0 +1,18 @@
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+欢迎使用OpenMOSS
+多 Al Agent 自给织协作平台 一 初始化设置
+eeg@B :，
+注册令牌
+fda854d9b296e3d452f79cd60e6a83d7             o 后
+Agont MAM Wit SRA St
+ee oe aia Sf Agent                             «q
+第四步: 配置访问地址
+这个访问地址也很重要，是用来告诉 agent 你的 OpenMOSS 服务地址在哪，通过哪个
+地址能正常访问，我这里是 OpenMOSS 和 OpenClaw 都在一台机器上，所以它直接走
+本地访问就行，完全没有问题，如果你的 OpenMOSS 部署在别的服务器上，这里应该配
+置正确的访问地址 。
+你可以这么理解，你怎么访问的 WebUl 就把你的地址复制粘贴进来，当然如果你的
+OpenMOSS 和 OpenClaw 在一台机器上，那么肯定就是 127.0.0.1:6565 了，就别填外
+网访问地址了。
+https://linux.do/t/topic/1794669                                                                                        10/62
+

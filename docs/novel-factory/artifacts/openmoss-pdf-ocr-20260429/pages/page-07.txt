@@ -1,0 +1,38 @@
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+部署 OpenMOSS (最快 30 分钟)
+当我们理解了 OpenClaw 的 Agent 创建机制、会话机制、定时任务机制、通知渠道机制|
+之后，就可以开始 OpenMOSS 的部署。
+仓库地址:
+      围       GitHub - uluckyXH/OpenMOSS: A self-
+organizing multi-agent collaboration...
+A self-organizing multi-agent collaboration platform for OpenClaw. Multiple Al
+agents work as an autonomous team — planning, executing, reviewing, and
+patrolling tasks with zero human intervention.
+快速启动
+# #t/4OpenMOSS BYE
+git clone https://github.com/uLuckyXH/OpenMOSS/ openmoss
+# #AOpenMOSS AR
+cd openmoss
+# Hlépythonewy ry
+python3 -m venv openmoss-env
+# BOE LE
+source openmoss-env/bin/activate
+# ZBI A 5 KR
+pip install -r requirements. txt
+# EAEAR
+mkdir -p Logs
+# Ja A ayOpenMoss
+nohup python3 -m uvicorn app.main:app \
+--host 0.0.0.0 --port 6565 --access-log \
+> ./logs/server.log 2>&1 &
+# APAASEAMMWET
+tail -f ./logs/server.log
+如果执行完后出现跟截图一样，就代表成功了
+人 root@vultr:~/openmoss# tail -f ./logs/server.log
+nohup: ignoring input
+na 0s    Started server process [236469]
+INFO:    Waiting for application startup.
+INFO:    Application startup complete.
+patos    Uvicorn running on http://@.@.0.0:6565 (Press CTRL+C to quit)
+https://linux.do/t/topic/1794669                                                                  7/162
+

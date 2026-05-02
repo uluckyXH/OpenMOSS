@@ -1,0 +1,79 @@
+2026/4/5 16:58                                                【开源】OpenMOSS部署配置指南 - 开发调优 - LINUX DO
+
+第三种通过命令创建
+
+#4 met arAity
+
+openclaw cron add \
+
+--name "<任务名称>" \
+
+--every "5m" \
+
+--session isolated \
+
+--agent <agent_id> \
+
+--message "先读取你工作区中的 AGENTS .md，并按其中定义的身份、职责和流程完成本次任务.
+--announce \
+
+--channel <channel_name> \
+
+--to "<target_id>"
+
+# BUH
+
+--name "AI reviewer 544} Wr"
+
+--every "Sm" # 4 5 “HiT xh
+
+--every "30m" # 4 30 AM¢LMIT—-K
+
+--every "1h" #4 461 DASH iF—%K
+
+--session isolated # ihix//(FAULA TF HET.
+
+# EME agent HTS REMES.
+
+--agent ai_reviewer
+
+--agent ai_xiaogui
+
+# ARI
+
+--message "这里写任务提示词..."
+
+# BATT, WARK ALAR
+
+--announce
+
+# PREM R A a
+
+--channel feishu
+
+--channel telegram
+
+4 fea Am ID (ARfHagent#)
+
+--to "chat :xxxxxx"
+
+— EEE                                           »
+
+以下是执行的示例命令，请不要直接复制粘贴执行，根据自己的情况修改后再执行
+
+# 这个命令请修改后再粘贴执行，不要直接复制粘贴!
+
+openclaw cron add \                                           回复
+--name "AI xiaogui 5A ehK« KE" \
+--every "5m" \
+--session isolated \                                           楼主
+--agent ai_xiaogui \
+--message "*iZHOUK TIE PY AGENTS.md, FHRAKEXWG UE BAMRIETMALKIEFE
+--announce \                                           sy
+--channel feishu \                                           级
+--to "chat:oc_602d99006635f553dd33c544cedc1857"
+
+# 查看定时任务列表
+
+https:Wlinux.do/tytopic/1794669                                                       32/62
+
