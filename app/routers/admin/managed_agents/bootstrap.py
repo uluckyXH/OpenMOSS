@@ -61,18 +61,10 @@ def create_bootstrap_token(
     db: Session = Depends(get_db),
 ):
     """创建某个配置态 Agent 的 Bootstrap Token。"""
-    try:
-        created = bootstrap_svc.create_bootstrap_token(
-            db,
-            managed_agent_id=agent_id,
-            purpose=req.purpose,
-            ttl_seconds=req.ttl_seconds,
-            scope=_parse_scope_json(req.scope_json),
-        )
-        created["scope_json"] = req.scope_json
-        return ManagedAgentBootstrapTokenCreateResponse.model_validate(created)
-    except BusinessError as exc:
-        raise HTTPException(status_code=exc.status_code, detail=str(exc))
+    raise HTTPException(
+        status_code=403,
+        detail="手动创建 Bootstrap Token 暂不开放，请通过部署脚本生成流程自动创建",
+    )
 
 
 @router.get("/{agent_id}/bootstrap-tokens", response_model=list[ManagedAgentBootstrapTokenListItem])
@@ -195,4 +187,3 @@ def get_onboarding_message(
         )
     except BusinessError as exc:
         raise HTTPException(status_code=exc.status_code, detail=str(exc))
-

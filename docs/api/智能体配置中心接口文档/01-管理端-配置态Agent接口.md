@@ -18,7 +18,7 @@
 - 定时任务管理
 - 宿主通讯渠道配置管理
 - Bootstrap Token 管理
-- 部署状态判断与变更集（deployment-state / deploy-preview / deploy-script / deployment-snapshots / dismiss）
+- 部署状态判断与变更集（deployment-state / deploy-preview / deploy-script / deployment-snapshots / cancel / dismiss）
 
 ## 2. 请求头
 
@@ -166,6 +166,7 @@ Content-Type: application/json
 |---|---|---|
 | `id` | string | Bootstrap Token ID |
 | `managed_agent_id` | string | 所属配置态 Agent ID |
+| `deployment_snapshot_id` | string/null | 关联的部署快照 ID；为空表示手动创建或旧兼容入口生成 |
 | `token_masked` | string | 固定返回 `仅创建时可见`，不会回显明文 token |
 | `purpose` | string | `download_script / register_runtime` |
 | `scope_json` | string/null | 附加范围信息 JSON |
@@ -721,11 +722,29 @@ Content-Type: application/json
 | `403` | 管理员鉴权失败 |
 | `404` | 宿主通讯渠道配置不存在或不属于该 Agent |
 
-### 5.20 创建 Bootstrap Token
+### 5.20 手动创建 Bootstrap Token（暂不开放）
 
 #### `POST /api/admin/managed-agents/{agent_id}/bootstrap-tokens`
 
-作用：为某个配置态 Agent 创建引导 Token。当前支持：
+作用：历史调试入口，原用于为某个配置态 Agent 手动创建引导 Token。
+
+当前状态：**暂不开放调用**。
+
+原因：
+
+- 新部署主流程应通过 `deploy-script` 自动创建并关联部署快照。
+- 手动创建 Token 容易绕开部署快照状态，导致用户误操作。
+- `scope_json` 属于兼容 / 调试字段，普通前端不应暴露给用户填写。
+
+当前调用结果：
+
+- 固定返回 `403`
+- 不会创建 Token
+- 不会校验 `scope_json`
+
+后端仍保留内部创建能力，供部署流程、旧兼容入口和测试使用。
+
+历史上支持的 `purpose`：
 
 - `download_script`
 - `register_runtime`
@@ -740,16 +759,13 @@ Content-Type: application/json
 
 #### 成功返回
 
-- 状态码：`201`
-- 返回体：`ManagedAgentBootstrapTokenCreateResponse`
+当前无成功返回。该接口暂不开放。
 
 #### 错误码
 
 | 状态码 | 说明 |
 |---|---|
-| `400` | 例如 `scope_json` 不是合法 JSON object、`ttl_seconds` 非法 |
-| `403` | 管理员鉴权失败 |
-| `404` | 配置态 Agent 不存在 |
+| `403` | 管理员鉴权失败，或手动创建 Bootstrap Token 暂不开放 |
 | `422` | 请求体验证失败 |
 
 #### 请求示例
@@ -766,13 +782,7 @@ Content-Type: application/json
 
 ```json
 {
-  "id": "9e2f77ca-0a11-49b7-8562-0c68b0dca3e0",
-  "managed_agent_id": "6df7f65f-7d43-4f0e-bdf0-38c7f37fe84e",
-  "token": "bt_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-  "purpose": "download_script",
-  "scope_json": "{\"deployment_mode\":\"create_sub_agent\"}",
-  "expires_at": "2026-04-07T20:00:00",
-  "created_at": "2026-04-07T19:00:00"
+  "detail": "手动创建 Bootstrap Token 暂不开放，请通过部署脚本生成流程自动创建"
 }
 ```
 
@@ -801,6 +811,7 @@ Content-Type: application/json
   {
     "id": "9e2f77ca-0a11-49b7-8562-0c68b0dca3e0",
     "managed_agent_id": "6df7f65f-7d43-4f0e-bdf0-38c7f37fe84e",
+    "deployment_snapshot_id": null,
     "token_masked": "仅创建时可见",
     "purpose": "download_script",
     "scope_json": "{\"deployment_mode\":\"create_sub_agent\"}",
@@ -819,6 +830,13 @@ Content-Type: application/json
 
 作用：撤销某个 Bootstrap Token。当前是“逻辑撤销”，不会物理删除记录。
 
+约束：
+
+- `deployment_snapshot_id = null` 的 Token 可以直接撤销。
+- 如果 Token 关联的部署快照仍是 `pending`，不允许在 Token 管理页单独撤销，返回 `409`。
+- 前端应引导用户先调用 `POST /deployment-snapshots/{snapshot_id}/cancel` 取消部署快照。
+- 如果关联快照已是 `cancelled / confirmed / failed / timeout`，允许撤销；已撤销 Token 再次撤销保持幂等。
+
 #### 成功返回
 
 - 状态码：`204`
@@ -830,6 +848,7 @@ Content-Type: application/json
 |---|---|
 | `403` | 管理员鉴权失败 |
 | `404` | Token 不存在或不属于该 Agent |
+| `409` | Token 关联未完成部署快照，请先取消部署快照后再撤销 Token |
 
 ### 5.23 获取 Bootstrap 脚本预览
 
@@ -1205,7 +1224,7 @@ Content-Type: application/json
 - `confirmed`：脚本回传成功，部署已确认。
 - `failed`：脚本回传失败，`failure_detail_json` 中包含失败详情。
 - `timeout`：快照超过 `expires_at` 后仍未回传，后端启动扫描时自动标记为超时。
-- `cancelled`：被用户确认重新生成的同类脚本替换，旧脚本和旧 Token 已失效。
+- `cancelled`：被用户确认重新生成的同类脚本替换，或被用户手动取消；旧脚本和旧 Token 已失效。
 
 超时提示说明：
 
@@ -1267,7 +1286,178 @@ Content-Type: application/json
 | `403` | 管理员鉴权失败 |
 | `404` | 配置态 Agent 不存在 |
 
-### 5.29 忽略已删除资源的清理提醒
+### 5.29 查看部署快照详情
+
+#### `GET /api/admin/managed-agents/{agent_id}/deployment-snapshots/{snapshot_id}`
+
+作用：按快照 ID 查看部署快照详情，恢复刷新后丢失的变更清单、curl 命令和接入说明。该接口用于前端重新打开最后一步部署确认页时重取展示数据。
+
+补充说明：
+
+- `changeset` 会根据快照中保存的资源 ID 清单重新计算，前端可直接用于展示变更清单。
+- `onboarding_message` 是后端生成的接入说明文案，前端只负责展示，不需要自行拼装。
+- 后端不会保存 Bootstrap Token 明文，只保存哈希。因此详情接口不会创建新的 Token 列表记录，但会复用同一条有效 `download_script` Token 记录重新签发明文。
+- 重新签发后，旧 curl 命令中的 token 会失效；前端应始终使用本接口最新返回的 `curl_command`。
+- 如果快照不是 `pending`，或已经超过超时截止时间，接口仍返回 `changeset`，但 `download_available=false`，不会返回可执行 curl 命令。
+
+#### Path 参数
+
+| 参数 | 类型 | 必填 | 说明 |
+|---|---|---|---|
+| `agent_id` | string | 是 | 配置态 Agent ID |
+| `snapshot_id` | string | 是 | 部署快照 ID，必须属于当前 Agent |
+
+#### 成功返回
+
+- 状态码：`200`
+
+响应字段：
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `id` | string | 快照 ID |
+| `managed_agent_id` | string | 所属配置态 Agent ID |
+| `script_intent` | string | `bootstrap / sync` |
+| `config_version` | int | 对应配置版本号 |
+| `snapshot_json` | string | 本次部署的资源 ID 清单（JSON 文本） |
+| `status` | string | `pending / confirmed / failed / timeout / cancelled` |
+| `failure_detail_json` | string/null | 失败或取消详情 |
+| `created_at` | datetime | 创建时间 |
+| `expires_at` | datetime/null | 超时截止时间 |
+| `confirmed_at` | datetime/null | 确认完成时间 |
+| `is_likely_timeout` | bool | 是否读取时判断为疑似超时 |
+| `changeset` | object | 变更集，结构同 deploy-preview |
+| `has_removals` | bool | 是否包含删除项 |
+| `curl_command` | string/null | 当前可用的下载脚本 curl 命令；不可下载时为 `null` |
+| `onboarding_message` | string/null | 后端生成的接入说明；不可下载时为 `null` |
+| `download_token_id` | string/null | 复用或重新签发的下载 Token 记录 ID |
+| `download_token_expires_at` | datetime/null | 下载 Token 过期时间 |
+| `download_available` | bool | 当前是否可继续下载执行脚本 |
+| `download_unavailable_reason` | string/null | 不可下载原因 |
+
+#### 响应示例
+
+```json
+{
+  "id": "a1b2c3d4-...",
+  "managed_agent_id": "6df7f65f-7d43-4f0e-bdf0-38c7f37fe84e",
+  "script_intent": "bootstrap",
+  "config_version": 3,
+  "snapshot_json": "{\"prompt_artifact_keys\":[\"system_prompt\"],\"schedules\":[],\"comm_bindings\":[]}",
+  "status": "pending",
+  "failure_detail_json": null,
+  "created_at": "2026-04-28T09:50:00",
+  "expires_at": "2026-04-28T10:20:00",
+  "confirmed_at": null,
+  "is_likely_timeout": false,
+  "changeset": {
+    "items": [
+      {
+        "resource_type": "prompt",
+        "change_type": "add",
+        "resource_key": "system_prompt",
+        "label": "Prompt: system_prompt",
+        "enabled": null
+      }
+    ],
+    "validation_errors": [],
+    "is_valid": true
+  },
+  "has_removals": false,
+  "curl_command": "curl -fsSL 'http://localhost:8000/api/bootstrap/agents/6df7f65f-7d43-4f0e-bdf0-38c7f37fe84e/script' -H 'X-Bootstrap-Token: bt_xxx' | bash",
+  "onboarding_message": "请在目标机器执行以下命令完成接入：\n\ncurl -fsSL 'http://localhost:8000/api/bootstrap/agents/6df7f65f-7d43-4f0e-bdf0-38c7f37fe84e/script' -H 'X-Bootstrap-Token: bt_xxx' | bash",
+  "download_token_id": "b2c3d4e5-...",
+  "download_token_expires_at": "2026-04-28T10:20:00",
+  "download_available": true,
+  "download_unavailable_reason": null
+}
+```
+
+#### 错误码
+
+| 状态码 | 说明 |
+|---|---|
+| `403` | 管理员鉴权失败 |
+| `404` | 配置态 Agent 或部署快照不存在 |
+
+### 5.30 手动取消部署快照
+
+#### `POST /api/admin/managed-agents/{agent_id}/deployment-snapshots/{snapshot_id}/cancel`
+
+作用：用户明确放弃本次未完成部署时，手动取消对应的 `pending` 部署快照，并撤销该快照关联的 Bootstrap Token。
+
+典型场景：
+
+- 用户生成了脚本但不准备执行。
+- 用户复制了错误命令，决定废弃旧脚本。
+- 快照已疑似超时，用户不想等待服务重启扫描标记为 `timeout`。
+- 用户准备重新调整配置，希望先把旧的待执行快照收口。
+
+状态规则：
+
+- 仅允许取消 `status = pending` 的快照。
+- 取消成功后，快照状态变为 `cancelled`。
+- 后端会撤销该快照关联的 `download_script / register_runtime` Bootstrap Token。
+- `confirmed / failed / timeout / cancelled` 都不允许取消，返回 `409`。
+
+#### Path 参数
+
+| 参数 | 类型 | 必填 | 说明 |
+|---|---|---|---|
+| `agent_id` | string | 是 | 配置态 Agent ID |
+| `snapshot_id` | string | 是 | 部署快照 ID，必须属于当前 Agent |
+
+#### 请求体
+
+无。
+
+#### 成功返回
+
+- 状态码：`200`
+
+响应字段同 `DeploymentSnapshotListItem`：
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `id` | string | 快照 ID |
+| `managed_agent_id` | string | 所属配置态 Agent ID |
+| `script_intent` | string | `bootstrap / sync` |
+| `config_version` | int | 对应配置版本号 |
+| `snapshot_json` | string | 本次部署的资源 ID 清单（JSON 文本） |
+| `status` | string | 固定为 `cancelled` |
+| `failure_detail_json` | string | 取消详情 JSON，包含 `reason=manual_cancel` 和 `cancelled_at` |
+| `created_at` | datetime | 创建时间 |
+| `expires_at` | datetime/null | 原超时截止时间 |
+| `confirmed_at` | datetime/null | 固定为 `null` |
+| `is_likely_timeout` | bool | 固定为 `false` |
+
+#### 响应示例
+
+```json
+{
+  "id": "a1b2c3d4-...",
+  "managed_agent_id": "6df7f65f-7d43-4f0e-bdf0-38c7f37fe84e",
+  "script_intent": "bootstrap",
+  "config_version": 3,
+  "snapshot_json": "{\"prompt_artifact_keys\":[\"system_prompt\"],\"schedules\":[],\"comm_bindings\":[]}",
+  "status": "cancelled",
+  "failure_detail_json": "{\"message\":\"用户手动取消部署快照\",\"reason\":\"manual_cancel\",\"cancelled_at\":\"2026-04-28T10:00:00\"}",
+  "created_at": "2026-04-28T09:50:00",
+  "expires_at": "2026-04-28T10:20:00",
+  "confirmed_at": null,
+  "is_likely_timeout": false
+}
+```
+
+#### 错误码
+
+| 状态码 | 说明 |
+|---|---|
+| `403` | 管理员鉴权失败 |
+| `404` | 配置态 Agent 或部署快照不存在 |
+| `409` | 快照不是 `pending` 状态，无法取消 |
+
+### 5.31 忽略已删除资源的清理提醒
 
 #### `POST /api/admin/managed-agents/{agent_id}/deployment-snapshot/dismiss`
 

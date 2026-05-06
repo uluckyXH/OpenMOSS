@@ -14,7 +14,7 @@ from typing import Any, Optional
 
 from sqlalchemy.orm import Session
 
-from app.exceptions import NotFoundError, ValidationError
+from app.exceptions import ConflictError, NotFoundError, ValidationError
 from app.models.managed_agent import (
     ManagedAgentBootstrapToken,
     ManagedAgentDeploymentSnapshot,
@@ -134,8 +134,48 @@ def cancel_pending_deployment_snapshots(
     if not rows:
         return []
 
+    return _cancel_deployment_snapshot_rows(
+        db,
+        managed_agent_id=managed_agent_id,
+        snapshots=rows,
+        reason=reason,
+        message="部署快照已被新的同类脚本替换",
+    )
+
+
+def cancel_deployment_snapshot(
+    db: Session,
+    snapshot_id: str,
+    managed_agent_id: str,
+    *,
+    reason: str = "manual_cancel",
+) -> ManagedAgentDeploymentSnapshot:
+    """手动取消 pending 部署快照，并撤销关联 Token。"""
+    snapshot = _get_snapshot_or_404(db, snapshot_id, managed_agent_id)
+    if snapshot.status != "pending":
+        raise ConflictError(f"快照状态为 {snapshot.status}，无法取消")
+
+    cancelled = _cancel_deployment_snapshot_rows(
+        db,
+        managed_agent_id=managed_agent_id,
+        snapshots=[snapshot],
+        reason=reason,
+        message="用户手动取消部署快照",
+    )
+    return cancelled[0]
+
+
+def _cancel_deployment_snapshot_rows(
+    db: Session,
+    *,
+    managed_agent_id: str,
+    snapshots: list[ManagedAgentDeploymentSnapshot],
+    reason: str,
+    message: str,
+) -> list[ManagedAgentDeploymentSnapshot]:
+    """批量取消部署快照，并撤销这些快照关联的 Bootstrap Token。"""
     now = datetime.now()
-    snapshot_ids = [row.id for row in rows]
+    snapshot_ids = [row.id for row in snapshots]
     tokens = (
         db.query(ManagedAgentBootstrapToken)
         .filter(ManagedAgentBootstrapToken.managed_agent_id == managed_agent_id)
@@ -149,20 +189,20 @@ def cancel_pending_deployment_snapshots(
 
     detail = json.dumps(
         {
-            "message": "部署快照已被新的同类脚本替换",
+            "message": message,
             "reason": reason,
             "cancelled_at": now.isoformat(),
         },
         ensure_ascii=False,
     )
-    for row in rows:
+    for row in snapshots:
         row.status = "cancelled"
         row.failure_detail_json = detail
 
     db.commit()
-    for row in rows:
+    for row in snapshots:
         db.refresh(row)
-    return rows
+    return snapshots
 
 
 def expire_stale_pending_snapshots(db: Session) -> int:
@@ -269,6 +309,15 @@ def list_deployment_snapshots(
         .order_by(ManagedAgentDeploymentSnapshot.created_at.desc())
         .all()
     )
+
+
+def get_deployment_snapshot_or_404(
+    db: Session,
+    snapshot_id: str,
+    managed_agent_id: str,
+) -> ManagedAgentDeploymentSnapshot:
+    """按 ID 获取部署快照，必须归属指定 Agent。"""
+    return _get_snapshot_or_404(db, snapshot_id, managed_agent_id)
 
 
 def compute_deployment_state(db: Session, managed_agent_id: str) -> dict[str, Any]:

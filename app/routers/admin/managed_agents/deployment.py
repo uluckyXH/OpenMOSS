@@ -1,5 +1,7 @@
 """配置态 Agent 部署变更集与快照路由。"""
 
+from datetime import datetime
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
@@ -11,8 +13,11 @@ from app.schemas.managed_agent import (
     DeployPreviewResponse,
     DeployScriptRequest,
     DeploySnapshotDismissRequest,
+    DeploymentSnapshotDetailResponse,
+    DeploymentSnapshotListItem,
     DeploymentStateResponse,
 )
+from app.services import bootstrap as bootstrap_svc
 from app.services import managed_agent as svc
 
 
@@ -43,6 +48,85 @@ def _build_deployment_snapshot_conflict_detail(snapshot) -> dict:
             "expires_at": expires_at.isoformat() if expires_at else None,
             "is_likely_timeout": data["is_likely_timeout"],
         },
+    }
+
+
+def _build_deploy_request_from_snapshot(snapshot) -> DeployScriptRequest:
+    """从快照资源清单恢复变更集计算请求。"""
+    snapshot_data = svc.parse_snapshot_json(snapshot.snapshot_json)
+    return DeployScriptRequest(
+        script_intent=snapshot.script_intent,
+        prompt_artifact_keys=snapshot_data.get("prompt_artifact_keys", []),
+        schedule_ids=[
+            item.get("id")
+            for item in snapshot_data.get("schedules", [])
+            if item.get("id")
+        ],
+        comm_binding_ids=[
+            item.get("id")
+            for item in snapshot_data.get("comm_bindings", [])
+            if item.get("id")
+        ],
+    )
+
+
+def _build_snapshot_download_context(
+    db: Session,
+    *,
+    agent_id: str,
+    snapshot,
+) -> dict:
+    """为 pending 快照生成可执行接入命令，不新增重复 Token 记录。"""
+    serialized = svc.serialize_deployment_snapshot(snapshot)
+    if snapshot.status != "pending":
+        return {
+            "curl_command": None,
+            "onboarding_message": None,
+            "download_token_id": None,
+            "download_token_expires_at": None,
+            "download_available": False,
+            "download_unavailable_reason": f"快照状态为 {snapshot.status}，不可继续下载执行脚本",
+        }
+    if serialized["is_likely_timeout"]:
+        return {
+            "curl_command": None,
+            "onboarding_message": None,
+            "download_token_id": None,
+            "download_token_expires_at": None,
+            "download_available": False,
+            "download_unavailable_reason": "部署快照已超过超时截止时间，请重新生成部署脚本",
+        }
+
+    ttl_seconds = 86400
+    if snapshot.expires_at:
+        remaining_seconds = int((snapshot.expires_at - datetime.now()).total_seconds())
+        ttl_seconds = max(60, min(86400, remaining_seconds))
+
+    download_token = bootstrap_svc.create_or_reissue_bootstrap_token(
+        db,
+        managed_agent_id=agent_id,
+        purpose="download_script",
+        ttl_seconds=ttl_seconds,
+        scope={
+            "deployment_snapshot_id": snapshot.id,
+            "script_intent": snapshot.script_intent,
+        },
+        min_remaining_seconds=0,
+        deployment_snapshot_id=snapshot.id,
+    )
+    curl_command = bootstrap_svc.render_curl_command(agent_id, download_token["token"])
+    onboarding_message = bootstrap_svc.render_onboarding_message(
+        db,
+        managed_agent_id=agent_id,
+        download_token=download_token["token"],
+    )
+    return {
+        "curl_command": curl_command,
+        "onboarding_message": onboarding_message,
+        "download_token_id": download_token["id"],
+        "download_token_expires_at": download_token["expires_at"],
+        "download_available": True,
+        "download_unavailable_reason": None,
     }
 
 
@@ -178,6 +262,18 @@ def deploy_script(
             snapshot_json=snapshot_json,
             timeout_seconds=body.snapshot_timeout_seconds,
         )
+        bootstrap_svc.create_or_reissue_bootstrap_token(
+            db,
+            managed_agent_id=agent_id,
+            purpose="download_script",
+            ttl_seconds=body.download_ttl_seconds,
+            scope={
+                "deployment_snapshot_id": snapshot.id,
+                "script_intent": snapshot.script_intent,
+            },
+            min_remaining_seconds=bootstrap_svc.DOWNLOAD_SCRIPT_MIN_REUSE_REMAINING_SECONDS,
+            deployment_snapshot_id=snapshot.id,
+        )
 
         return {
             "snapshot_id": snapshot.id,
@@ -223,5 +319,64 @@ def list_agent_deployment_snapshots(
     try:
         snapshots = svc.list_deployment_snapshots(db, agent_id)
         return [svc.serialize_deployment_snapshot(item) for item in snapshots]
+    except BusinessError as exc:
+        raise HTTPException(status_code=exc.status_code, detail=str(exc))
+
+
+@router.get(
+    "/{agent_id}/deployment-snapshots/{snapshot_id}",
+    response_model=DeploymentSnapshotDetailResponse,
+)
+def get_agent_deployment_snapshot(
+    agent_id: str,
+    snapshot_id: str,
+    _: bool = Depends(verify_admin),
+    db: Session = Depends(get_db),
+):
+    """查看部署快照详情，恢复 changeset 与接入说明。"""
+    try:
+        agent = svc.get_managed_agent_or_404(db, agent_id)
+        snapshot = svc.get_deployment_snapshot_or_404(db, snapshot_id, agent_id)
+        request_for_changeset = _build_deploy_request_from_snapshot(snapshot)
+        changeset = svc.compute_changeset(
+            db,
+            agent_id,
+            request_for_changeset,
+            renderer_prompt_keys=_get_renderer_prompt_keys(agent.host_platform),
+        )
+        has_removals = any(item.change_type == "remove" for item in changeset.items)
+        payload = svc.serialize_deployment_snapshot(snapshot)
+        payload.update(
+            {
+                "changeset": changeset,
+                "has_removals": has_removals,
+                **_build_snapshot_download_context(
+                    db,
+                    agent_id=agent_id,
+                    snapshot=snapshot,
+                ),
+            }
+        )
+        return DeploymentSnapshotDetailResponse.model_validate(payload)
+    except BusinessError as exc:
+        raise HTTPException(status_code=exc.status_code, detail=str(exc))
+
+
+@router.post(
+    "/{agent_id}/deployment-snapshots/{snapshot_id}/cancel",
+    response_model=DeploymentSnapshotListItem,
+)
+def cancel_agent_deployment_snapshot(
+    agent_id: str,
+    snapshot_id: str,
+    _: bool = Depends(verify_admin),
+    db: Session = Depends(get_db),
+):
+    """手动取消 pending 部署快照，并撤销关联 Token。"""
+    try:
+        snapshot = svc.cancel_deployment_snapshot(db, snapshot_id, agent_id)
+        return DeploymentSnapshotListItem.model_validate(
+            svc.serialize_deployment_snapshot(snapshot)
+        )
     except BusinessError as exc:
         raise HTTPException(status_code=exc.status_code, detail=str(exc))

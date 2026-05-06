@@ -42,7 +42,7 @@
 - `POST /api/admin/managed-agents/{agent_id}/comm-bindings`
 - `PUT /api/admin/managed-agents/{agent_id}/comm-bindings/{binding_id}`
 - `DELETE /api/admin/managed-agents/{agent_id}/comm-bindings/{binding_id}`
-- `POST /api/admin/managed-agents/{agent_id}/bootstrap-tokens`
+- `POST /api/admin/managed-agents/{agent_id}/bootstrap-tokens`（暂不开放，返回 403）
 - `GET /api/admin/managed-agents/{agent_id}/bootstrap-tokens`
 - `DELETE /api/admin/managed-agents/{agent_id}/bootstrap-tokens/{token_id}`
 - `GET /api/admin/managed-agents/{agent_id}/bootstrap-script`
@@ -51,6 +51,8 @@
 - `POST /api/admin/managed-agents/{agent_id}/deploy-preview`
 - `POST /api/admin/managed-agents/{agent_id}/deploy-script`
 - `GET /api/admin/managed-agents/{agent_id}/deployment-snapshots`
+- `GET /api/admin/managed-agents/{agent_id}/deployment-snapshots/{snapshot_id}`
+- `POST /api/admin/managed-agents/{agent_id}/deployment-snapshots/{snapshot_id}/cancel`
 - `POST /api/admin/managed-agents/{agent_id}/deployment-snapshot/dismiss`
 
 ### 2.2 Agent 侧运行态接口

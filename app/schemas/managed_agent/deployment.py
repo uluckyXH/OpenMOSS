@@ -107,6 +107,19 @@ class DeploymentSnapshotListItem(BaseModel):
     is_likely_timeout: bool = False
 
 
+class DeploymentSnapshotDetailResponse(DeploymentSnapshotListItem):
+    """部署快照详情，用于刷新后恢复变更清单和接入说明。"""
+
+    changeset: DeployChangeset
+    has_removals: bool = False
+    curl_command: Optional[str] = None
+    onboarding_message: Optional[str] = None
+    download_token_id: Optional[str] = None
+    download_token_expires_at: Optional[datetime] = None
+    download_available: bool = False
+    download_unavailable_reason: Optional[str] = None
+
+
 class DeploymentStateResponse(BaseModel):
     """部署阶段判断响应。"""
 

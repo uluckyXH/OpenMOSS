@@ -51,6 +51,7 @@ from .platform_meta import list_supported_host_platforms
 from .changeset import compute_changeset
 from .deployment import (
     build_snapshot_json,
+    cancel_deployment_snapshot,
     cancel_pending_deployment_snapshots,
     compute_deployment_state,
     confirm_deployment_snapshot,
@@ -58,6 +59,7 @@ from .deployment import (
     dismiss_snapshot_resources,
     expire_stale_pending_snapshots,
     fail_deployment_snapshot,
+    get_deployment_snapshot_or_404,
     get_pending_deployment_snapshot_conflict,
     get_latest_confirmed_snapshot,
     list_deployment_snapshots,
@@ -70,6 +72,7 @@ __all__ = [
     "auto_backfill_from_runtime",
     "build_migration_report",
     "build_snapshot_json",
+    "cancel_deployment_snapshot",
     "cancel_pending_deployment_snapshots",
     "compute_deployment_state",
     "compute_changeset",
@@ -92,6 +95,7 @@ __all__ = [
     "fail_deployment_snapshot",
     "get_comm_binding_or_404",
     "get_comm_binding_for_agent_or_404",
+    "get_deployment_snapshot_or_404",
     "get_host_config",
     "get_latest_confirmed_snapshot",
     "get_pending_deployment_snapshot_conflict",

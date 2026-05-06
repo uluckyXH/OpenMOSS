@@ -49,6 +49,7 @@ class ManagedAgentBootstrapTokenListItem(BaseModel):
 
     id: str
     managed_agent_id: str
+    deployment_snapshot_id: Optional[str] = None
     token_masked: str = "仅创建时可见"
     purpose: ManagedAgentBootstrapPurpose
     scope_json: Optional[str] = None
@@ -74,4 +75,3 @@ class ManagedAgentOnboardingMessageResponse(BaseModel):
     curl_command: str
     download_token_id: str
     download_token_expires_at: datetime
-

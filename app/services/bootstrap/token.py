@@ -11,8 +11,11 @@ from typing import Any, Optional
 
 from sqlalchemy.orm import Session
 
-from app.exceptions import ForbiddenError, NotFoundError, ValidationError
-from app.models.managed_agent import ManagedAgentBootstrapToken
+from app.exceptions import ConflictError, ForbiddenError, NotFoundError, ValidationError
+from app.models.managed_agent import (
+    ManagedAgentBootstrapToken,
+    ManagedAgentDeploymentSnapshot,
+)
 from app.services.managed_agent.core import get_managed_agent_or_404
 
 
@@ -231,6 +234,7 @@ def revoke_bootstrap_token(
 ) -> ManagedAgentBootstrapToken:
     """撤销 bootstrap token。"""
     row = get_bootstrap_token_or_404(db, token_id, managed_agent_id=managed_agent_id)
+    _ensure_token_can_be_revoked(db, row)
     if row.revoked_at is None:
         row.revoked_at = datetime.now()
         db.commit()
@@ -280,3 +284,21 @@ def deserialize_bootstrap_scope(bootstrap_token: ManagedAgentBootstrapToken) -> 
     if not isinstance(parsed, dict):
         return {}
     return parsed
+
+
+def _ensure_token_can_be_revoked(
+    db: Session,
+    token: ManagedAgentBootstrapToken,
+) -> None:
+    """禁止单独撤销仍关联 pending 部署快照的 Token。"""
+    if not token.deployment_snapshot_id:
+        return
+
+    snapshot = (
+        db.query(ManagedAgentDeploymentSnapshot)
+        .filter(ManagedAgentDeploymentSnapshot.id == token.deployment_snapshot_id)
+        .filter(ManagedAgentDeploymentSnapshot.managed_agent_id == token.managed_agent_id)
+        .first()
+    )
+    if snapshot and snapshot.status == "pending":
+        raise ConflictError("该 Token 关联未完成部署快照，请先取消部署快照后再撤销 Token")
