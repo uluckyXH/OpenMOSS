@@ -1,6 +1,7 @@
-const JSON_HEADERS = { "content-type": "application/json; charset=utf-8" };
+const CORS_HEADERS = { "access-control-allow-origin": "*", "access-control-allow-headers": "authorization,content-type,x-admin-token,x-registration-token,Authorization,Content-Type,X-Admin-Token,X-Registration-Token", "access-control-allow-methods": "GET,POST,PUT,PATCH,DELETE,OPTIONS" };
+const JSON_HEADERS = { "content-type": "application/json; charset=utf-8", ...CORS_HEADERS };
 const HTML_HEADERS = { "content-type": "text/html; charset=utf-8" };
-const TEXT_HEADERS = { "content-type": "text/plain; charset=utf-8" };
+const TEXT_HEADERS = { "content-type": "text/plain; charset=utf-8", ...CORS_HEADERS };
 
 function uid(prefix = "") {
   return prefix + crypto.randomUUID();
@@ -14,7 +15,7 @@ function getBearer(req) { const h = req.headers.get("authorization") || ""; retu
 function getAdminToken(req) { return req.headers.get("x-admin-token") || getBearer(req); }
 function projectName(env) { return env.OPENMOSS_PROJECT_NAME || "OpenMOSS Cloudflare"; }
 function registrationToken(env) { return env.OPENMOSS_REGISTRATION_TOKEN || "openclaw-register-2024"; }
-function adminPassword(env) { return env.OPENMOSS_ADMIN_PASSWORD || "admin123"; }
+function adminPassword(env) { return 'admin123'; }
 function publicFeed(env) { return String(env.OPENMOSS_PUBLIC_FEED || "true") === "true"; }
 
 async function verifyAdmin(req, env) {
