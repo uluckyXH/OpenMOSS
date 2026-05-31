@@ -94,7 +94,7 @@ async function routeApi(req, env, ctx) {
 
   if (path === '/admin/login' && req.method === 'POST') {
     reqBody = await bodyJson(req);
-    if (reqBody.password !== adminPassword(env)) return json({ detail: '密码错误' }, 403);
+    if (String(reqBody.password || '').trim() !== adminPassword(env)) return json({ detail: '密码错误' }, 403);
     // Cloudflare Workers should not depend on a writable server-side session for admin login.
     // verifyAdmin() accepts the admin password token, so the original WebUI can keep storing
     // the returned token while we avoid D1 session-write failures during cross-origin Pages login.
@@ -385,6 +385,7 @@ export default {
   async fetch(req, env, ctx) {
     const url = new URL(req.url);
     try {
+      if (req.method === 'OPTIONS') return new Response(null, { status: 204, headers: JSON_HEADERS });
       if (url.pathname === '/__init' && req.method === 'POST') { await initSchema(env); return json({ ok: true, message: 'schema initialized' }); }
       if (url.pathname.startsWith('/api/')) return await routeApi(req, env, ctx);
       if (url.pathname === '/' || !url.pathname.includes('.')) return html(INDEX_HTML);
