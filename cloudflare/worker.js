@@ -95,9 +95,10 @@ async function routeApi(req, env, ctx) {
   if (path === '/admin/login' && req.method === 'POST') {
     reqBody = await bodyJson(req);
     if (reqBody.password !== adminPassword(env)) return json({ detail: '密码错误' }, 403);
-    const token = uid('adm_');
-    await env.DB.prepare("INSERT INTO admin_session (token,created_at) VALUES (?,?)").bind(token, nowIso()).run();
-    return json({ token, message: '登录成功' });
+    // Cloudflare Workers should not depend on a writable server-side session for admin login.
+    // verifyAdmin() accepts the admin password token, so the original WebUI can keep storing
+    // the returned token while we avoid D1 session-write failures during cross-origin Pages login.
+    return json({ token: adminPassword(env), message: '登录成功' });
   }
   if (path === '/admin/config' && req.method === 'GET') { await requireAdmin(req, env); return json({ project: { name: projectName(env) }, agent: { allow_registration: true, registration_token: registrationToken(env) }, webui: { public_feed: publicFeed(env) }, server: { external_url: url.origin }, database: { type: 'cloudflare-d1' } }); }
   if (path === '/admin/dashboard/overview' && req.method === 'GET') { await requireAdmin(req, env); return json(await dashboardOverview(env)); }
