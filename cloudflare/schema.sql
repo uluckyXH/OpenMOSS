@@ -120,3 +120,97 @@ CREATE TABLE IF NOT EXISTS admin_session (
   token TEXT PRIMARY KEY,
   created_at TEXT DEFAULT CURRENT_TIMESTAMP
 );
+
+
+CREATE TABLE IF NOT EXISTS managed_agent (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL,
+  slug TEXT UNIQUE NOT NULL,
+  role TEXT NOT NULL,
+  description TEXT DEFAULT '',
+  host_platform TEXT DEFAULT 'openclaw',
+  deployment_mode TEXT DEFAULT 'create_sub_agent',
+  host_access_mode TEXT DEFAULT 'local',
+  status TEXT DEFAULT 'draft',
+  runtime_agent_id TEXT,
+  config_version INTEGER DEFAULT 1,
+  deployed_config_version INTEGER,
+  online_status TEXT,
+  data_source TEXT DEFAULT 'cloudflare-d1',
+  api_key TEXT,
+  system_prompt_content TEXT DEFAULT '',
+  persona_prompt_content TEXT DEFAULT '',
+  identity_content TEXT DEFAULT '',
+  host_render_strategy TEXT DEFAULT 'host_default',
+  notes TEXT,
+  created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+  updated_at TEXT DEFAULT CURRENT_TIMESTAMP
+);
+CREATE INDEX IF NOT EXISTS idx_managed_agent_role ON managed_agent(role);
+CREATE INDEX IF NOT EXISTS idx_managed_agent_status ON managed_agent(status);
+
+CREATE TABLE IF NOT EXISTS managed_agent_host_config (
+  id TEXT PRIMARY KEY,
+  managed_agent_id TEXT UNIQUE NOT NULL,
+  host_platform TEXT DEFAULT 'openclaw',
+  host_agent_identifier TEXT,
+  workdir_path TEXT,
+  host_config_payload_masked TEXT,
+  host_metadata_json TEXT,
+  created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+  updated_at TEXT DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS managed_agent_schedule (
+  id TEXT PRIMARY KEY,
+  managed_agent_id TEXT NOT NULL,
+  name TEXT NOT NULL,
+  enabled INTEGER DEFAULT 1,
+  schedule_type TEXT NOT NULL,
+  schedule_expr TEXT NOT NULL,
+  timeout_seconds INTEGER DEFAULT 300,
+  model_override TEXT,
+  execution_options_json TEXT,
+  schedule_message_content TEXT DEFAULT '',
+  created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+  updated_at TEXT DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS managed_agent_comm_binding (
+  id TEXT PRIMARY KEY,
+  managed_agent_id TEXT NOT NULL,
+  provider TEXT NOT NULL,
+  binding_key TEXT NOT NULL,
+  display_name TEXT,
+  enabled INTEGER DEFAULT 1,
+  routing_policy_json TEXT,
+  metadata_json TEXT,
+  config_payload_masked TEXT,
+  created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+  updated_at TEXT DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS managed_agent_bootstrap_token (
+  id TEXT PRIMARY KEY,
+  managed_agent_id TEXT NOT NULL,
+  token TEXT NOT NULL,
+  purpose TEXT NOT NULL,
+  scope_json TEXT,
+  expires_at TEXT NOT NULL,
+  used_at TEXT,
+  revoked_at TEXT,
+  created_at TEXT DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS managed_agent_deployment_snapshot (
+  id TEXT PRIMARY KEY,
+  managed_agent_id TEXT NOT NULL,
+  script_intent TEXT NOT NULL,
+  status TEXT DEFAULT 'pending',
+  changeset_json TEXT,
+  confirmation_payload_json TEXT,
+  created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+  expires_at TEXT,
+  confirmed_at TEXT,
+  dismissed_at TEXT
+);
