@@ -1,0 +1,12 @@
+name = "openmoss-cloudflare"
+main = "worker.js"
+compatibility_date = "2026-05-31"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "openmoss-prod"
+database_id = "6da6315b-fc4c-46b5-990d-40a51cf27d14"
+
+[vars]
+OPENMOSS_PROJECT_NAME = "OpenMOSS Cloudflare"
+OPENMOSS_PUBLIC_FEED = "true"
