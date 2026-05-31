@@ -46,6 +46,15 @@ async function logRequest(req, env, agent, status, body) {
       .bind(uid(), nowIso(), req.method, new URL(req.url).pathname, agent.id, agent.name, agent.role, body ? JSON.stringify(body).slice(0,10000) : null, status).run();
   } catch (e) { console.log('request log failed', e.message); }
 }
+
+function page(items, url) {
+  const currentPage = Math.max(1, Number(url.searchParams.get('page') || 1));
+  const pageSize = Math.min(100, Math.max(1, Number(url.searchParams.get('page_size') || items.length || 20)));
+  const total = items.length;
+  const start = (currentPage - 1) * pageSize;
+  return { items: items.slice(start, start + pageSize), total, page: currentPage, page_size: pageSize, total_pages: Math.max(1, Math.ceil(total / pageSize)), has_more: currentPage * pageSize < total };
+}
+
 function pageParams(url) {
   const page = Math.max(1, Number(url.searchParams.get('page') || 1));
   const pageSize = Math.min(100, Math.max(0, Number(url.searchParams.get('page_size') || 0)));
@@ -77,6 +86,10 @@ async function routeApi(req, env, ctx) {
   if (path === '/health') return json({ ok: true, runtime: 'cloudflare-workers', project: projectName(env), time: nowIso() });
   if (path === '/version') return json({ name: 'OpenMOSS Cloudflare', version: '2.0.0-cloudflare', runtime: 'cloudflare-workers' });
   if (path === '/setup/status') return json({ initialized: true, has_external_url: true });
+  if (path === '/setup/initialize' && req.method === 'POST') return json({ ok: true, initialized: true });
+  if (path === '/webui/version') return json({ current_version: '0.0.1', latest_version: '0.0.1', update_available: false, update_type: 'none', checked_at: nowIso() });
+  if (path === '/webui/version/check') return json({ current_version: '0.0.1', latest_version: '0.0.1', update_available: false, update_type: 'none', checked_at: nowIso() });
+  if (path === '/admin/webui/update' && req.method === 'POST') return json({ ok: true, message: 'Cloudflare Pages deployment is managed by Wrangler/Pages.' });
   if (path === '/config/notification') { agent = await requireAgent(req, env); return json({ enabled: false, channels: [], events: [] }); }
 
   if (path === '/admin/login' && req.method === 'POST') {
@@ -88,6 +101,23 @@ async function routeApi(req, env, ctx) {
   }
   if (path === '/admin/config' && req.method === 'GET') { await requireAdmin(req, env); return json({ project: { name: projectName(env) }, agent: { allow_registration: true, registration_token: registrationToken(env) }, webui: { public_feed: publicFeed(env) }, server: { external_url: url.origin }, database: { type: 'cloudflare-d1' } }); }
   if (path === '/admin/dashboard/overview' && req.method === 'GET') { await requireAdmin(req, env); return json(await dashboardOverview(env)); }
+  
+  if (path === '/admin/dashboard/highlights' && req.method === 'GET') { await requireAdmin(req, env); return json({ generated_at: nowIso(), limit: Number(url.searchParams.get('limit') || 5), inactive_hours: Number(url.searchParams.get('inactive_hours') || 24), blocked_sub_tasks: [], pending_review_sub_tasks: [], busy_agents: [], low_activity_agents: [], recent_reviews: [] }); }
+  if (path === '/admin/dashboard/trends' && req.method === 'GET') { await requireAdmin(req, env); const days=Number(url.searchParams.get('days')||14); return json({ generated_at: nowIso(), days, start_date: nowIso().slice(0,10), end_date: nowIso().slice(0,10), sub_task_created_trend: [], sub_task_completed_trend: [], review_trend: [], score_delta_trend: [], request_trend: [], activity_trend: [] }); }
+  if (path === '/admin/scores/summary' && req.method === 'GET') { await requireAdmin(req, env); const rows=(await env.DB.prepare("SELECT total_score FROM agent").all()).results||[]; const scores=rows.map(r=>Number(r.total_score||0)); return json({ total_agents: scores.length, positive_score_agents: scores.filter(x=>x>0).length, zero_score_agents: scores.filter(x=>x===0).length, negative_score_agents: scores.filter(x=>x<0).length, top_score: Math.max(0,...scores), average_score: scores.length? scores.reduce((a,b)=>a+b,0)/scores.length:0, last_score_at: null }); }
+  if (path === '/admin/scores/logs' && req.method === 'GET') { await requireAdmin(req, env); const rows=(await env.DB.prepare("SELECT r.*, a.name AS agent_name FROM reward_log r LEFT JOIN agent a ON a.id=r.agent_id ORDER BY r.created_at DESC").all()).results||[]; return json(page(rows, url)); }
+  if (path === '/admin/scores/adjust' && req.method === 'POST') { await requireAdmin(req, env); reqBody=await bodyJson(req); const id=uid(); await env.DB.prepare("INSERT INTO reward_log (id,agent_id,sub_task_id,reason,score_delta,created_at) VALUES (?,?,?,?,?,?)").bind(id,reqBody.agent_id,reqBody.sub_task_id||null,reqBody.reason||'manual',Number(reqBody.score_delta||0),nowIso()).run(); await env.DB.prepare("UPDATE agent SET total_score=total_score+? WHERE id=?").bind(Number(reqBody.score_delta||0),reqBody.agent_id).run(); return json({ok:true,id}); }
+  if (path === '/admin/prompts/templates') { await requireAdmin(req, env); return json(['planner','executor','reviewer','patrol'].map(role=>({role,filename:`${role}.md`,content:`# ${role}\n\nCloudflare OpenMOSS prompt placeholder.`}))); }
+  if (path.startsWith('/admin/prompts/')) { await requireAdmin(req, env); return json({ content: 'Cloudflare deployment is stateless for prompt files in this build.', status: 'unconfigured' }); }
+
+  
+  if (path === '/admin/review-records' && req.method === 'GET') { await requireAdmin(req, env); const rows=(await env.DB.prepare(`SELECT r.*, s.task_id, t.name AS task_name, s.module_id, m.name AS module_name, s.name AS sub_task_name, a.name AS reviewer_agent_name, ra.name AS rework_agent_name FROM review_record r LEFT JOIN sub_task s ON s.id=r.sub_task_id LEFT JOIN task t ON t.id=s.task_id LEFT JOIN module m ON m.id=s.module_id LEFT JOIN agent a ON a.id=r.reviewer_agent LEFT JOIN agent ra ON ra.id=r.rework_agent ORDER BY r.created_at DESC`).all()).results||[]; return json(page(rows, url)); }
+  if (path.match(/^\/admin\/review-records\/[^/]+$/) && req.method === 'GET') { await requireAdmin(req, env); return json({detail:'Not implemented in Cloudflare compact backend'},404); }
+  if (path === '/admin/managed-agents/meta/host-platforms') { await requireAdmin(req, env); return json({ platforms: [] }); }
+  if (path === '/admin/managed-agents/meta/prompt-templates') { await requireAdmin(req, env); return json({ templates: [] }); }
+  if (path === '/admin/managed-agents' && req.method === 'GET') { await requireAdmin(req, env); return json({ items: [], total:0, page:1, page_size:20, total_pages:1, has_more:false }); }
+  if (path.startsWith('/admin/managed-agents/')) { await requireAdmin(req, env); return json({ detail: 'Managed agent host operations are not available on Cloudflare Workers.' }, 501); }
+
   if (path === '/admin/agents' && req.method === 'GET') { await requireAdmin(req, env); return json(await listAdminAgents(env, url)); }
   if (path === '/admin/tasks' && req.method === 'GET') { await requireAdmin(req, env); return json(await listAdminTasks(env, url)); }
   if (path === '/admin/logs' && req.method === 'GET') { await requireAdmin(req, env); return json(await listQuery(env, `SELECT l.*, a.name AS agent_name, a.role AS agent_role FROM activity_log l LEFT JOIN agent a ON a.id=l.agent_id ORDER BY l.created_at DESC`, [], url)); }
@@ -183,8 +213,36 @@ async function dashboardOverview(env) {
   const roleD=await dist('agent','role',['planner','executor','reviewer','patrol']);
   return { generated_at: nowIso(), core_cards:{ open_task_count:taskD.planning+taskD.active+taskD.in_progress, active_sub_task_count:subD.assigned+subD.in_progress+subD.review+subD.rework+subD.blocked, review_queue_count:subD.review, blocked_sub_task_count:subD.blocked, active_agent_count:agentD.active, today_completed_sub_task_count:0 }, secondary_cards:{ disabled_agent_count:agentD.disabled, today_review_count:0, today_rejected_review_count:0, today_reject_rate:0, today_net_score_delta:0 }, distributions:{ task_status_distribution:taskD, sub_task_status_distribution:subD, agent_status_distribution:agentD, agent_role_distribution:roleD, review_result_distribution_7d:{approved:0,rejected:0} } };
 }
-async function listAdminAgents(env,url){ return await listQuery(env, `SELECT id,name,role,description,status,total_score,created_at FROM agent ORDER BY created_at DESC`, [], url); }
-async function listAdminTasks(env,url){ return await listQuery(env, `SELECT t.*, (SELECT count(*) FROM sub_task s WHERE s.task_id=t.id) AS sub_task_count, (SELECT count(*) FROM module m WHERE m.task_id=t.id) AS module_count FROM task t ORDER BY created_at DESC`, [], url); }
+async function listAdminAgents(env,url){
+  const rows=(await env.DB.prepare(`SELECT a.id,a.name,a.role,a.description,a.status,a.total_score,a.created_at,
+    0 AS rank,
+    (SELECT count(*) FROM sub_task s WHERE s.assigned_agent=a.id AND s.status NOT IN ('done','cancelled')) AS open_sub_task_count,
+    (SELECT count(*) FROM sub_task s WHERE s.assigned_agent=a.id AND s.status='assigned') AS assigned_count,
+    (SELECT count(*) FROM sub_task s WHERE s.assigned_agent=a.id AND s.status='in_progress') AS in_progress_count,
+    (SELECT count(*) FROM sub_task s WHERE s.assigned_agent=a.id AND s.status='review') AS review_count,
+    (SELECT count(*) FROM sub_task s WHERE s.assigned_agent=a.id AND s.status='rework') AS rework_count,
+    (SELECT count(*) FROM sub_task s WHERE s.assigned_agent=a.id AND s.status='blocked') AS blocked_count,
+    (SELECT max(timestamp) FROM request_log l WHERE l.agent_id=a.id) AS last_request_at,
+    (SELECT max(created_at) FROM activity_log l WHERE l.agent_id=a.id) AS last_activity_at
+    FROM agent a ORDER BY total_score DESC, created_at DESC`).all()).results||[];
+  rows.forEach((r,i)=>r.rank=i+1);
+  return page(rows,url);
+}
+async function listAdminTasks(env,url){
+  const rows=(await env.DB.prepare(`SELECT t.*,
+    (SELECT count(*) FROM module m WHERE m.task_id=t.id) AS module_count,
+    (SELECT count(*) FROM sub_task s WHERE s.task_id=t.id) AS sub_task_count,
+    (SELECT count(*) FROM sub_task s WHERE s.task_id=t.id AND s.status='pending') AS pending_count,
+    (SELECT count(*) FROM sub_task s WHERE s.task_id=t.id AND s.status='assigned') AS assigned_count,
+    (SELECT count(*) FROM sub_task s WHERE s.task_id=t.id AND s.status='in_progress') AS in_progress_count,
+    (SELECT count(*) FROM sub_task s WHERE s.task_id=t.id AND s.status='review') AS review_count,
+    (SELECT count(*) FROM sub_task s WHERE s.task_id=t.id AND s.status='rework') AS rework_count,
+    (SELECT count(*) FROM sub_task s WHERE s.task_id=t.id AND s.status='blocked') AS blocked_count,
+    (SELECT count(*) FROM sub_task s WHERE s.task_id=t.id AND s.status='done') AS done_count,
+    (SELECT count(*) FROM sub_task s WHERE s.task_id=t.id AND s.status='cancelled') AS cancelled_count
+    FROM task t ORDER BY created_at DESC`).all()).results||[];
+  return page(rows,url);
+}
 
 const INDEX_HTML = `<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>OpenMOSS Cloudflare</title><style>
 body{margin:0;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#07111f;color:#e5f0ff} .wrap{max-width:1180px;margin:0 auto;padding:32px 20px} .hero{padding:28px;border:1px solid #23334d;border-radius:22px;background:linear-gradient(135deg,#13284a,#0b1728 55%,#10251e);box-shadow:0 20px 70px #0008}.title{font-size:42px;font-weight:900;margin:0}.sub{color:#9fb3d1}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;margin-top:18px}.card{background:#0d1a2d;border:1px solid #20324f;border-radius:18px;padding:18px}.num{font-size:32px;font-weight:900}.muted{color:#8ea3c3}.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}button,input,select,textarea{border-radius:12px;border:1px solid #2b4164;background:#0b1525;color:#e5f0ff;padding:10px 12px}button{cursor:pointer;background:#2563eb;border-color:#3b82f6;font-weight:700}.ok{color:#34d399}.bad{color:#fb7185}pre{white-space:pre-wrap;background:#030712;border:1px solid #1f2937;border-radius:14px;padding:14px;max-height:420px;overflow:auto}a{color:#60a5fa}.pill{display:inline-flex;gap:6px;padding:5px 10px;border-radius:999px;background:#11233d;border:1px solid #29466f;color:#bfdbfe;font-size:12px}</style></head><body><div class="wrap"><section class="hero"><div class="pill">Cloudflare Workers + Pages-style UI + D1</div><h1 class="title">OpenMOSS Cloudflare</h1><p class="sub">OpenMOSS 多 Agent 协作中间件的 Cloudflare 原生实现：Worker API、D1 数据库、单页管理界面。</p><div class="row"><button onclick="loadHealth()">健康检查</button><button onclick="loadDashboard()">刷新仪表盘</button><button onclick="loadFeed()">公开活动流</button><a href="/api/health" target="_blank">/api/health</a></div></section><div class="grid" id="cards"></div><section class="card" style="margin-top:18px"><h2>Admin Login</h2><div class="row"><input id="pwd" type="password" placeholder="Admin password"><button onclick="login()">登录</button><button onclick="loadAdmin()">加载管理数据</button></div><p class="muted">登录后 token 保存在浏览器 localStorage。</p></section><section class="card" style="margin-top:18px"><h2>Agent 注册</h2><div class="row"><input id="regToken" placeholder="registration token"><input id="agentName" placeholder="agent name"><select id="agentRole"><option>planner</option><option>executor</option><option>reviewer</option><option>patrol</option></select><button onclick="registerAgent()">注册</button></div></section><section class="card" style="margin-top:18px"><h2>输出</h2><pre id="out">Ready.</pre></section></div><script>

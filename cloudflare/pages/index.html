@@ -1,11 +1,18 @@
-<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>OpenMOSS Cloudflare Pages</title><style>
-body{margin:0;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#07111f;color:#e5f0ff}.wrap{max-width:1180px;margin:0 auto;padding:32px 20px}.hero{padding:28px;border:1px solid #23334d;border-radius:22px;background:linear-gradient(135deg,#13284a,#0b1728 55%,#10251e);box-shadow:0 20px 70px #0008}.title{font-size:42px;font-weight:900;margin:0}.sub{color:#9fb3d1}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;margin-top:18px}.card{background:#0d1a2d;border:1px solid #20324f;border-radius:18px;padding:18px}.num{font-size:32px;font-weight:900}.muted{color:#8ea3c3}.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}button,input,select{border-radius:12px;border:1px solid #2b4164;background:#0b1525;color:#e5f0ff;padding:10px 12px}button{cursor:pointer;background:#2563eb;border-color:#3b82f6;font-weight:700}pre{white-space:pre-wrap;background:#030712;border:1px solid #1f2937;border-radius:14px;padding:14px;max-height:420px;overflow:auto}a{color:#60a5fa}.pill{display:inline-flex;gap:6px;padding:5px 10px;border-radius:999px;background:#11233d;border:1px solid #29466f;color:#bfdbfe;font-size:12px}</style></head><body><div class="wrap"><section class="hero"><div class="pill">Cloudflare Pages + Workers API + D1</div><h1 class="title">OpenMOSS Cloudflare</h1><p class="sub">前端由 Cloudflare Pages 托管，API 由 Worker 提供，数据持久化到 D1。</p><div class="row"><button onclick="loadHealth()">健康检查</button><button onclick="loadDashboard()">刷新仪表盘</button><button onclick="loadFeed()">公开活动流</button><a href="https://openmoss-cloudflare.97274247.workers.dev/api/health" target="_blank">Worker API</a></div></section><div class="grid" id="cards"></div><section class="card" style="margin-top:18px"><h2>Admin Login</h2><div class="row"><input id="pwd" type="password" placeholder="Admin password"><button onclick="login()">登录</button><button onclick="loadAdmin()">加载管理数据</button></div></section><section class="card" style="margin-top:18px"><h2>Agent 注册</h2><div class="row"><input id="regToken" placeholder="registration token"><input id="agentName" placeholder="agent name"><select id="agentRole"><option>planner</option><option>executor</option><option>reviewer</option><option>patrol</option></select><button onclick="registerAgent()">注册</button></div></section><section class="card" style="margin-top:18px"><h2>输出</h2><pre id="out">Ready. API_BASE=https://openmoss-cloudflare.97274247.workers.dev</pre></section></div><script>
-const API_BASE='https://openmoss-cloudflare.97274247.workers.dev'; const out=x=>document.getElementById('out').textContent=typeof x==='string'?x:JSON.stringify(x,null,2); const api=(p,o={})=>fetch(API_BASE+'/api'+p,o).then(r=>r.json());
-async function loadHealth(){out(await api('/health'))} async function loadDashboard(){const d=await api('/admin/dashboard/overview',{headers:{'x-admin-token':localStorage.mossAdmin||document.getElementById('pwd')?.value||''}}); renderCards(d); out(d)}
-function renderCards(d){const c=d.core_cards||{}; document.getElementById('cards').innerHTML=[['开放任务',c.open_task_count],['活跃子任务',c.active_sub_task_count],['待审查',c.review_queue_count],['阻塞',c.blocked_sub_task_count],['活跃 Agent',c.active_agent_count],['今日完成',c.today_completed_sub_task_count]].map(([k,v])=>'<div class="card"><div class="muted">'+k+'</div><div class="num">'+(v??'-')+'</div></div>').join('')}
-async function login(){const r=await api('/admin/login',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({password:document.getElementById('pwd').value})}); if(r.token)localStorage.mossAdmin=r.token; out(r)}
-async function loadAdmin(){const h={'x-admin-token':localStorage.mossAdmin||document.getElementById('pwd')?.value||''}; const data={config:await api('/admin/config',{headers:h}),agents:await api('/admin/agents?page_size=20',{headers:h}),tasks:await api('/admin/tasks?page_size=20',{headers:h})}; out(data)}
-async function loadFeed(){out({status:await api('/feed/status'), agents:await api('/feed/agents'), logs:await api('/feed/logs?limit=20')})}
-async function registerAgent(){const r=await api('/agents/register',{method:'POST',headers:{'content-type':'application/json','x-registration-token':document.getElementById('regToken').value},body:JSON.stringify({name:document.getElementById('agentName').value,role:document.getElementById('agentRole').value,description:'Registered from Cloudflare Pages UI'})}); out(r)}
-loadHealth();
-</script></body></html>
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+    <title>OpenMOSS</title>
+    <script type="module" crossorigin src="/assets/index-BYiXDk_r.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-BBqWFH4z.css">
+  </head>
+  <body>
+    <div id="app"></div>
+  </body>
+</html>
